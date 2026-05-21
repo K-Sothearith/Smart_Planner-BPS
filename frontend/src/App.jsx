@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import './App.css'
 import Auth from './pages/Auth'
 import Analytics from './pages/Analytics'
@@ -23,6 +23,16 @@ function readSession() {
 function App() {
   const [session, setSession] = useState(() => readSession())
   const [route, setRoute] = useState(() => (session ? 'dashboard' : 'signin'))
+
+  // Load and apply cached theme on startup
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('sp:theme') || 'light'
+    if (savedTheme === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark')
+    } else {
+      document.documentElement.removeAttribute('data-theme')
+    }
+  }, [])
 
   const user = useMemo(() => {
     if (!session) return null

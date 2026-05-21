@@ -1,7 +1,7 @@
 :root {
   color-scheme: light;
-  --font-body: "Segoe UI", "Trebuchet MS", sans-serif;
-  --font-heading: Georgia, "Times New Roman", serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-heading: "Outfit", -apple-system, BlinkMacSystemFont, sans-serif;
   --bg: #f3efe6;
   --bg-accent: radial-gradient(circle at top left, rgba(255, 255, 255, 0.95), transparent 32%),
     linear-gradient(135deg, #f3efe6 0%, #efe4d2 45%, #e2dccf 100%);
