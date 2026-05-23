@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react';
+import { MindfulStudyLogo } from '../../assets';
 
 export default function Signin({ onGoToSignup, onAuthSuccess }) {
   const [email, setEmail] = useState('')
@@ -69,13 +70,13 @@ export default function Signin({ onGoToSignup, onAuthSuccess }) {
   }
 
   return (
-    <div className="min-h-screen w-full flex flex-col justify-between items-center px-4 py-12 bg-gradient-to-br from-[#F4F7FB] via-[#F8FAFC] to-[#EBF1F9] dark:from-[#0F172A] dark:via-[#111A2E] dark:to-[#1E293B] transition-colors duration-300 font-sans relative">
+    <div className="min-h-screen w-full flex flex-col justify-between items-center px-4 py-7 bg-linear-to-br from-[#F4F7FB] via-[#F8FAFC] to-[#EBF1F9] dark:from-[#0F172A] dark:via-[#111A2E] dark:to-[#1E293B] transition-colors duration-300 font-sans relative">
       
       {/* Floating Theme Switcher */}
       <button
         type="button"
         onClick={toggleTheme}
-        className="absolute top-6 right-6 z-50 flex items-center justify-center w-10 h-10 rounded-full border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-[#1E293B]/90 backdrop-blur-sm shadow-sm hover:bg-slate-50 dark:hover:bg-slate-900 cursor-pointer text-slate-500 dark:text-slate-400 hover:text-[#2E5B70] dark:hover:text-sky-400 transition-all duration-200 focus:outline-none"
+        className="absolute top-6 right-8 z-50 flex items-center justify-center w-10 h-10 rounded-full border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-[#1E293B]/90 backdrop-blur-sm shadow-sm hover:bg-slate-50 dark:hover:bg-slate-900 cursor-pointer text-slate-500 dark:text-slate-400 hover:text-[#2E5B70] dark:hover:text-sky-400 transition-all duration-200 focus:outline-none"
         aria-label="Toggle theme"
       >
         {theme === 'dark' ? (
@@ -91,19 +92,13 @@ export default function Signin({ onGoToSignup, onAuthSuccess }) {
         )}
       </button>
 
-      {/* Spacer to push content down slightly */}
-      <div className="flex-1" />
-
       {/* Main Container */}
-      <div className="w-full max-w-[460px] flex flex-col items-center">
+      <div className="w-full max-w-115 flex flex-col items-center">
         
         {/* Logo and Brand Header */}
-        <div className="flex flex-col items-center text-center mb-7">
+        <div className="flex flex-col items-center text-center mb-4">
           <div className="w-13 h-13 rounded-2xl bg-[#2E5B70] dark:bg-[#0EA5E9] flex items-center justify-center shadow-lg shadow-[#2E5B70]/10 dark:shadow-sky-500/10 mb-4 transition-all duration-300 hover:scale-105">
-            {/* Brain/Profile Mindful SVG Icon */}
-            <svg className="w-7 h-7 text-white dark:text-slate-900" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.8 15.92c-.02.03-.06.06-.09.08h-.03c-.05-.03-.09-.07-.12-.12l-.01-.01c-.13-.23-.27-.47-.41-.7-.14-.23-.27-.46-.39-.7l-.02-.04a11 11 0 0 1-.62-1.46c-.05-.18-.11-.37-.16-.56-.24-.76-.42-1.55-.54-2.35-.12-.8-.17-1.6-.17-2.4 0-1.41.32-2.73.91-3.92s1.42-2.14 2.45-2.82c1.03-.68 2.21-1.02 3.55-1.02.4 0 .78.03 1.15.08.37.05.74.14 1.1.26.36.12.7.28 1.02.47.32.19.61.42.87.68.26.26.47.55.63.87.16.32.28.66.36 1.02.08.36.12.74.12 1.12 0 1.25-.26 2.4-.78 3.44s-1.25 1.86-2.19 2.47c-.94.61-2.02.94-3.24.99-.02.16-.06.33-.12.49-.06.16-.14.32-.24.47-.1.15-.22.28-.36.39-.14.11-.29.2-.46.26-.17.06-.35.09-.54.09z" />
-            </svg>
+            <img src={MindfulStudyLogo} alt="Icon" className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"/>
           </div>
           <h1 className="text-3xl font-extrabold tracking-tight text-[#2E5B70] dark:text-[#E2E8F0] font-heading">
             MindfulStudy
@@ -147,13 +142,6 @@ export default function Signin({ onGoToSignup, onAuthSuccess }) {
                 <label htmlFor="signin-password" className="text-[11px] font-bold tracking-wider text-slate-400 dark:text-slate-500 uppercase">
                   Password
                 </label>
-                <button
-                  type="button"
-                  className="text-xs font-semibold text-[#2E5B70] dark:text-[#38BDF8] hover:underline transition-all duration-150"
-                  onClick={() => alert('Password reset is not configured for LocalStorage accounts.')}
-                >
-                  Forgot password?
-                </button>
               </div>
               <div className="relative flex items-center">
                 <div className="absolute left-4 text-slate-400 dark:text-slate-500 pointer-events-none">
@@ -190,6 +178,13 @@ export default function Signin({ onGoToSignup, onAuthSuccess }) {
                   )}
                 </button>
               </div>
+              <button
+                  type="button"
+                  className="text-xs font-semibold text-[#2E5B70] dark:text-[#38BDF8] hover:underline transition-all duration-150 self-end"
+                  onClick={() => alert('Password reset is not configured for LocalStorage accounts.')}
+                >
+                  Forgot password?
+                </button>
             </div>
 
             {/* Checkbox */}
@@ -230,11 +225,11 @@ export default function Signin({ onGoToSignup, onAuthSuccess }) {
 
           {/* Separator */}
           <div className="flex items-center justify-between my-5">
-            <div className="h-[1px] bg-slate-200/80 dark:bg-slate-800/80 flex-1" />
+            <div className="h-px bg-slate-200/80 dark:bg-slate-800/80 flex-1" />
             <span className="text-[10px] font-bold tracking-wider text-slate-400 dark:text-slate-500 px-3 uppercase">
               Or continue with
             </span>
-            <div className="h-[1px] bg-slate-200/80 dark:bg-slate-800/80 flex-1" />
+            <div className="h-1px bg-slate-200/80 dark:bg-slate-800/80 flex-1" />
           </div>
 
           {/* Social Sign In */}
@@ -283,15 +278,12 @@ export default function Signin({ onGoToSignup, onAuthSuccess }) {
         </p>
       </div>
 
-      {/* Spacer to push quote badge down */}
-      <div className="flex-1" />
-
       {/* Quote Badge Footer */}
-      <div className="mt-8 transition-transform hover:scale-[1.02] duration-200">
+      <div className="mt-6 transition-transform hover:scale-[1.02] duration-200">
         <div className="inline-flex items-center gap-2.5 px-4 py-2.5 bg-emerald-500/10 dark:bg-emerald-500/5 border border-emerald-500/20 dark:border-emerald-500/10 rounded-full shadow-sm">
           <span className="text-sm">☘️</span>
           <span className="text-[10px] font-extrabold tracking-wider text-emerald-700 dark:text-emerald-400 uppercase font-sans">
-            _☘️RK &ldquo;THE SECRET OF GETTING AHEAD IS GETTING STARTED.&rdquo;
+            -- &ldquo;THE SECRET OF GETTING AHEAD IS GETTING STARTED&rdquo;
           </span>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { MindfulStudyLogo } from '../../assets'
 
 export default function Signup({ onGoToSignin, onAuthSuccess }) {
   const [name, setName] = useState('')
@@ -133,9 +134,7 @@ export default function Signup({ onGoToSignin, onAuthSuccess }) {
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-xl bg-[#2E5B70] dark:bg-[#0EA5E9] flex items-center justify-center shadow-md">
             {/* 4-point star SVG */}
-            <svg className="w-5 h-5 text-white dark:text-slate-900" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2l2.6 7.4 7.4 2.6-7.4 2.6-2.6 7.4-2.6-7.4-7.4-2.6 7.4-2.6z" />
-            </svg>
+            <img src={MindfulStudyLogo} alt="Logo" className="w-5 h-5 text-white dark:text-slate-900" fill="currentColor" viewBox="0 0 24 24" />
           </div>
           <span className="text-xl font-extrabold text-[#2E5B70] dark:text-[#E2E8F0] tracking-tight font-heading">
             MindfulStudy
@@ -434,7 +433,7 @@ export default function Signup({ onGoToSignin, onAuthSuccess }) {
           </div>
 
           {/* Switch Link */}
-          <p className="mt-8 text-sm font-medium text-slate-500 dark:text-slate-400">
+          <p className="mt-8 text-sm font-medium text-slate-500 dark:text-slate-400 self-center">
             Already have an account?{' '}
             <button
               type="button"
