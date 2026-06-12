@@ -404,7 +404,7 @@ export default function Signup({ onGoToSignin, onAuthSuccess }) {
           <div className="grid grid-cols-2 gap-4">
             <button
               type="button"
-              onClick={() => alert('OAuth features are placeholders in this mockup demonstration.')}
+              onClick={() => alert('Auth feature with Google has not been implemented, Design only')}
               className="h-11 border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0F172A] hover:bg-slate-50 dark:hover:bg-slate-900/50 rounded-xl flex items-center justify-center gap-2.5 text-xs font-bold text-slate-600 dark:text-slate-300 transition-all cursor-pointer"
             >
               {/* Google SVG */}
@@ -418,7 +418,7 @@ export default function Signup({ onGoToSignin, onAuthSuccess }) {
             </button>
             <button
               type="button"
-              onClick={() => alert('OAuth features are placeholders in this mockup demonstration.')}
+              onClick={() => alert('Auth feature with Microsoft has not been implemented, Design only')}
               className="h-11 border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0F172A] hover:bg-slate-50 dark:hover:bg-slate-900/50 rounded-xl flex items-center justify-center gap-2.5 text-xs font-bold text-slate-600 dark:text-slate-300 transition-all cursor-pointer"
             >
               {/* Microsoft 4-square SVG */}
