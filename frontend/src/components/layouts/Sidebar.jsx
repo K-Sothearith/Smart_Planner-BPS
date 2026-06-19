@@ -1,8 +1,9 @@
 import { navItems } from '../../navItems'
-import { MindfulStudyLogo, DashboardIcon, AnalyticsIcon, PlannerIcon, SettingIcon, SupportIcon, SignoutIcon } from '../../assets'
+import { MindfulStudyLogo, DashboardIcon, ManagerIcon, AnalyticsIcon, PlannerIcon, SettingIcon, SupportIcon, SignoutIcon } from '../../assets'
 
 const NAV_ICONS = {
   dashboard: DashboardIcon,
+  manager: ManagerIcon,
   planner: PlannerIcon,
   analytics: AnalyticsIcon,
   settings: SettingIcon,

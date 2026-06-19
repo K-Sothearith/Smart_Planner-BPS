@@ -1,8 +1,9 @@
 import { useMemo, useState, useEffect } from 'react'
 import './App.css'
 import Auth from './pages/Auth'
-import Analytics from './pages/Analytics'
 import Dashboard from './pages/Dashboard'
+import Manager from './pages/Task_Session-Manager'
+import Analytics from './pages/Analytics'
 import Planner from './pages/Planner'
 import Setting from './pages/Setting'
 
@@ -65,10 +66,12 @@ function App() {
   }
 
   switch (route) {
-    case 'planner':
-      return <Planner user={user} onNavigate={setRoute} onSignOut={handleSignOut} />
+    case 'manager':
+      return <Manager user={user} onNavigate={setRoute} onSignOut={handleSignOut} />
     case 'analytics':
       return <Analytics user={user} onNavigate={setRoute} onSignOut={handleSignOut} />
+    case 'planner':
+      return <Planner user={user} onNavigate={setRoute} onSignOut={handleSignOut} />
     case 'settings':
       return <Setting user={user} onNavigate={setRoute} onSignOut={handleSignOut} />
     case 'dashboard':
