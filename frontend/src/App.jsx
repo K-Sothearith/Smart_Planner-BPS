@@ -40,6 +40,8 @@ function App() {
     return {
       name: session.name || 'Student',
       email: session.email,
+      age: session.age,
+      gender: session.gender,
     }
   }, [session])
 

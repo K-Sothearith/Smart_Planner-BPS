@@ -65,6 +65,8 @@ export default function Signin({ onGoToSignup, onAuthSuccess }) {
     onAuthSuccess?.({
       name: matchedAccount.name,
       email: matchedAccount.email,
+      age: matchedAccount.age,
+      gender: matchedAccount.gender,
       keepMeSignedIn
     })
   }

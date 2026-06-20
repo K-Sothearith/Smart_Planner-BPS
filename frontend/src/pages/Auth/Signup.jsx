@@ -4,6 +4,8 @@ import { MindfulStudyLogo } from '../../assets'
 export default function Signup({ onGoToSignin, onAuthSuccess }) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
+  const [age, setAge] = useState('')
+  const [gender, setGender] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [agreeTerms, setAgreeTerms] = useState(false)
@@ -41,9 +43,15 @@ export default function Signup({ onGoToSignin, onAuthSuccess }) {
 
     const trimmedName = name.trim()
     const trimmedEmail = email.trim()
+    const parsedAge = Number(age)
 
     if (!trimmedName) return setError('Please enter your full name.')
     if (!trimmedEmail) return setError('Please enter your student email.')
+    if (!age) return setError('Please enter your age.')
+    if (!Number.isInteger(parsedAge) || parsedAge < 13 || parsedAge > 100) {
+      return setError('Please enter a valid age between 13 and 100.')
+    }
+    if (!gender) return setError('Please select your gender.')
     
     // Strict password requirements check
     if (!hasMinLength) return setError('Password must be at least 6 characters.')
@@ -84,6 +92,8 @@ export default function Signup({ onGoToSignin, onAuthSuccess }) {
     const newAccount = {
       name: trimmedName,
       email: trimmedEmail,
+      age: parsedAge,
+      gender,
       password: password
     }
 
@@ -100,7 +110,9 @@ export default function Signup({ onGoToSignin, onAuthSuccess }) {
     // Auto log-in on signup success
     onAuthSuccess?.({
       name: trimmedName,
-      email: trimmedEmail
+      email: trimmedEmail,
+      age: parsedAge,
+      gender
     })
   }
 
@@ -271,9 +283,64 @@ export default function Signup({ onGoToSignin, onAuthSuccess }) {
                   className="w-full h-12 pl-12 pr-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-[#F8FAFC] dark:bg-[#0F172A] text-slate-800 dark:text-slate-100 placeholder-slate-300 dark:placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-[#2E5B70] dark:focus:ring-sky-500/50 focus:border-transparent transition-all duration-200"
                 />
               </div>
-              <p className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 mt-1 pl-1">
-                Use your university email for academic discounts.
-              </p>
+            </div>
+
+            {/* Age and Gender */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="signup-age" className="text-[11px] font-bold tracking-wider text-slate-400 dark:text-slate-500 uppercase">
+                  Age
+                </label>
+                <div className="relative flex items-center">
+                  <div className="absolute left-4 text-slate-400 dark:text-slate-500 pointer-events-none">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l3.5 2M12 3.75a8.25 8.25 0 100 16.5 8.25 8.25 0 000-16.5z" />
+                    </svg>
+                  </div>
+                  <input
+                    id="signup-age"
+                    type="number"
+                    min="13"
+                    max="100"
+                    value={age}
+                    onChange={(e) => setAge(e.target.value)}
+                    placeholder="21"
+                    autoComplete="bday"
+                    className="w-full h-12 pl-12 pr-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-[#F8FAFC] dark:bg-[#0F172A] text-slate-800 dark:text-slate-100 placeholder-slate-300 dark:placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-[#2E5B70] dark:focus:ring-sky-500/50 focus:border-transparent transition-all duration-200"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="signup-gender" className="text-[11px] font-bold tracking-wider text-slate-400 dark:text-slate-500 uppercase">
+                  Gender
+                </label>
+                <div className="relative flex items-center">
+                  <div className="absolute left-4 text-slate-400 dark:text-slate-500 pointer-events-none">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5a4.5 4.5 0 100 9 4.5 4.5 0 000-9zM12 13.5v6m-3-3h6" />
+                    </svg>
+                  </div>
+                  <select
+                    id="signup-gender"
+                    value={gender}
+                    onChange={(e) => setGender(e.target.value)}
+                    autoComplete="sex"
+                    className="w-full h-12 pl-12 pr-10 rounded-xl border border-slate-200 dark:border-slate-800 bg-[#F8FAFC] dark:bg-[#0F172A] text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#2E5B70] dark:focus:ring-sky-500/50 focus:border-transparent transition-all duration-200 appearance-none"
+                  >
+                    <option value="">Select gender</option>
+                    <option value="Female">Female</option>
+                    <option value="Male">Male</option>
+                    <option value="Other">Other</option>
+                    <option value="Prefer not to say">Prefer not to say</option>
+                  </select>
+                  <div className="absolute right-4 text-slate-400 dark:text-slate-500 pointer-events-none">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Password */}
