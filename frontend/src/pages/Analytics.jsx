@@ -1,4 +1,5 @@
 import SidebarLayout from '../components/layouts/SidebarLayout'
+import { AnalyticsIcon } from '../assets'
 
 export default function Analytics({ user, onNavigate, onSignOut }) {
   // Mock data for weekly logs to demonstrate scrollability
@@ -11,7 +12,21 @@ export default function Analytics({ user, onNavigate, onSignOut }) {
       <div className="flex flex-col gap-6 text-left max-w-7xl mx-auto w-full">
         {/* Page Header */}
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-800 dark:text-slate-100 font-heading">
+          <h1 className="flex items-center gap-3 text-3xl font-extrabold tracking-tight text-slate-800 dark:text-slate-100 font-heading">
+            <span
+              aria-hidden="true"
+              className="inline-block w-8 h-8 shrink-0 bg-current"
+              style={{
+                WebkitMaskImage: `url("${AnalyticsIcon}")`,
+                maskImage: `url("${AnalyticsIcon}")`,
+                WebkitMaskRepeat: 'no-repeat',
+                maskRepeat: 'no-repeat',
+                WebkitMaskSize: 'contain',
+                maskSize: 'contain',
+                WebkitMaskPosition: 'center',
+                maskPosition: 'center',
+              }}
+            />
             Productivity & Mood Analytics
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
@@ -84,62 +99,82 @@ export default function Analytics({ user, onNavigate, onSignOut }) {
             </div>
           </div>
 
-          {/* Card 2: Mood & Stress Log (Fixed Height) */}
-          <div className="flex flex-col h-90 bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
-            <div className="p-6 border-b border-slate-300 dark:border-slate-800/50">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-rose-500/10 dark:bg-rose-500/20 flex items-center justify-center text-rose-600 dark:text-rose-400">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
+          {/* Column 2 Stack */}
+          <div className="flex flex-col gap-8">
+            {/* Card 2: Mood & Stress Log (Fixed Height) */}
+            <div className="flex flex-col h-90 bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
+              <div className="p-6 border-b border-slate-300 dark:border-slate-800/50">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-rose-500/10 dark:bg-rose-500/20 flex items-center justify-center text-rose-600 dark:text-rose-400">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <h2 className="text-base font-bold text-slate-800 dark:text-slate-200 font-sans">Mood & Stress Tracking</h2>
                 </div>
-                <h2 className="text-base font-bold text-slate-800 dark:text-slate-200 font-sans">Mood & Stress Tracking</h2>
+                <p className="text-[11px] text-slate-400 dark:text-slate-500 font-semibold mt-1">Review self-reported mood tags and stress triggers.</p>
               </div>
-              <p className="text-[11px] text-slate-400 dark:text-slate-500 font-semibold mt-1">Review self-reported mood tags and stress triggers.</p>
+
+              {/* Scrollable Content */}
+              <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-4 scrollbar-thin">
+                {/* Mood Check-In Widget */}
+                <div className="p-4 bg-slate-50/50 dark:bg-slate-900/30 rounded-xl border border-slate-100 dark:border-slate-800/40 text-left">
+                  <h3 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Quick Mood Check-in</h3>
+                  <div className="grid grid-cols-5 gap-2 mt-2.5">
+                    <button className="h-10 text-lg hover:scale-110 active:scale-95 bg-white dark:bg-[#151a1f] border border-slate-200 dark:border-slate-800 rounded-lg transition-transform">😊</button>
+                    <button className="h-10 text-lg hover:scale-110 active:scale-95 bg-white dark:bg-[#151a1f] border border-slate-200 dark:border-slate-800 rounded-lg transition-transform">😐</button>
+                    <button className="h-10 text-lg hover:scale-110 active:scale-95 bg-white dark:bg-[#151a1f] border border-slate-200 dark:border-slate-800 rounded-lg transition-transform">😴</button>
+                    <button className="h-10 text-lg hover:scale-110 active:scale-95 bg-white dark:bg-[#151a1f] border border-slate-200 dark:border-slate-800 rounded-lg transition-transform">😫</button>
+                    <button className="h-10 text-lg hover:scale-110 active:scale-95 bg-white dark:bg-[#151a1f] border border-slate-200 dark:border-slate-800 rounded-lg transition-transform">😡</button>
+                  </div>
+                </div>
+
+                {/* Mood Logs Timeline */}
+                <div className="flex flex-col gap-3">
+                  <h3 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Mood Log History</h3>
+                  {mockMoodLogs.map((log) => (
+                    <div
+                      key={log.id}
+                      className="p-3.5 bg-slate-50/50 dark:bg-slate-900/30 border border-slate-100 dark:border-slate-800/30 rounded-xl flex flex-col gap-1.5 transition-all hover:bg-slate-100/50 dark:hover:bg-slate-800/40 text-left"
+                    >
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="font-bold text-slate-800 dark:text-slate-200">{log.rating}</span>
+                        <span className="text-[9px] text-slate-400 dark:text-slate-500 font-semibold">{log.date}</span>
+                      </div>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 font-medium leading-relaxed">{log.notes}</p>
+                      <div className="flex items-center gap-1.5 mt-0.5">
+                        <span className="text-[9px] text-slate-400 dark:text-slate-500 font-semibold">Stress Level:</span>
+                        <span className={`text-[8.5px] font-extrabold uppercase px-1.5 rounded border ${
+                          log.stressLevel === 'Low'
+                            ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
+                            : log.stressLevel === 'Medium'
+                            ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
+                            : 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20'
+                        }`}>
+                          {log.stressLevel}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
 
-            {/* Scrollable Content */}
-            <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-4 scrollbar-thin">
-              {/* Mood Check-In Widget */}
-              <div className="p-4 bg-slate-50/50 dark:bg-slate-900/30 rounded-xl border border-slate-100 dark:border-slate-800/40 text-left">
-                <h3 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Quick Mood Check-in</h3>
-                <div className="grid grid-cols-5 gap-2 mt-2.5">
-                  <button className="h-10 text-lg hover:scale-110 active:scale-95 bg-white dark:bg-[#151a1f] border border-slate-200 dark:border-slate-800 rounded-lg transition-transform">😊</button>
-                  <button className="h-10 text-lg hover:scale-110 active:scale-95 bg-white dark:bg-[#151a1f] border border-slate-200 dark:border-slate-800 rounded-lg transition-transform">😐</button>
-                  <button className="h-10 text-lg hover:scale-110 active:scale-95 bg-white dark:bg-[#151a1f] border border-slate-200 dark:border-slate-800 rounded-lg transition-transform">😴</button>
-                  <button className="h-10 text-lg hover:scale-110 active:scale-95 bg-white dark:bg-[#151a1f] border border-slate-200 dark:border-slate-800 rounded-lg transition-transform">😫</button>
-                  <button className="h-10 text-lg hover:scale-110 active:scale-95 bg-white dark:bg-[#151a1f] border border-slate-200 dark:border-slate-800 rounded-lg transition-transform">😡</button>
-                </div>
-              </div>
-
-              {/* Mood Logs Timeline */}
-              <div className="flex flex-col gap-3">
-                <h3 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Mood Log History</h3>
-                {mockMoodLogs.map((log) => (
-                  <div
-                    key={log.id}
-                    className="p-3.5 bg-slate-50/50 dark:bg-slate-900/30 border border-slate-100 dark:border-slate-800/30 rounded-xl flex flex-col gap-1.5 transition-all hover:bg-slate-100/50 dark:hover:bg-slate-800/40 text-left"
-                  >
-                    <div className="flex justify-between items-center text-xs">
-                      <span className="font-bold text-slate-800 dark:text-slate-200">{log.rating}</span>
-                      <span className="text-[9px] text-slate-400 dark:text-slate-500 font-semibold">{log.date}</span>
-                    </div>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 font-medium leading-relaxed">{log.notes}</p>
-                    <div className="flex items-center gap-1.5 mt-0.5">
-                      <span className="text-[9px] text-slate-400 dark:text-slate-500 font-semibold">Stress Level:</span>
-                      <span className={`text-[8.5px] font-extrabold uppercase px-1.5 rounded border ${
-                        log.stressLevel === 'Low'
-                          ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
-                          : log.stressLevel === 'Medium'
-                          ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
-                          : 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20'
-                      }`}>
-                        {log.stressLevel}
-                      </span>
-                    </div>
+            {/* Card 3: Breakdown Chart */}
+            <div className="flex flex-col h-72 bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
+              <div className="p-6 border-b border-slate-300 dark:border-slate-800/50">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-indigo-500/10 dark:bg-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M11 3.055A9.003 9.003 0 1020.945 13H11V3.055z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+                    </svg>
                   </div>
-                ))}
+                  <h2 className="text-base font-bold text-slate-800 dark:text-slate-200 font-sans">Breakdown Chart</h2>
+                </div>
+                <p className="text-[11px] text-slate-400 dark:text-slate-500 font-semibold mt-1">Visual representation of your study sessions and breaks distribution.</p>
               </div>
+              <div className="flex-1" />
             </div>
           </div>
 

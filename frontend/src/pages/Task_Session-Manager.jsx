@@ -1,17 +1,49 @@
+import { useState } from 'react'
 import SidebarLayout from '../components/layouts/SidebarLayout'
+import { ManagerIcon } from '../assets'
+import Select from '../components/ui/Select'
 
 export default function Manager({ user, onNavigate, onSignOut }) {
   
+  const [focusDuration, setFocusDuration] = useState('25 Minutes (Standard)')
+  const [breakMethod, setBreakMethod] = useState('5 Mins (Pomodoro Break)')
+
+  const focusOptions = [
+    { value: '25 Minutes (Standard)', label: '25 Minutes (Standard)' },
+    { value: '50 Minutes (Deep Work)', label: '50 Minutes (Deep Work)' },
+    { value: '15 Minutes (Short Focus)', label: '15 Minutes (Short Focus)' },
+  ]
+
+  const breakOptions = [
+    { value: '5 Mins (Pomodoro Break)', label: '5 Mins (Pomodoro Break)' },
+    { value: '10 Mins (Extended Rest)', label: '10 Mins (Extended Rest)' },
+    { value: 'No Break (Continuous)', label: 'No Break (Continuous)' },
+  ]
+
   const mockTasks = []
 
   const mockSessions = []
 
   return (
     <SidebarLayout activeView="manager" user={user} onNavigate={onNavigate} onSignOut={onSignOut}>
-      <div className="flex flex-col gap-6 text-left max-w-5xl mx-auto w-full">
+      <div className="flex flex-col gap-6 text-left max-w-7xl mx-auto w-full">
         {/* Page Header */}
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-800 dark:text-slate-100 font-heading">
+          <h1 className="flex items-center gap-3 text-3xl font-extrabold tracking-tight text-slate-800 dark:text-slate-100 font-heading">
+            <span
+              aria-hidden="true"
+              className="inline-block w-8 h-8 shrink-0 bg-current"
+              style={{
+                WebkitMaskImage: `url("${ManagerIcon}")`,
+                maskImage: `url("${ManagerIcon}")`,
+                WebkitMaskRepeat: 'no-repeat',
+                maskRepeat: 'no-repeat',
+                WebkitMaskSize: 'contain',
+                maskSize: 'contain',
+                WebkitMaskPosition: 'center',
+                maskPosition: 'center',
+              }}
+            />
             Task-Study Session Manager
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
@@ -19,11 +51,11 @@ export default function Manager({ user, onNavigate, onSignOut }) {
           </p>
         </div>
 
-        {/* Vertical Stack Layout */}
-        <div className="flex flex-col gap-8 mt-4">
+        {/* 2-Column Grid Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-[38%_60%] gap-8 mt-4">
           
-          {/* Card 1: Managing Tasks (Top Card) */}
-          <div className="flex flex-col h-[350px] bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
+          {/* Card 1: Managing Tasks (Left Card) */}
+          <div className="flex flex-col h-150 bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
             {/* Card Header */}
             <div className="p-6 border-b border-slate-300 dark:border-slate-800/50 flex justify-between items-center">
               <div>
@@ -93,7 +125,7 @@ export default function Manager({ user, onNavigate, onSignOut }) {
           </div>
 
           {/* Card 2: Managing Study Sessions (Bottom Card) */}
-          <div className="flex flex-col h-[380px] bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
+          <div className="flex flex-col h-150 bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
             {/* Card Header */}
             <div className="p-6 border-b border-slate-300 dark:border-slate-800/50 flex justify-between items-center">
               <div>
@@ -122,8 +154,8 @@ export default function Manager({ user, onNavigate, onSignOut }) {
             {/* Scrollable Content */}
             <div className="flex-1 overflow-y-auto p-6 flex flex-col md:flex-row gap-8 scrollbar-thin">
               
-              {/* Right Side: Mock Session Log Table */}
-              <div className="flex-1 flex flex-col gap-4 text-left min-w-[280px] border-r-slate-400 border-r-1">
+              {/* Left Side: Mock Session Log Table */}
+              <div className="flex-1 flex flex-col gap-4 text-left min-w-[350px] border-r-slate-400 border-r-1">
                 <h3 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Session History</h3>
                 <div className="flex flex-col gap-2.5">
                   {mockSessions.map((session) => (
@@ -153,28 +185,28 @@ export default function Manager({ user, onNavigate, onSignOut }) {
                 </div>
               </div>
 
-              {/* Left Side: Mock Quick Config Controls */}
+              {/* Right Side: Mock Quick Config Controls */}
               <div className="flex-1 flex flex-col gap-4 text-left">
                 <h3 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Timer Settings</h3>
-                <div className="grid grid-cols-2 gap-3.5">
+                <div className="grid grid-cols-1 gap-3.5">
                   <div className="flex flex-col gap-1">
                     <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Focus Duration</label>
-                    <select className="h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-[#F8FAFC] dark:bg-[#0F172A] text-xs font-semibold text-slate-700 dark:text-slate-300">
-                      <option>25 Minutes (Standard)</option>
-                      <option>50 Minutes (Deep Work)</option>
-                      <option>15 Minutes (Short Focus)</option>
-                    </select>
+                    <Select
+                      value={focusDuration}
+                      onChange={setFocusDuration}
+                      options={focusOptions}
+                    />
                   </div>
                   <div className="flex flex-col gap-1">
                     <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Break Method</label>
-                    <select className="h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-[#F8FAFC] dark:bg-[#0F172A] text-xs font-semibold text-slate-700 dark:text-slate-300">
-                      <option>5 Mins (Pomodoro Break)</option>
-                      <option>10 Mins (Extended Rest)</option>
-                      <option>No Break (Continuous)</option>
-                    </select>
+                    <Select
+                      value={breakMethod}
+                      onChange={setBreakMethod}
+                      options={breakOptions}
+                    />
                   </div>
                 </div>
-                <div className="p-4 bg-slate-50/50 dark:bg-slate-900/30 rounded-xl border border-slate-100 dark:border-slate-800/40 flex items-center justify-between">
+                <div className="p-4 bg-slate-100 dark:bg-slate-900/30 rounded-xl border border-slate-100 dark:border-slate-800/40 flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">⚡</span>
                     <div>

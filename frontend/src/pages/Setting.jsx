@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import SidebarLayout from '../components/layouts/SidebarLayout'
+import { SettingIcon } from '../assets'
 
 export default function Setting({ user, onNavigate, onSignOut }) {
   const ageDisplay = user?.age ? `${user.age}` : 'Not provided'
@@ -68,7 +69,21 @@ export default function Setting({ user, onNavigate, onSignOut }) {
       <div className="flex flex-col gap-6 text-left max-w-7xl mx-auto w-full">
         {/* Page Header */}
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-800 dark:text-slate-100 font-heading">
+          <h1 className="flex items-center gap-3 text-3xl font-extrabold tracking-tight text-slate-800 dark:text-slate-100 font-heading">
+            <span
+              aria-hidden="true"
+              className="inline-block w-8 h-8 shrink-0 bg-current"
+              style={{
+                WebkitMaskImage: `url("${SettingIcon}")`,
+                maskImage: `url("${SettingIcon}")`,
+                WebkitMaskRepeat: 'no-repeat',
+                maskRepeat: 'no-repeat',
+                WebkitMaskSize: 'contain',
+                maskSize: 'contain',
+                WebkitMaskPosition: 'center',
+                maskPosition: 'center',
+              }}
+            />
             Settings
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1.5 font-medium">

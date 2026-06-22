@@ -1,5 +1,5 @@
-CREATE DATABASE SP_BPS;
-USE SP_BPS;
+CREATE DATABASE Mindful_Study;
+USE Mindful_Study;
 
 CREATE TABLE IF NOT EXISTS Users (
     user_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -20,8 +20,8 @@ CREATE TABLE IF NOT EXISTS Categories (
 
 CREATE TABLE IF NOT EXISTS Tasks (
 	task_id INT PRIMARY KEY AUTO_INCREMENT,
-    user_id INT,
-    category_id INT,
+    user_id INT NULL,
+    category_id INT NULL,
     title VARCHAR(50),
     description VARCHAR(150),
     priority ENUM('High', 'Medium', 'Low'),
@@ -36,8 +36,8 @@ CREATE TABLE IF NOT EXISTS Tasks (
 
 CREATE TABLE IF NOT EXISTS StudySessions (
 	session_id INT PRIMARY KEY AUTO_INCREMENT,
-    user_id INT,
-    task_id INT,
+    user_id INT UNIQUE NULL,
+    task_id INT NULL,
     start_time DATETIME,
     end_time DATETIME,
     duration_minutes INT,
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS StudySessions (
 
 CREATE TABLE IF NOT EXISTS Notifications (
 	notification_id INT PRIMARY KEY AUTO_INCREMENT,
-    user_id INT,
+    user_id INT NULL,
     message VARCHAR(150),
     type ENUM('Deadline', 'Reminder', 'Break', 'System'),
     is_read BOOLEAN DEFAULT FALSE,
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS Notifications (
 
 CREATE TABLE IF NOT EXISTS Recommendations (
 	recommendation_id INT PRIMARY KEY AUTO_INCREMENT,
-    user_id INT,
+    user_id INT NULL,
     message VARCHAR(150),
     recommendation_type ENUM('Break', 'Workload', 'Deadline', 'Productivity'),
     created_at date,
@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS Recommendations (
 
 CREATE TABLE IF NOT EXISTS MoodLogs (
 	mood_id INT PRIMARY KEY AUTO_INCREMENT,
-    user_id INT,
+    user_id INT NULL,
     mood_level ENUM('Happy', 'Normal', 'Tired', 'Frustrated', 'Stressed'),
     note VARCHAR(100),
     created_at DATE,
@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS MoodLogs (
 
 CREATE TABLE IF NOT EXISTS UserSettings (
     setting_id INT PRIMARY KEY AUTO_INCREMENT,
-    user_id INT,
+    user_id INT NULL,
     notification_enabled BOOLEAN,
     dark_mode BOOLEAN,
 
