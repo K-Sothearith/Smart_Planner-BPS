@@ -5,7 +5,23 @@ import Select from '../Select'
 export default function NewSessionModal({ isOpen, onClose }) {
   const [subjectTask, setSubjectTask] = useState('')
   const [date, setDate] = useState('')
-  const [time, setTime] = useState('')
+  const [timeVal, setTimeVal] = useState('')
+  const [ampm, setAmpm] = useState('AM')
+
+  const handleTimeChange = (e) => {
+    let val = e.target.value.replace(/[^0-9:]/g, '')
+    if (val.length === 2 && !val.includes(':') && e.nativeEvent.inputType !== 'deleteContentBackward') {
+      val = val + ':'
+    }
+    if (val.length > 5) {
+      val = val.substring(0, 5)
+    }
+    setTimeVal(val)
+  }
+
+  const toggleAmPm = () => {
+    setAmpm((prev) => (prev === 'AM' ? 'PM' : 'AM'))
+  }
   const [duration, setDuration] = useState('30 mins')
   const [focusTechnique, setFocusTechnique] = useState('Pomodoro')
   const [breakDuration, setBreakDuration] = useState('5 mins')
@@ -80,22 +96,35 @@ export default function NewSessionModal({ isOpen, onClose }) {
                     required
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
-                    className="w-full h-11 pl-4 pr-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-[#F8FAFC] dark:bg-[#0F172A] text-xs font-semibold text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-[#2E5B70] dark:focus:ring-sky-500/50 transition-all appearance-none"
+                    className="w-full h-11 pl-4 pr-10 rounded-xl border border-slate-200 dark:border-slate-800 bg-[#F8FAFC] dark:bg-[#0F172A] text-xs font-semibold text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-[#2E5B70] dark:focus:ring-sky-500/50 transition-all cursor-pointer datetime-input"
                   />
+                  <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 dark:text-slate-500 z-0">
+                    <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
                 </div>
               </div>
 
               {/* Time */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Time</label>
-                <div className="relative">
+                <div className="relative flex items-center">
                   <input
-                    type="time"
+                    type="text"
                     required
-                    value={time}
-                    onChange={(e) => setTime(e.target.value)}
-                    className="w-full h-11 pl-4 pr-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-[#F8FAFC] dark:bg-[#0F172A] text-xs font-semibold text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-[#2E5B70] dark:focus:ring-sky-500/50 transition-all appearance-none"
+                    placeholder="10:00"
+                    value={timeVal}
+                    onChange={handleTimeChange}
+                    className="w-full h-11 pl-4 pr-16 rounded-xl border border-slate-200 dark:border-slate-800 bg-[#F8FAFC] dark:bg-[#0F172A] text-xs font-semibold text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-[#2E5B70] dark:focus:ring-sky-500/50 transition-all"
                   />
+                  <button
+                    type="button"
+                    onClick={toggleAmPm}
+                    className="absolute right-1.5 h-8 px-2.5 rounded-lg bg-[#2E5B70]/10 dark:bg-sky-500/20 text-[#2E5B70] dark:text-sky-400 hover:bg-[#2E5B70]/20 text-[10px] font-extrabold tracking-wider transition-colors cursor-pointer select-none"
+                  >
+                    {ampm}
+                  </button>
                 </div>
               </div>
             </div>
