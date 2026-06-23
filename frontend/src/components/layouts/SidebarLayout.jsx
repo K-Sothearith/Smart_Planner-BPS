@@ -1,7 +1,11 @@
+import { useState } from 'react'
 import Sidebar from './Sidebar'
 import ThemeToggle from '../ui/ThemeToggle'
+import NewTaskModal from '../ui/modals/NewTaskModal'
 
 export default function SidebarLayout({ activeView, onNavigate, onSignOut, user, children }) {
+  const [isNewTaskOpen, setIsNewTaskOpen] = useState(false)
+
   const handleUserClick = () => {
     onNavigate?.('settings')
   }
@@ -34,8 +38,17 @@ export default function SidebarLayout({ activeView, onNavigate, onSignOut, user,
         </button>
       </div>
 
-      <Sidebar activeView={activeView} onNavigate={onNavigate} onSignOut={onSignOut} user={user} />
+      <Sidebar
+        activeView={activeView}
+        onNavigate={onNavigate}
+        onSignOut={onSignOut}
+        user={user}
+        onNewTask={() => setIsNewTaskOpen(true)}
+      />
       <main className="flex-1 p-6 relative">{children}</main>
+
+      {/* Global Modals */}
+      <NewTaskModal isOpen={isNewTaskOpen} onClose={() => setIsNewTaskOpen(false)} />
     </div>
   )
 }
