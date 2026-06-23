@@ -20,3 +20,89 @@ body {
   color: var(--text);
   background: var(--bg);
 }
+
+/* Custom styling for native date and time inputs to look clean and modern */
+input[type="date"],
+input[type="time"] {
+  position: relative;
+}
+
+input[type="date"]::-webkit-datetime-edit,
+input[type="time"]::-webkit-datetime-edit {
+  display: flex;
+  align-items: center;
+}
+
+input[type="date"]::-webkit-datetime-edit-fields-wrapper,
+input[type="time"]::-webkit-datetime-edit-fields-wrapper {
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+input[type="date"]::-webkit-datetime-edit-text,
+input[type="time"]::-webkit-datetime-edit-text {
+  color: #94a3b8;
+  padding: 0 2px;
+}
+
+input[type="date"]::-webkit-datetime-edit-month-field,
+input[type="date"]::-webkit-datetime-edit-day-field,
+input[type="date"]::-webkit-datetime-edit-year-field,
+input[type="time"]::-webkit-datetime-edit-hour-field,
+input[type="time"]::-webkit-datetime-edit-minute-field,
+input[type="time"]::-webkit-datetime-edit-ampm-field {
+  border-radius: 6px;
+  padding: 2px 4px;
+  color: inherit;
+  background-color: transparent;
+  transition: all 0.15s ease-in-out;
+}
+
+input[type="date"]::-webkit-datetime-edit-month-field:focus,
+input[type="date"]::-webkit-datetime-edit-day-field:focus,
+input[type="date"]::-webkit-datetime-edit-year-field:focus,
+input[type="time"]::-webkit-datetime-edit-hour-field:focus,
+input[type="time"]::-webkit-datetime-edit-minute-field:focus,
+input[type="time"]::-webkit-datetime-edit-ampm-field:focus {
+  background-color: rgba(46, 91, 112, 0.15);
+  color: #2E5B70;
+}
+
+/* Dark mode overrides for focused segments */
+html[data-theme="dark"] input[type="date"]::-webkit-datetime-edit-month-field:focus,
+html[data-theme="dark"] input[type="date"]::-webkit-datetime-edit-day-field:focus,
+html[data-theme="dark"] input[type="date"]::-webkit-datetime-edit-year-field:focus,
+html[data-theme="dark"] input[type="time"]::-webkit-datetime-edit-hour-field:focus,
+html[data-theme="dark"] input[type="time"]::-webkit-datetime-edit-minute-field:focus,
+html[data-theme="dark"] input[type="time"]::-webkit-datetime-edit-ampm-field:focus {
+  background-color: rgba(56, 189, 248, 0.15);
+  color: #38BDF8;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  border-radius: 6px;
+  padding: 4px;
+  transition: all 0.15s ease-in-out;
+  margin-right: -4px;
+  filter: opacity(0.6) grayscale(1);
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover,
+input[type="time"]::-webkit-calendar-picker-indicator:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  filter: opacity(1) grayscale(0);
+}
+
+html[data-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator,
+html[data-theme="dark"] input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.9) opacity(0.6);
+}
+
+html[data-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator:hover,
+html[data-theme="dark"] input[type="time"]::-webkit-calendar-picker-indicator:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  filter: invert(0.9) opacity(1);
+}

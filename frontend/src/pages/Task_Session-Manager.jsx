@@ -2,11 +2,15 @@ import { useState } from 'react'
 import SidebarLayout from '../components/layouts/SidebarLayout'
 import { ManagerIcon } from '../assets'
 import Select from '../components/ui/Select'
+import NewTaskModal from '../components/ui/modals/NewTaskModal'
+import NewSessionModal from '../components/ui/modals/NewSessionModal'
 
 export default function Manager({ user, onNavigate, onSignOut }) {
   
   const [focusDuration, setFocusDuration] = useState('25 Minutes (Standard)')
   const [breakMethod, setBreakMethod] = useState('5 Mins (Pomodoro Break)')
+  const [isNewTaskOpen, setIsNewTaskOpen] = useState(false)
+  const [isNewSessionOpen, setIsNewSessionOpen] = useState(false)
 
   const focusOptions = [
     { value: '25 Minutes (Standard)', label: '25 Minutes (Standard)' },
@@ -71,6 +75,7 @@ export default function Manager({ user, onNavigate, onSignOut }) {
               </div>
               <button
                 type="button"
+                onClick={() => setIsNewTaskOpen(true)}
                 className="h-9 px-4 rounded-xl bg-[#2E5B70] hover:bg-[#214353] dark:bg-[#38BDF8] dark:hover:bg-[#0EA5E9] dark:text-slate-900 text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -141,6 +146,7 @@ export default function Manager({ user, onNavigate, onSignOut }) {
               </div>
               <button
                 type="button"
+                onClick={() => setIsNewSessionOpen(true)}
                 className="h-9 px-4 rounded-xl bg-[#2E5B70] hover:bg-[#214353] dark:bg-[#38BDF8] dark:hover:bg-[#0EA5E9] dark:text-slate-900 text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
               >
                 <svg className="w-4.5 h-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -223,6 +229,10 @@ export default function Manager({ user, onNavigate, onSignOut }) {
 
         </div>
       </div>
+
+      {/* Page Local Modals */}
+      <NewTaskModal isOpen={isNewTaskOpen} onClose={() => setIsNewTaskOpen(false)} />
+      <NewSessionModal isOpen={isNewSessionOpen} onClose={() => setIsNewSessionOpen(false)} />
     </SidebarLayout>
   )
 }
