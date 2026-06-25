@@ -44,6 +44,7 @@ export default function SidebarLayout({ activeView, onNavigate, onSignOut, user,
         onSignOut={onSignOut}
         user={user}
         onNewTask={() => setIsNewTaskOpen(true)}
+        onHelpSupport={() => onNavigate?.('support')}
       />
       <main className="flex-1 p-6 relative">{children}</main>
 

@@ -89,12 +89,21 @@ export default function Sidebar({ activeView, onNavigate, onNewTask, onHelpSuppo
 
         <button
           type="button"
-          className="group h-11 rounded-xl border border-[#2E5B70] dark:border-slate-700 bg-[#e5eeff] dark:bg-[#111A2E] text-(--text) text-sm font-medium hover:bg-[#2E5B70] dark:hover:bg-[#38BDF8] hover:text-white dark:hover:text-slate-900 flex items-center gap-3 px-3 transition-colors"
+          className={[
+            'group h-11 rounded-xl border text-sm font-medium flex items-center gap-3 px-3 transition-colors',
+            activeView === 'support'
+              ? 'border-transparent bg-[#2E5B70] dark:bg-[#38BDF8] text-white dark:text-slate-900'
+              : 'border-[#2E5B70] dark:border-slate-700 bg-[#e5eeff] dark:bg-[#111A2E] text-(--text) hover:bg-[#2E5B70] dark:hover:bg-[#38BDF8] hover:text-white dark:hover:text-slate-900',
+          ].join(' ')}
           onClick={() => onHelpSupport?.()}
         >
           <MaskIcon
             src={SupportIcon}
-            className="text-slate-900 dark:text-slate-200 group-hover:text-white dark:group-hover:text-slate-900"
+            className={
+              activeView === 'support'
+                ? 'text-white dark:text-slate-900'
+                : 'text-slate-900 dark:text-slate-200 group-hover:text-white dark:group-hover:text-slate-900'
+            }
           />
           <span className="truncate">Help and Support</span>
         </button>

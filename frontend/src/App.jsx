@@ -6,6 +6,7 @@ import Manager from './pages/Task_Session-Manager'
 import Analytics from './pages/Analytics'
 import Planner from './pages/Planner'
 import Setting from './pages/Setting'
+import Support from './pages/Support'
 
 const SESSION_KEY = 'sp:session'
 
@@ -76,6 +77,8 @@ function App() {
       return <Planner user={user} onNavigate={setRoute} onSignOut={handleSignOut} />
     case 'settings':
       return <Setting user={user} onNavigate={setRoute} onSignOut={handleSignOut} />
+    case 'support':
+      return <Support user={user} onNavigate={setRoute} onSignOut={handleSignOut} />
     case 'dashboard':
     default:
       return <Dashboard user={user} onNavigate={setRoute} onSignOut={handleSignOut} />
