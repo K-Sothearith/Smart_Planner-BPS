@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { MindfulStudyLogo } from '../../assets';
+import authService from '../../services/authService.js';
 
 export default function Signin({ onGoToSignup, onAuthSuccess }) {
   const [email, setEmail] = useState('')
@@ -27,7 +28,7 @@ export default function Signin({ onGoToSignup, onAuthSuccess }) {
     setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
 
@@ -35,45 +36,27 @@ export default function Signin({ onGoToSignup, onAuthSuccess }) {
     if (!trimmedEmail) return setError('Please enter your university email.')
     if (!password) return setError('Please enter your password.')
 
-    // Retrieve accounts from LocalStorage
-    let accounts = []
     try {
-      const storedAccounts = localStorage.getItem('sp:accounts')
-      if (storedAccounts) {
-        accounts = JSON.parse(storedAccounts)
-      }
+      const responseData = await authService.login(trimmedEmail, password);
+      
+      // Auth Success
+      onAuthSuccess?.({
+        token: responseData.token,
+        name: responseData.name,
+        email: responseData.email,
+        age: responseData.age,
+        gender: responseData.gender,
+        keepMeSignedIn
+      });
     } catch (err) {
-      console.error('Failed to parse accounts from LocalStorage:', err)
+      console.error('Login request failed:', err);
+      const errMsg = err.response?.data?.message || 'Connection error. Please try again.';
+      setError(errMsg);
     }
-
-    // Find matching account
-    const matchedAccount = accounts.find(
-      (acc) => acc.email.toLowerCase() === trimmedEmail.toLowerCase()
-    )
-
-    if (!matchedAccount) {
-      setError('No account found with this email. Please sign up first.')
-      return
-    }
-
-    if (matchedAccount.password !== password) {
-      setError('Incorrect password. Please try again.')
-      return
-    }
-
-    // Auth Success
-    onAuthSuccess?.({
-      name: matchedAccount.name,
-      email: matchedAccount.email,
-      age: matchedAccount.age,
-      gender: matchedAccount.gender,
-      keepMeSignedIn
-    })
   }
 
   return (
     <div className="min-h-screen w-full flex flex-col justify-between items-center px-4 py-7 bg-linear-to-br from-[#F4F7FB] via-[#F8FAFC] to-[#EBF1F9] dark:from-[#0F172A] dark:via-[#111A2E] dark:to-[#1E293B] transition-colors duration-300 font-sans relative">
-      
       {/* Floating Theme Switcher */}
       <button
         type="button"
