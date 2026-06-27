@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { MindfulStudyLogo } from '../../assets'
+import authService from '../../services/authService.js'
 
 export default function Signup({ onGoToSignin, onAuthSuccess }) {
   const [name, setName] = useState('')
@@ -37,7 +38,7 @@ export default function Signup({ onGoToSignin, onAuthSuccess }) {
   const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password)
   const hasMinLength = password.length >= 6
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
 
@@ -68,52 +69,28 @@ export default function Signup({ onGoToSignin, onAuthSuccess }) {
       return setError('Please enter a valid email address.')
     }
 
-    // Retrieve accounts database
-    let accounts = []
     try {
-      const storedAccounts = localStorage.getItem('sp:accounts')
-      if (storedAccounts) {
-        accounts = JSON.parse(storedAccounts)
-      }
+      const responseData = await authService.register({
+        name: trimmedName,
+        email: trimmedEmail,
+        age: parsedAge,
+        gender,
+        password
+      });
+
+      // Auto log-in on signup success
+      onAuthSuccess?.({
+        token: responseData.token,
+        name: responseData.name,
+        email: responseData.email,
+        age: responseData.age,
+        gender: responseData.gender
+      });
     } catch (err) {
-      console.error('Failed to parse accounts from LocalStorage:', err)
+      console.error('Registration request failed:', err);
+      const errMsg = err.response?.data?.message || 'Connection error. Please try again.';
+      setError(errMsg);
     }
-
-    // Check email uniqueness
-    const emailExists = accounts.some(
-      (acc) => acc.email.toLowerCase() === trimmedEmail.toLowerCase()
-    )
-    if (emailExists) {
-      setError('An account with this email already exists. Please sign in instead.')
-      return
-    }
-
-    // Register account
-    const newAccount = {
-      name: trimmedName,
-      email: trimmedEmail,
-      age: parsedAge,
-      gender,
-      password: password
-    }
-
-    accounts.push(newAccount)
-
-    try {
-      localStorage.setItem('sp:accounts', JSON.stringify(accounts))
-    } catch (err) {
-      console.error('Failed to save account to LocalStorage:', err)
-      setError('Could not complete registration due to a storage error.')
-      return
-    }
-
-    // Auto log-in on signup success
-    onAuthSuccess?.({
-      name: trimmedName,
-      email: trimmedEmail,
-      age: parsedAge,
-      gender
-    })
   }
 
   return (
