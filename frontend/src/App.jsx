@@ -12,7 +12,7 @@ const SESSION_KEY = 'sp:session'
 
 function readSession() {
   try {
-    const raw = localStorage.getItem(SESSION_KEY)
+    const raw = sessionStorage.getItem(SESSION_KEY)
     if (!raw) return null
     const parsed = JSON.parse(raw)
     if (!parsed?.email) return null
@@ -47,13 +47,13 @@ function App() {
   }, [session])
 
   const handleAuthSuccess = (nextSession) => {
-    localStorage.setItem(SESSION_KEY, JSON.stringify(nextSession))
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify(nextSession))
     setSession(nextSession)
     setRoute('dashboard')
   }
 
   const handleSignOut = () => {
-    localStorage.removeItem(SESSION_KEY)
+    sessionStorage.removeItem(SESSION_KEY)
     setSession(null)
     setRoute('signin')
   }

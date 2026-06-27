@@ -49,10 +49,10 @@ export default function NewSessionModal({ isOpen, onClose }) {
       {/* Backdrop */}
       <div className="fixed inset-0 bg-slate-900/40 dark:bg-black/60 backdrop-blur-xs transition-opacity" />
 
-      {/* Modal Container */}
+      {/* Container */}
       <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
         <DialogPanel className="w-full max-w-md bg-white/95 dark:bg-[#1E293B]/95 backdrop-blur-md border border-slate-300 dark:border-slate-800 rounded-3xl shadow-2xl p-6 transition-all transform relative">
-          {/* Close button */}
+          
           <button
             type="button"
             onClick={onClose}
@@ -72,7 +72,7 @@ export default function NewSessionModal({ isOpen, onClose }) {
           </p>
 
           <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4.5 text-left">
-            {/* Subject / Task (Input field as requested) */}
+            {/* Subject / Task */}
             <div className="flex flex-col gap-1.5">
               <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Subject / Task</label>
               <input
@@ -85,7 +85,7 @@ export default function NewSessionModal({ isOpen, onClose }) {
               />
             </div>
 
-            {/* Date and Time side by side */}
+            {/* Date and Time */}
             <div className="grid grid-cols-2 gap-4">
               {/* Date */}
               <div className="flex flex-col gap-1.5">
@@ -129,7 +129,7 @@ export default function NewSessionModal({ isOpen, onClose }) {
               </div>
             </div>
 
-            {/* Duration Buttons row */}
+            {/* Duration Buttons */}
             <div className="flex flex-col gap-1.5">
               <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Duration</label>
               <div className="flex gap-3 h-11">
@@ -153,7 +153,7 @@ export default function NewSessionModal({ isOpen, onClose }) {
               </div>
             </div>
 
-            {/* Focus Technique and Break Duration side by side */}
+            {/* Focus Technique and Break Duration */}
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-1.5">
                 <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Focus Technique</label>
@@ -165,7 +165,7 @@ export default function NewSessionModal({ isOpen, onClose }) {
               </div>
             </div>
 
-            {/* Burnout Prevention Toggle Card */}
+            {/* Burnout Prevention Card */}
             <div className="p-4 bg-emerald-500/5 dark:bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center justify-between transition-all">
               <div className="flex items-center gap-3 text-left">
                 <span className="text-xl text-emerald-600 dark:text-emerald-400">🍃</span>

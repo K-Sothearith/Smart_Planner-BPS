@@ -6,7 +6,7 @@ export default function BreakModal({ isOpen, onClose, onTakeBreak }) {
       {/* Backdrop */}
       <div className="fixed inset-0 bg-slate-900/40 dark:bg-black/60 backdrop-blur-xs transition-opacity" />
 
-      {/* Modal Container */}
+      {/* Container */}
       <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
         <DialogPanel className="w-full max-w-sm bg-white/95 dark:bg-[#1E293B]/95 backdrop-blur-md border border-slate-300 dark:border-slate-800 rounded-3xl shadow-2xl p-6 transition-all transform text-center relative">
           
