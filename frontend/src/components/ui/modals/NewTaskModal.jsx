@@ -29,10 +29,10 @@ export default function NewTaskModal({ isOpen, onClose }) {
       {/* Backdrop */}
       <div className="fixed inset-0 bg-slate-900/40 dark:bg-black/60 backdrop-blur-xs transition-opacity" />
 
-      {/* Modal Container */}
+      {/* Container */}
       <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
         <DialogPanel className="w-full max-w-md bg-white/95 dark:bg-[#1E293B]/95 backdrop-blur-md border border-slate-300 dark:border-slate-850 rounded-3xl shadow-2xl p-6 transition-all transform relative">
-          {/* Close button */}
+          
           <button
             type="button"
             onClick={onClose}
@@ -52,7 +52,7 @@ export default function NewTaskModal({ isOpen, onClose }) {
           </p>
 
           <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-5 text-left">
-            {/* Task Name */}
+            
             <div className="flex flex-col gap-1.5">
               <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Task Name</label>
               <input
@@ -65,15 +65,15 @@ export default function NewTaskModal({ isOpen, onClose }) {
               />
             </div>
 
-            {/* Category and Priority side by side */}
+            {/* Category and Priority */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* Category Select */}
+              {/* Category */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Category</label>
                 <Select value={category} onChange={setCategory} options={categoryOptions} className="h-11" />
               </div>
 
-              {/* Priority Select Buttons */}
+              {/* Priority */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Priority</label>
                 <div className="flex gap-2 h-11">
@@ -98,9 +98,9 @@ export default function NewTaskModal({ isOpen, onClose }) {
               </div>
             </div>
 
-            {/* Due Date and Estimated Time side by side */}
+            {/* Due Date and Estimated Time */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* Due Date Input with Icon */}
+              {/* Due Date */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Due Date</label>
                 <div className="relative">
@@ -119,7 +119,7 @@ export default function NewTaskModal({ isOpen, onClose }) {
                 </div>
               </div>
 
-              {/* Estimated Time Input with Icon */}
+              {/* Estimated Time */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Estimated Time</label>
                 <div className="relative">

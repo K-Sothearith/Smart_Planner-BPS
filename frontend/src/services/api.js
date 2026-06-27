@@ -7,11 +7,11 @@ const API = axios.create({
   },
 });
 
-// Request interceptor to automatically attach JWT token to headers if available
+// Request interceptor to automatically attach JWT token to headers
 API.interceptors.request.use(
   (config) => {
     try {
-      const session = localStorage.getItem("sp:session");
+      const session = sessionStorage.getItem("sp:session");
       if (session) {
         const parsedSession = JSON.parse(session);
         if (parsedSession && parsedSession.token) {
@@ -19,7 +19,7 @@ API.interceptors.request.use(
         }
       }
     } catch (error) {
-      console.error("Error reading token from LocalStorage:", error);
+      console.error("Error reading token from sessionStorage:", error);
     }
     return config;
   },

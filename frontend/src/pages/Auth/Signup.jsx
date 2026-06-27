@@ -54,7 +54,7 @@ export default function Signup({ onGoToSignin, onAuthSuccess }) {
     }
     if (!gender) return setError('Please select your gender.')
     
-    // Strict password requirements check
+    // Password requirements check
     if (!hasMinLength) return setError('Password must be at least 6 characters.')
     if (!hasUppercase) return setError('Password must contain at least one uppercase letter.')
     if (!hasLowercase) return setError('Password must contain at least one lowercase letter.')
@@ -104,25 +104,25 @@ export default function Signup({ onGoToSignin, onAuthSuccess }) {
         aria-label="Toggle theme"
       >
         {theme === 'dark' ? (
-          /* Sun SVG */
+          /* Light mode*/
           <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
           </svg>
         ) : (
-          /* Moon SVG */
+          /* Dark mode*/
           <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 16.25A9 9 0 1111.25 3m.004 0a8.007 8.007 0 0010.5 10.5z" />
           </svg>
         )}
       </button>
 
-      {/* Left Marketing Panel - Split Screen (Hidden on mobile) */}
+      {/* Left Panel - Split Screen */}
       <div className="hidden md:flex flex-col justify-between p-12 bg-gradient-to-b from-[#F0F4F8] to-[#E5ECF4] dark:from-[#111A2E] dark:to-[#17253D] border-r border-slate-200/50 dark:border-slate-800/50 text-left">
         
-        {/* Top Logo */}
+        {/* Logo */}
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-xl bg-[#2E5B70] dark:bg-[#0EA5E9] flex items-center justify-center shadow-md">
-            {/* 4-point star SVG */}
+        
             <img src={MindfulStudyLogo} alt="Logo" className="w-5 h-5 text-white dark:text-slate-900" fill="currentColor" viewBox="0 0 24 24" />
           </div>
           <span className="text-xl font-extrabold text-[#2E5B70] dark:text-[#E2E8F0] tracking-tight font-heading">
@@ -130,7 +130,7 @@ export default function Signup({ onGoToSignin, onAuthSuccess }) {
           </span>
         </div>
 
-        {/* Central Marketing Message */}
+        {/* Central Message */}
         <div className="max-w-[400px] my-auto py-8">
           <h2 className="text-4.5xl font-black tracking-tight text-slate-800 dark:text-slate-100 leading-tight font-heading">
             Protect your <span className="text-[#2E5B70] dark:text-[#38BDF8]">focus</span>, prevent the <span className="text-[#E28743] dark:text-[#F0A45D]">burnout</span>.
@@ -139,13 +139,13 @@ export default function Signup({ onGoToSignin, onAuthSuccess }) {
             The only smart planner that prioritizes your cognitive well-being. We analyze your workload in real-time to suggest breaks before exhaustion hits.
           </p>
 
-          {/* Marketing Option Cards */}
+          {/* Option Cards */}
           <div className="flex flex-col gap-4.5 mt-9">
             
             {/* Card 1 */}
             <div className="bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-sm border border-slate-200/50 dark:border-slate-800/50 rounded-2xl p-4 flex gap-4.5 shadow-sm shadow-[#2E5B70]/5">
               <div className="w-10 h-10 rounded-xl bg-[#F0FDF4] dark:bg-[#064E3B]/40 border border-emerald-100/50 dark:border-emerald-800/10 flex items-center justify-center shrink-0">
-                {/* Leaf SVG */}
+                
                 <svg className="w-5.5 h-5.5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v13.5m0 0l-4-4m4 4l4-4M3.75 19.5h16.5" />
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 16.5c-4.5 0-8.25-3.75-8.25-8.25S7.5 3 12 3s8.25 3.75 8.25 8.25-3.75 8.25-8.25 8.25z" />
@@ -164,7 +164,7 @@ export default function Signup({ onGoToSignin, onAuthSuccess }) {
             {/* Card 2 */}
             <div className="bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-sm border border-slate-200/50 dark:border-slate-800/50 rounded-2xl p-4 flex gap-4.5 shadow-sm shadow-[#2E5B70]/5">
               <div className="w-10 h-10 rounded-xl bg-[#F0F9FF] dark:bg-[#075985]/40 border border-sky-100/50 dark:border-sky-800/10 flex items-center justify-center shrink-0">
-                {/* Moon SVG */}
+                
                 <svg className="w-5.5 h-5.5 text-sky-600 dark:text-sky-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 16.25A9 9 0 1111.25 3m.004 0a8.007 8.007 0 0010.5 10.5M12 15a3 3 0 100-6 3 3 0 000 6z" />
                 </svg>
@@ -347,12 +347,12 @@ export default function Signup({ onGoToSignin, onAuthSuccess }) {
                   className="absolute right-4 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
                 >
                   {showPassword ? (
-                    /* Eye Off SVG */
+                    /* Hide Password */
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.815 7.815l3 3m-3-3l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
                     </svg>
                   ) : (
-                    /* Eye SVG */
+                    /* Show Password */
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -451,7 +451,7 @@ export default function Signup({ onGoToSignin, onAuthSuccess }) {
               onClick={() => alert('Auth feature with Google has not been implemented, Design only')}
               className="h-11 border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0F172A] hover:bg-slate-50 dark:hover:bg-slate-900/50 rounded-xl flex items-center justify-center gap-2.5 text-xs font-bold text-slate-600 dark:text-slate-300 transition-all cursor-pointer"
             >
-              {/* Google SVG */}
+              
               <svg className="w-4.5 h-4.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M21.35 11.1H12v2.7h5.38c-.24 1.28-.96 2.37-2.04 3.1v2.57h3.3c1.93-1.78 3.04-4.4 3.04-7.49 0-.61-.05-1.2-.15-1.78z" fill="#4285F4"/>
                 <path d="M12 20.58c2.43 0 4.47-.81 5.96-2.21l-3.3-2.57c-.91.61-2.07.97-3.3.97-2.34 0-4.33-1.58-5.03-3.7H2.9v2.66c1.49 2.96 4.54 4.85 8.1 4.85z" fill="#34A853"/>
@@ -465,7 +465,7 @@ export default function Signup({ onGoToSignin, onAuthSuccess }) {
               onClick={() => alert('Auth feature with Microsoft has not been implemented, Design only')}
               className="h-11 border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0F172A] hover:bg-slate-50 dark:hover:bg-slate-900/50 rounded-xl flex items-center justify-center gap-2.5 text-xs font-bold text-slate-600 dark:text-slate-300 transition-all cursor-pointer"
             >
-              {/* Microsoft 4-square SVG */}
+              
               <svg className="w-4.5 h-4.5" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect width="10.5" height="10.5" fill="#F25022"/>
                 <rect x="11.5" width="10.5" height="10.5" fill="#7FBA00"/>
@@ -476,7 +476,7 @@ export default function Signup({ onGoToSignin, onAuthSuccess }) {
             </button>
           </div>
 
-          {/* Switch Link */}
+          {/* Signin Link */}
           <p className="mt-8 text-sm font-medium text-slate-500 dark:text-slate-400 self-center">
             Already have an account?{' '}
             <button

@@ -1,9 +1,7 @@
 import jwt from "jsonwebtoken";
 
-/**
- * Authentication Middleware
- * Verifies JWT token from the Authorization header and attaches the user payload to the request.
- */
+
+// Authentication Middleware
 const authMiddleware = (req, res, next) => {
   const authHeader = req.headers["authorization"];
   
@@ -14,7 +12,7 @@ const authMiddleware = (req, res, next) => {
     });
   }
 
-  // Expect header format: Bearer <token>
+  // Header format: Bearer <token>
   const parts = authHeader.split(" ");
   if (parts.length !== 2 || parts[0] !== "Bearer") {
     return res.status(401).json({

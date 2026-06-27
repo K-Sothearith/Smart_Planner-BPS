@@ -3,11 +3,29 @@ import { MindfulStudyLogo } from '../../assets';
 import authService from '../../services/authService.js';
 
 export default function Signin({ onGoToSignup, onAuthSuccess }) {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState(() => {
+    try {
+      return localStorage.getItem('sp:remembered_email') || '';
+    } catch {
+      return '';
+    }
+  })
+  const [password, setPassword] = useState(() => {
+    try {
+      return localStorage.getItem('sp:remembered_password') || '';
+    } catch {
+      return '';
+    }
+  })
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
-  const [keepMeSignedIn, setKeepMeSignedIn] = useState(false)
+  const [rememberMe, setRememberMe] = useState(() => {
+    try {
+      return localStorage.getItem('sp:remember_me') === 'true';
+    } catch {
+      return false;
+    }
+  })
 
   // Manage Theme State
   const [theme, setTheme] = useState(() => {
@@ -39,14 +57,23 @@ export default function Signin({ onGoToSignup, onAuthSuccess }) {
     try {
       const responseData = await authService.login(trimmedEmail, password);
       
-      // Auth Success
+      // Save or clear remembered credentials in LocalStorage
+      if (rememberMe) {
+        localStorage.setItem('sp:remembered_email', trimmedEmail);
+        localStorage.setItem('sp:remembered_password', password);
+        localStorage.setItem('sp:remember_me', 'true');
+      } else {
+        localStorage.removeItem('sp:remembered_email');
+        localStorage.removeItem('sp:remembered_password');
+        localStorage.setItem('sp:remember_me', 'false');
+      }
+
       onAuthSuccess?.({
         token: responseData.token,
         name: responseData.name,
         email: responseData.email,
         age: responseData.age,
-        gender: responseData.gender,
-        keepMeSignedIn
+        gender: responseData.gender
       });
     } catch (err) {
       console.error('Login request failed:', err);
@@ -65,12 +92,12 @@ export default function Signin({ onGoToSignup, onAuthSuccess }) {
         aria-label="Toggle theme"
       >
         {theme === 'dark' ? (
-          /* Sun SVG */
+          /* Light mode */
           <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
           </svg>
         ) : (
-          /* Moon SVG */
+          /* Dark mode */
           <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 16.25A9 9 0 1111.25 3m.004 0a8.007 8.007 0 0010.5 10.5z" />
           </svg>
@@ -93,7 +120,7 @@ export default function Signin({ onGoToSignup, onAuthSuccess }) {
           </p>
         </div>
 
-        {/* glassmorphic card */}
+        {/* Card */}
         <div className="w-full bg-white/95 dark:bg-[#1E293B]/95 border border-slate-200/80 dark:border-slate-800/80 rounded-3xl shadow-[0_16px_40px_rgba(43,92,116,0.06)] dark:shadow-[0_24px_60px_rgba(0,0,0,0.3)] p-8 transition-all duration-300">
           <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
             
@@ -104,7 +131,7 @@ export default function Signin({ onGoToSignup, onAuthSuccess }) {
               </label>
               <div className="relative flex items-center">
                 <div className="absolute left-4 text-slate-400 dark:text-slate-500 pointer-events-none">
-                  {/* Envelope SVG Icon */}
+                  
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
                   </svg>
@@ -130,7 +157,7 @@ export default function Signin({ onGoToSignup, onAuthSuccess }) {
               </div>
               <div className="relative flex items-center">
                 <div className="absolute left-4 text-slate-400 dark:text-slate-500 pointer-events-none">
-                  {/* Lock SVG Icon */}
+                  
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                   </svg>
@@ -150,12 +177,12 @@ export default function Signin({ onGoToSignup, onAuthSuccess }) {
                   className="absolute right-4 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
                 >
                   {showPassword ? (
-                    /* Eye Off SVG */
+                    /* Hide Password */
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.815 7.815l3 3m-3-3l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
                     </svg>
                   ) : (
-                    /* Eye SVG */
+                    /* Show Password */
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -175,14 +202,14 @@ export default function Signin({ onGoToSignup, onAuthSuccess }) {
             {/* Checkbox */}
             <div className="flex items-center gap-2 mt-1">
               <input
-                id="keep-signed-in"
+                id="remember-me"
                 type="checkbox"
-                checked={keepMeSignedIn}
-                onChange={(e) => setKeepMeSignedIn(e.target.checked)}
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
                 className="w-4 h-4 rounded border-slate-300 text-[#2E5B70] focus:ring-[#2E5B70] dark:bg-[#0F172A] dark:border-slate-800"
               />
-              <label htmlFor="keep-signed-in" className="text-sm font-medium text-slate-500 dark:text-slate-400 cursor-pointer select-none">
-                Keep me signed in for today
+              <label htmlFor="remember-me" className="text-sm font-medium text-slate-500 dark:text-slate-400 cursor-pointer select-none">
+                Remember me
               </label>
             </div>
 
@@ -224,7 +251,6 @@ export default function Signin({ onGoToSignup, onAuthSuccess }) {
               onClick={() => alert('Auth feature with Google has not been implemented, Design only')}
               className="h-11 border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0F172A] hover:bg-slate-50 dark:hover:bg-slate-900/50 rounded-xl flex items-center justify-center gap-2.5 text-xs font-bold text-slate-600 dark:text-slate-300 transition-all cursor-pointer"
             >
-              {/* Google SVG */}
               <svg className="w-4.5 h-4.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M21.35 11.1H12v2.7h5.38c-.24 1.28-.96 2.37-2.04 3.1v2.57h3.3c1.93-1.78 3.04-4.4 3.04-7.49 0-.61-.05-1.2-.15-1.78z" fill="#4285F4"/>
                 <path d="M12 20.58c2.43 0 4.47-.81 5.96-2.21l-3.3-2.57c-.91.61-2.07.97-3.3.97-2.34 0-4.33-1.58-5.03-3.7H2.9v2.66c1.49 2.96 4.54 4.85 8.1 4.85z" fill="#34A853"/>
@@ -238,7 +264,6 @@ export default function Signin({ onGoToSignup, onAuthSuccess }) {
               onClick={() => alert('Auth feature with Microsoft has not been implemented, Design only')}
               className="h-11 border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0F172A] hover:bg-slate-50 dark:hover:bg-slate-900/50 rounded-xl flex items-center justify-center gap-2.5 text-xs font-bold text-slate-600 dark:text-slate-300 transition-all cursor-pointer"
             >
-              {/* Microsoft 4-square SVG */}
               <svg className="w-4.5 h-4.5" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect width="10.5" height="10.5" fill="#F25022"/>
                 <rect x="11.5" width="10.5" height="10.5" fill="#7FBA00"/>
@@ -250,7 +275,7 @@ export default function Signin({ onGoToSignup, onAuthSuccess }) {
           </div>
         </div>
 
-        {/* Switch Link */}
+        {/* Signup Link */}
         <p className="mt-7 text-sm font-medium text-slate-500 dark:text-slate-400">
           New to MindfulStudy?{' '}
           <button
@@ -263,7 +288,7 @@ export default function Signin({ onGoToSignup, onAuthSuccess }) {
         </p>
       </div>
 
-      {/* Quote Badge Footer */}
+      {/* Quote */}
       <div className="mt-6 transition-transform hover:scale-[1.02] duration-200">
         <div className="inline-flex items-center gap-2.5 px-4 py-2.5 bg-emerald-500/10 dark:bg-emerald-500/5 border border-emerald-500/20 dark:border-emerald-500/10 rounded-full shadow-sm">
           <span className="text-sm">☘️</span>

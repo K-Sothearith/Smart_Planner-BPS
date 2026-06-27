@@ -2,9 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
-/**
- * Helper to generate JWT token for a user.
- */
+// JWT token for a user
 const generateToken = (userId) => {
   const secret = process.env.JWT_SECRET || "mindful_study_jwt_secret_key_2026";
   const expiry = process.env.JWT_EXPIRES_IN || "24h";
@@ -12,9 +10,7 @@ const generateToken = (userId) => {
 };
 
 const authController = {
-  /**
-   * Register a new user.
-   */
+  // Register a new user
   async register(req, res) {
     try {
       const { name, email, password, age, gender } = req.body;
@@ -104,9 +100,8 @@ const authController = {
     }
   },
 
-  /**
-   * Log in an existing user.
-   */
+
+  // Log in an existing user
   async login(req, res) {
     try {
       const { email, password } = req.body;

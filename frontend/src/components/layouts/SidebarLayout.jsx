@@ -13,7 +13,7 @@ export default function SidebarLayout({ activeView, onNavigate, onSignOut, user,
   return (
     <div className="min-h-screen w-full flex relative bg-linear-to-br from-[#F4F7FB] via-[#F8FAFC] to-[#EBF1F9] dark:from-[#0F172A] dark:via-[#111A2E] dark:to-[#1E293B] transition-colors duration-300 font-sans">
       
-      {/* Top Right Utility Controls */}
+      {/* Top Right Controls */}
       <div className="absolute top-6 right-6 z-50 flex items-center gap-3">
         {/* Streak Counter */}
         <div className="flex items-center gap-1.5 px-3 h-10 bg-amber-500/10 dark:bg-amber-500/20 border border-amber-500/20 rounded-full text-amber-600 dark:text-amber-400 font-bold text-xs select-none shadow-sm">
@@ -48,7 +48,6 @@ export default function SidebarLayout({ activeView, onNavigate, onSignOut, user,
       />
       <main className="flex-1 p-6 relative">{children}</main>
 
-      {/* Global Modals */}
       <NewTaskModal isOpen={isNewTaskOpen} onClose={() => setIsNewTaskOpen(false)} />
     </div>
   )

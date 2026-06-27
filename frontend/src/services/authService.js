@@ -5,7 +5,7 @@ const authService = {
    * Log in an existing user.
    * @param {string} email 
    * @param {string} password 
-   * @returns {Promise<object>} The authentication response data (user details + JWT token)
+   * @returns {Promise<object>}
    */
   async login(email, password) {
     const response = await API.post("/auth/login", { email, password });
@@ -20,7 +20,7 @@ const authService = {
    * @param {number|string} registrationData.age
    * @param {string} registrationData.gender
    * @param {string} registrationData.password
-   * @returns {Promise<object>} The authentication response data (user details + JWT token)
+   * @returns {Promise<object>}
    */
   async register({ name, email, age, gender, password }) {
     const response = await API.post("/auth/register", {
