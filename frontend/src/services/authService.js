@@ -32,6 +32,15 @@ const authService = {
     });
     return response.data;
   },
+
+  /**
+   * Mark the onboarding guide as completed for the current user.
+   * @returns {Promise<object>}
+   */
+  async completeGuide() {
+    const response = await API.put("/auth/complete-guide");
+    return response.data;
+  },
 };
 
 export default authService;

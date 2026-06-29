@@ -7,6 +7,8 @@ import Analytics from './pages/Analytics'
 import Planner from './pages/Planner'
 import Setting from './pages/Setting'
 import Support from './pages/Support'
+import GuideModal from './components/ui/modals/GuideModal'
+import authService from './services/authService'
 
 const SESSION_KEY = 'sp:session'
 
@@ -25,6 +27,7 @@ function readSession() {
 function App() {
   const [session, setSession] = useState(() => readSession())
   const [route, setRoute] = useState(() => (session ? 'dashboard' : 'signin'))
+  const [isGuideOpen, setIsGuideOpen] = useState(false)
 
   // Load and apply cached theme on startup
   useEffect(() => {
@@ -43,8 +46,32 @@ function App() {
       email: session.email,
       age: session.age,
       gender: session.gender,
+      isNewUser: !!session.isNewUser,
     }
   }, [session])
+
+  // Automatically trigger the guide modal for new users on registration/onboarding
+  useEffect(() => {
+    if (user?.isNewUser) {
+      setIsGuideOpen(true)
+    }
+  }, [user])
+
+  const handleCompleteGuide = async () => {
+    setIsGuideOpen(false)
+    if (user?.isNewUser) {
+      try {
+        await authService.completeGuide()
+      } catch (err) {
+        console.error('Failed to update onboarding guide status on backend:', err)
+      }
+      if (session) {
+        const updatedSession = { ...session, isNewUser: false }
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify(updatedSession))
+        setSession(updatedSession)
+      }
+    }
+  }
 
   const handleAuthSuccess = (nextSession) => {
     sessionStorage.setItem(SESSION_KEY, JSON.stringify(nextSession))
@@ -68,21 +95,37 @@ function App() {
     )
   }
 
-  switch (route) {
-    case 'manager':
-      return <Manager user={user} onNavigate={setRoute} onSignOut={handleSignOut} />
-    case 'analytics':
-      return <Analytics user={user} onNavigate={setRoute} onSignOut={handleSignOut} />
-    case 'planner':
-      return <Planner user={user} onNavigate={setRoute} onSignOut={handleSignOut} />
-    case 'settings':
-      return <Setting user={user} onNavigate={setRoute} onSignOut={handleSignOut} />
-    case 'support':
-      return <Support user={user} onNavigate={setRoute} onSignOut={handleSignOut} />
-    case 'dashboard':
-    default:
-      return <Dashboard user={user} onNavigate={setRoute} onSignOut={handleSignOut} />
+  const renderActivePage = () => {
+    const props = {
+      user,
+      onNavigate: setRoute,
+      onSignOut: handleSignOut,
+      onOpenGuide: () => setIsGuideOpen(true)
+    }
+
+    switch (route) {
+      case 'manager':
+        return <Manager {...props} />
+      case 'analytics':
+        return <Analytics {...props} />
+      case 'planner':
+        return <Planner {...props} />
+      case 'settings':
+        return <Setting {...props} />
+      case 'support':
+        return <Support {...props} />
+      case 'dashboard':
+      default:
+        return <Dashboard {...props} />
+    }
   }
+
+  return (
+    <>
+      {renderActivePage()}
+      <GuideModal isOpen={isGuideOpen} onClose={handleCompleteGuide} />
+    </>
+  )
 }
 
 export default App

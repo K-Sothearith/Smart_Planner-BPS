@@ -1,7 +1,7 @@
 import SidebarLayout from '../components/layouts/SidebarLayout'
 import { PlannerIcon } from '../assets'
 
-export default function Planner({ user, onNavigate, onSignOut }) {
+export default function Planner({ user, onNavigate, onSignOut, onOpenGuide }) {
   // Mock weekly schedule content
   const weeklySchedule = []
 
@@ -9,7 +9,7 @@ export default function Planner({ user, onNavigate, onSignOut }) {
   const backlog = []
 
   return (
-    <SidebarLayout activeView="planner" user={user} onNavigate={onNavigate} onSignOut={onSignOut}>
+    <SidebarLayout activeView="planner" user={user} onNavigate={onNavigate} onSignOut={onSignOut} onOpenGuide={onOpenGuide}>
       <div className="flex flex-col gap-6 text-left max-w-7xl mx-auto w-full">
         {/* Page Header */}
         <div>
