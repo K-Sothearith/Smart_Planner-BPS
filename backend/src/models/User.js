@@ -44,6 +44,7 @@ const User = {
       email,
       age,
       gender,
+      isNewUser: true,
       modePreference: "Light"
     };
   },
@@ -54,10 +55,20 @@ const User = {
    * @returns {Promise<object|null>}
    */
   async findById(id) {
-    const query = "SELECT user_id, full_name, email, age, gender, modePreference, created_at FROM Users WHERE user_id = ?";
+    const query = "SELECT user_id, full_name, email, age, gender, modePreference, isNewUser, created_at FROM Users WHERE user_id = ?";
     const [rows] = await pool.query(query, [id]);
     if (rows.length === 0) return null;
     return rows[0];
+  },
+
+  /**
+   * Mark the onboarding guide as completed/seen.
+   * @param {number} userId
+   * @returns {Promise<void>}
+   */
+  async completeGuide(userId) {
+    const query = "UPDATE Users SET isNewUser = FALSE WHERE user_id = ?";
+    await pool.query(query, [userId]);
   }
 };
 

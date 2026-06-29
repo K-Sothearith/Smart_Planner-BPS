@@ -35,6 +35,16 @@ const authController = {
         });
       }
 
+      // 2b. Email domain validation
+      const allowedDomains = ["gmail.com", "outlook.com", "student.cadt.edu.kh", "icloud.com", "yahoo.com"];
+      const emailDomain = trimmedEmail.split("@")[1];
+      if (!allowedDomains.includes(emailDomain)) {
+        return res.status(400).json({
+          status: "ERROR",
+          message: "Please register with an approved email domain (gmail.com, outlook.com, student.cadt.edu.kh, icloud.com, or yahoo.com)."
+        });
+      }
+
       // 3. Password strength check (min 6 characters)
       if (password.length < 6) {
         return res.status(400).json({
@@ -87,7 +97,8 @@ const authController = {
         name: createdUser.fullName,
         email: createdUser.email,
         age: createdUser.age,
-        gender: createdUser.gender
+        gender: createdUser.gender,
+        isNewUser: true
       });
 
     } catch (error) {
@@ -145,7 +156,8 @@ const authController = {
         name: user.full_name,
         email: user.email,
         age: user.age,
-        gender: user.gender
+        gender: user.gender,
+        isNewUser: user.isNewUser === 1 || user.isNewUser === true || user.isNewUser === '1'
       });
 
     } catch (error) {
@@ -153,6 +165,33 @@ const authController = {
       return res.status(500).json({
         status: "ERROR",
         message: "An error occurred during login. Please try again later.",
+        error: error.message
+      });
+    }
+  },
+
+  // Mark the onboarding guide as completed/seen
+  async completeGuide(req, res) {
+    try {
+      const userId = req.user.userId;
+      if (!userId) {
+        return res.status(400).json({
+          status: "ERROR",
+          message: "User ID not found in request."
+        });
+      }
+
+      await User.completeGuide(userId);
+
+      return res.status(200).json({
+        status: "SUCCESS",
+        message: "Onboarding guide completed successfully."
+      });
+    } catch (error) {
+      console.error("Complete guide error:", error);
+      return res.status(500).json({
+        status: "ERROR",
+        message: "An error occurred while updating the guide completion status.",
         error: error.message
       });
     }

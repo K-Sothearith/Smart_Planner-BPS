@@ -5,7 +5,7 @@ import Select from '../components/ui/Select'
 import NewTaskModal from '../components/ui/modals/NewTaskModal'
 import NewSessionModal from '../components/ui/modals/NewSessionModal'
 
-export default function Manager({ user, onNavigate, onSignOut }) {
+export default function Manager({ user, onNavigate, onSignOut, onOpenGuide }) {
   
   const [focusDuration, setFocusDuration] = useState('25 Minutes (Standard)')
   const [breakMethod, setBreakMethod] = useState('5 Mins (Pomodoro Break)')
@@ -29,7 +29,7 @@ export default function Manager({ user, onNavigate, onSignOut }) {
   const mockSessions = []
 
   return (
-    <SidebarLayout activeView="manager" user={user} onNavigate={onNavigate} onSignOut={onSignOut}>
+    <SidebarLayout activeView="manager" user={user} onNavigate={onNavigate} onSignOut={onSignOut} onOpenGuide={onOpenGuide}>
       <div className="flex flex-col gap-6 text-left max-w-7xl mx-auto w-full">
         {/* Page Header */}
         <div>

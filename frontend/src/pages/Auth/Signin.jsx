@@ -73,7 +73,8 @@ export default function Signin({ onGoToSignup, onAuthSuccess }) {
         name: responseData.name,
         email: responseData.email,
         age: responseData.age,
-        gender: responseData.gender
+        gender: responseData.gender,
+        isNewUser: responseData.isNewUser
       });
     } catch (err) {
       console.error('Login request failed:', err);

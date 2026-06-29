@@ -2,7 +2,7 @@ import { useState } from 'react'
 import SidebarLayout from '../components/layouts/SidebarLayout'
 import { SettingIcon } from '../assets'
 
-export default function Setting({ user, onNavigate, onSignOut }) {
+export default function Setting({ user, onNavigate, onSignOut, onOpenGuide }) {
   const ageDisplay = user?.age ? `${user.age}` : 'Not provided'
   const genderDisplay = user?.gender || 'Not provided'
   const [currentPassword, setCurrentPassword] = useState('')
@@ -65,7 +65,7 @@ export default function Setting({ user, onNavigate, onSignOut }) {
   }
 
   return (
-    <SidebarLayout activeView="settings" user={user} onNavigate={onNavigate} onSignOut={onSignOut}>
+    <SidebarLayout activeView="settings" user={user} onNavigate={onNavigate} onSignOut={onSignOut} onOpenGuide={onOpenGuide}>
       <div className="flex flex-col gap-6 text-left max-w-7xl mx-auto w-full">
         {/* Page Header */}
         <div>

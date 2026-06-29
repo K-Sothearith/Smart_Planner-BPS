@@ -13,9 +13,9 @@ function Card({ title, description, className = '' }) {
   )
 }
 
-export default function Dashboard({ user, onNavigate, onSignOut }) {
+export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide }) {
   return (
-    <SidebarLayout activeView="dashboard" user={user} onNavigate={onNavigate} onSignOut={onSignOut}>
+    <SidebarLayout activeView="dashboard" user={user} onNavigate={onNavigate} onSignOut={onSignOut} onOpenGuide={onOpenGuide}>
       <div className="flex flex-col gap-6 text-left max-w-7xl mx-auto w-full">
         <div>
           <h1 className="flex items-center gap-3 text-3xl font-extrabold tracking-tight text-slate-800 dark:text-slate-100 font-heading">

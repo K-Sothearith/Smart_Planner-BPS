@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS Users (
     gender ENUM('Male', 'Female', 'Other', 'Prefer not to say'),
     dob DATE,
     created_at DATE,
+    isNewUser BOOLEAN DEFAULT TRUE,
     -- UserSetting
     modePreference ENUM('Dark', 'Light')
 );

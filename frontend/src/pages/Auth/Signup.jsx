@@ -69,6 +69,13 @@ export default function Signup({ onGoToSignin, onAuthSuccess }) {
       return setError('Please enter a valid email address.')
     }
 
+    // Validate email domain
+    const allowedDomains = ['gmail.com', 'outlook.com', 'student.cadt.edu.kh', 'icloud.com', 'yahoo.com']
+    const emailDomain = trimmedEmail.split('@')[1]
+    if (!allowedDomains.includes(emailDomain)) {
+      return setError('Please use an approved email domain (gmail.com, outlook.com, student.cadt.edu.kh, icloud.com, or yahoo.com).')
+    }
+
     try {
       const responseData = await authService.register({
         name: trimmedName,
@@ -84,7 +91,8 @@ export default function Signup({ onGoToSignin, onAuthSuccess }) {
         name: responseData.name,
         email: responseData.email,
         age: responseData.age,
-        gender: responseData.gender
+        gender: responseData.gender,
+        isNewUser: responseData.isNewUser
       });
     } catch (err) {
       console.error('Registration request failed:', err);

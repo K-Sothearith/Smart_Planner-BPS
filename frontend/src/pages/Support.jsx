@@ -38,7 +38,7 @@ const faqs = [
   },
 ]
 
-export default function Support({ user, onNavigate, onSignOut }) {
+export default function Support({ user, onNavigate, onSignOut, onOpenGuide }) {
   const [message, setMessage] = useState('')
   const [status, setStatus] = useState('')
 
@@ -53,7 +53,7 @@ export default function Support({ user, onNavigate, onSignOut }) {
   }
 
   return (
-    <SidebarLayout activeView="support" user={user} onNavigate={onNavigate} onSignOut={onSignOut}>
+    <SidebarLayout activeView="support" user={user} onNavigate={onNavigate} onSignOut={onSignOut} onOpenGuide={onOpenGuide}>
       <div className="flex flex-col gap-6 text-left max-w-7xl mx-auto w-full">
         <div>
           <h1 className="flex items-center gap-3 text-3xl font-extrabold tracking-tight text-slate-800 dark:text-slate-100 font-heading">

@@ -1,14 +1,14 @@
 import SidebarLayout from '../components/layouts/SidebarLayout'
 import { AnalyticsIcon } from '../assets'
 
-export default function Analytics({ user, onNavigate, onSignOut }) {
+export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide }) {
   // Mock data for weekly logs to demonstrate scrollability
   const mockStudyStats = []
 
   const mockMoodLogs = []
 
   return (
-    <SidebarLayout activeView="analytics" user={user} onNavigate={onNavigate} onSignOut={onSignOut}>
+    <SidebarLayout activeView="analytics" user={user} onNavigate={onNavigate} onSignOut={onSignOut} onOpenGuide={onOpenGuide}>
       <div className="flex flex-col gap-6 text-left max-w-7xl mx-auto w-full">
         {/* Page Header */}
         <div>
