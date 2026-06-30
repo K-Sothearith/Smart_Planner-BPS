@@ -98,7 +98,7 @@ export default function Support({ user, onNavigate, onSignOut, onOpenGuide }) {
             </div>
 
             <div className="bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5">
-              <div className="p-6 border-b border-slate-300 dark:border-slate-800/50">
+              <div className="p-6 border-b border-slate-300 dark:border-slate-700">
                 <h2 className="text-base font-bold text-slate-800 dark:text-slate-200">Frequently Asked Questions</h2>
                 <p className="text-[11px] text-slate-400 dark:text-slate-500 font-semibold mt-1">
                   Quick answers for common Mindful Study questions.
@@ -108,7 +108,7 @@ export default function Support({ user, onNavigate, onSignOut, onOpenGuide }) {
                 {faqs.map((faq) => (
                   <details
                     key={faq.question}
-                    className="group rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/30 px-4 py-3"
+                    className="group rounded-xl border border-slate-300 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/30 px-4 py-3"
                   >
                     <summary className="cursor-pointer list-none text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center justify-between gap-3">
                       <span>{faq.question}</span>
@@ -122,7 +122,7 @@ export default function Support({ user, onNavigate, onSignOut, onOpenGuide }) {
           </div>
 
           <div className="bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5">
-            <div className="p-6 border-b border-slate-300 dark:border-slate-800/50">
+            <div className="p-6 border-b border-slate-300 dark:border-slate-700">
               <h2 className="text-base font-bold text-slate-800 dark:text-slate-200">Contact Support</h2>
               <p className="text-[11px] text-slate-400 dark:text-slate-500 font-semibold mt-1">
                 Tell us what happened and we will help you sort it out.

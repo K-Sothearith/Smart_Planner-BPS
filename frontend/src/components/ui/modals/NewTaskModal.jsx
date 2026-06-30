@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 import Select from '../Select'
 import taskService from '../../../services/taskService.js'
 
-export default function NewTaskModal({ isOpen, onClose, onTaskCreated }) {
+export default function NewTaskModal({ isOpen, onClose, onTaskCreated, task }) {
   const [taskName, setTaskName] = useState('')
   const [category, setCategory] = useState('Assignment')
   const [priority, setPriority] = useState('Med')
@@ -21,24 +21,75 @@ export default function NewTaskModal({ isOpen, onClose, onTaskCreated }) {
     { value: 'Others', label: 'Others' },
   ]
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setError(null)
-    setSubmitting(true)
-    try {
-      await taskService.createTask({
-        title: taskName,
-        category,
-        priority,
-        dueDate,
-        description: estimatedTime ? `Estimated time: ${estimatedTime}` : ''
-      })
-      // Clear fields
+  useEffect(() => {
+    if (task) {
+      setTaskName(task.title || '')
+      setCategory(task.category || 'Assignment')
+      setPriority(task.priority === 'Medium' ? 'Med' : (task.priority || 'Med'))
+      
+      // format due_date YYYY-MM-DD
+      if (task.due_date) {
+        const d = new Date(task.due_date)
+        const year = d.getFullYear()
+        const month = String(d.getMonth() + 1).padStart(2, '0')
+        const day = String(d.getDate()).padStart(2, '0')
+        setDueDate(`${year}-${month}-${day}`)
+      } else {
+        setDueDate('')
+      }
+      
+      if (task.description && task.description.startsWith('Estimated time: ')) {
+        setEstimatedTime(task.description.replace('Estimated time: ', ''))
+      } else {
+        setEstimatedTime(task.description || '')
+      }
+    } else {
+      // Clear fields for new task creation
       setTaskName('')
       setCategory('Assignment')
       setPriority('Med')
       setDueDate('')
       setEstimatedTime('')
+    }
+  }, [task, isOpen])
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setError(null)
+    setSubmitting(true)
+    try {
+      if (task) {
+        // Edit mode
+        const categoryMap = {
+          'Practice': 1,
+          'Assignment': 2,
+          'Project': 3,
+          'Revision': 4,
+          'Research': 5,
+          'Others': 6
+        };
+        const categoryId = categoryMap[category] || 6;
+        const apiPriority = priority === 'Med' ? 'Medium' : priority;
+        
+        await taskService.updateTask(task.task_id, {
+          categoryId,
+          title: taskName,
+          description: estimatedTime ? `Estimated time: ${estimatedTime}` : '',
+          priority: apiPriority,
+          status: task.status,
+          dueDate,
+          completeAt: task.completed_at || null
+        })
+      } else {
+        // Create mode
+        await taskService.createTask({
+          title: taskName,
+          category,
+          priority,
+          dueDate,
+          description: estimatedTime ? `Estimated time: ${estimatedTime}` : ''
+        })
+      }
       
       if (onTaskCreated) {
         onTaskCreated()
@@ -46,7 +97,7 @@ export default function NewTaskModal({ isOpen, onClose, onTaskCreated }) {
       onClose()
     } catch (err) {
       console.error(err)
-      setError(err.response?.data?.message || 'Failed to create task.')
+      setError(err.response?.data?.message || 'Failed to process task.')
     } finally {
       setSubmitting(false)
     }
@@ -73,10 +124,10 @@ export default function NewTaskModal({ isOpen, onClose, onTaskCreated }) {
           </button>
 
           <DialogTitle className="text-2xl font-extrabold text-[#2E5B70] dark:text-slate-100 font-sans tracking-tight">
-            New Task
+            {task ? 'Edit Task' : 'New Task'}
           </DialogTitle>
           <p className="text-xs text-slate-450 dark:text-slate-400 font-medium mt-1">
-            Add a mindful addition to your schedule.
+            {task ? 'Update the details of your task.' : 'Add a mindful addition to your schedule.'}
           </p>
 
           <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-5 text-left">
@@ -183,9 +234,10 @@ export default function NewTaskModal({ isOpen, onClose, onTaskCreated }) {
               </button>
               <button
                 type="submit"
-                className="flex-1 sm:flex-initial h-11 px-8 rounded-full bg-[#2E5B70] hover:bg-[#214353] dark:bg-[#38BDF8] dark:hover:bg-[#0EA5E9] dark:text-slate-900 text-white text-xs font-bold transition-all shadow-md cursor-pointer"
+                disabled={submitting}
+                className="flex-1 sm:flex-initial h-11 px-8 rounded-full bg-[#2E5B70] hover:bg-[#214353] dark:bg-[#38BDF8] dark:hover:bg-[#0EA5E9] dark:text-slate-900 text-white text-xs font-bold transition-all shadow-md cursor-pointer disabled:opacity-50"
               >
-                Add Task
+                {submitting ? 'Saving...' : (task ? 'Save Changes' : 'Add Task')}
               </button>
             </div>
           </form>

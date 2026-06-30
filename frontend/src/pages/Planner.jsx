@@ -40,7 +40,7 @@ export default function Planner({ user, onNavigate, onSignOut, onOpenGuide }) {
           
           {/* Card 1: Weekly Timetable (Large Card) */}
           <div className="flex flex-col h-170 bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
-            <div className="p-6 border-b border-slate-300 dark:border-slate-800/50 flex justify-between items-center">
+            <div className="p-6 border-b border-slate-300 dark:border-slate-700 flex justify-between items-center">
               <div>
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-lg bg-indigo-500/10 dark:bg-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
@@ -84,7 +84,7 @@ export default function Planner({ user, onNavigate, onSignOut, onOpenGuide }) {
 
           {/* Card 2: Backlog & Time Blocking (Smaller Side Card) */}
           <div className="flex flex-col h-170 bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
-            <div className="p-6 border-b border-slate-300 dark:border-slate-800/50">
+            <div className="p-6 border-b border-slate-300 dark:border-slate-700">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-rose-500/10 dark:bg-rose-500/20 flex items-center justify-center text-rose-600 dark:text-rose-400">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">

@@ -4,7 +4,7 @@ import { DashboardIcon } from '../assets'
 function Card({ title, description, className = '' }) {
   return (
     <section className={`flex flex-col bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300 ${className}`}>
-      <div className="p-6 border-b border-slate-300 dark:border-slate-800/50">
+      <div className="p-6 border-b border-slate-300 dark:border-slate-700">
         <h2 className="text-base font-bold text-slate-800 dark:text-slate-200 font-sans">{title}</h2>
         <p className="text-[11px] text-slate-400 dark:text-slate-500 font-semibold mt-1">{description}</p>
       </div>

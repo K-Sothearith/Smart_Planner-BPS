@@ -96,7 +96,7 @@ export default function Setting({ user, onNavigate, onSignOut, onOpenGuide }) {
           
           {/* Card 1: Timer Preferences (Fixed Height) */}
           <div className="flex flex-col h-150 bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
-            <div className="p-6 border-b border-slate-300 dark:border-slate-800/50">
+            <div className="p-6 border-b border-slate-300 dark:border-slate-700">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-[#accent]/10 dark:bg-[#accent]/20 flex items-center justify-center text-[#accent] dark:text-[#f0a45d]">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
@@ -164,7 +164,7 @@ export default function Setting({ user, onNavigate, onSignOut, onOpenGuide }) {
 
           {/* Card 2: System Settings & Profile (Fixed Height) */}
           <div className="flex flex-col h-150 bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
-            <div className="p-6 border-b border-slate-300 dark:border-slate-800/50">
+            <div className="p-6 border-b border-slate-300 dark:border-slate-700">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-sky-500/10 dark:bg-sky-500/20 flex items-center justify-center text-sky-600 dark:text-sky-400">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
