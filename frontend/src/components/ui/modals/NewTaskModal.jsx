@@ -1,13 +1,16 @@
 import { useState } from 'react'
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 import Select from '../Select'
+import taskService from '../../../services/taskService.js'
 
-export default function NewTaskModal({ isOpen, onClose }) {
+export default function NewTaskModal({ isOpen, onClose, onTaskCreated }) {
   const [taskName, setTaskName] = useState('')
   const [category, setCategory] = useState('Assignment')
   const [priority, setPriority] = useState('Med')
   const [dueDate, setDueDate] = useState('')
   const [estimatedTime, setEstimatedTime] = useState('')
+  const [error, setError] = useState(null)
+  const [submitting, setSubmitting] = useState(false)
 
   const categoryOptions = [
     { value: 'Practice', label: 'Practice' },
@@ -18,10 +21,35 @@ export default function NewTaskModal({ isOpen, onClose }) {
     { value: 'Others', label: 'Others' },
   ]
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // Do nothing for now
-    onClose()
+    setError(null)
+    setSubmitting(true)
+    try {
+      await taskService.createTask({
+        title: taskName,
+        category,
+        priority,
+        dueDate,
+        description: estimatedTime ? `Estimated time: ${estimatedTime}` : ''
+      })
+      // Clear fields
+      setTaskName('')
+      setCategory('Assignment')
+      setPriority('Med')
+      setDueDate('')
+      setEstimatedTime('')
+      
+      if (onTaskCreated) {
+        onTaskCreated()
+      }
+      onClose()
+    } catch (err) {
+      console.error(err)
+      setError(err.response?.data?.message || 'Failed to create task.')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -52,6 +80,11 @@ export default function NewTaskModal({ isOpen, onClose }) {
           </p>
 
           <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-5 text-left">
+            {error && (
+              <div className="p-3 bg-rose-500/10 text-rose-500 text-xs font-semibold rounded-xl border border-rose-500/20">
+                {error}
+              </div>
+            )}
             
             <div className="flex flex-col gap-1.5">
               <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Task Name</label>

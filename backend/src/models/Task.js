@@ -101,8 +101,8 @@ const Task = {
                 description=?,
                 priority=?,
                 status=?,
-                dueDate=?,
-                completeAt=?,
+                due_date=?,
+                completed_at=?
             WHERE task_id=?
             `;
         await pool.query(query, [
@@ -115,6 +115,18 @@ const Task = {
             completeAt,
             taskId,
         ]);
+    },
+
+    /**
+     * Mark a task as completed.
+     */
+    async complete(taskId) {
+        const query = `
+            UPDATE Tasks
+            SET status = 'Done', completed_at = NOW()
+            WHERE task_id = ?
+        `;
+        await pool.query(query, [taskId]);
     },
 
     /**

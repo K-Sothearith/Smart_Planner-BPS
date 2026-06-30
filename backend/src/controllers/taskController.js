@@ -1,4 +1,4 @@
-import Task from "../models/Task";
+import Task from "../models/Task.js";
 
 const taskController = {
     //create new task
@@ -127,6 +127,44 @@ const taskController = {
             return res.status(500).json({
                 status: "ERROR",
                 message: "Failed to delete task.",
+                error: error.message,
+            });
+        }
+    },
+
+    //Set task as completed (setTaskDone)
+    async completeTask(req, res){
+        try{
+            const taskId = req.params.id;
+            const userId = req.user.userId;
+
+            const task = await Task.findById(taskId);
+            if (!task) {
+                return res.status(404).json({
+                    status: "ERROR",
+                    message: "Task not found.",
+                });
+            }
+
+            if (Number(task.user_id) !== Number(userId)) {
+                return res.status(403).json({
+                    status: "ERROR",
+                    message: "Unauthorized to complete this task.",
+                });
+            }
+
+            await Task.complete(taskId);
+
+            return res.status(200).json({
+                status: "SUCCESS",
+                message: "Task marked as completed successfully.",
+            });
+        } catch (error){
+            console.error(error);
+
+            return res.status(500).json({
+                status: "ERROR",
+                message: "Failed to complete task.",
                 error: error.message,
             });
         }

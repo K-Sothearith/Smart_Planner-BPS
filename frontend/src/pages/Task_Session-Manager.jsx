@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import SidebarLayout from '../components/layouts/SidebarLayout'
 import { ManagerIcon } from '../assets'
 import Select from '../components/ui/Select'
 import NewTaskModal from '../components/ui/modals/NewTaskModal'
 import NewSessionModal from '../components/ui/modals/NewSessionModal'
+import taskService from '../services/taskService.js'
 
 export default function Manager({ user, onNavigate, onSignOut, onOpenGuide }) {
   
@@ -24,7 +25,33 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide }) {
     { value: 'No Break (Continuous)', label: 'No Break (Continuous)' },
   ]
 
-  const mockTasks = []
+  const [tasks, setTasks] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  const fetchTasks = async () => {
+    try {
+      setLoading(true)
+      const data = await taskService.getTasks()
+      setTasks(data)
+    } catch (err) {
+      console.error('Failed to fetch tasks:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleCompleteTask = async (taskId) => {
+    try {
+      await taskService.completeTask(taskId)
+      fetchTasks()
+    } catch (err) {
+      console.error('Failed to complete task:', err)
+    }
+  }
+
+  useEffect(() => {
+    fetchTasks()
+  }, [])
 
   const mockSessions = []
 
@@ -87,45 +114,53 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide }) {
 
             {/* Scrollable Content */}
             <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-3 scrollbar-thin">
-              {mockTasks.map((task) => (
-                <div
-                  key={task.id}
-                  className="p-3.5 bg-slate-50/50 dark:bg-slate-900/30 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 rounded-xl border border-slate-100 dark:border-slate-800/30 flex items-center justify-between gap-4 transition-all"
-                >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <input
-                      type="checkbox"
-                      checked={task.status === 'Completed'}
-                      readOnly
-                      className="w-4.5 h-4.5 rounded border-slate-300 text-[#2E5B70] focus:ring-[#2E5B70] dark:bg-[#0F172A] dark:border-slate-800"
-                    />
-                    <div className="text-left min-w-0">
-                      <h3 className={`text-xs font-bold text-slate-800 dark:text-slate-200 truncate ${task.status === 'Completed' ? 'line-through text-slate-400 dark:text-slate-600' : ''}`}>{task.title}</h3>
-                      <p className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold truncate mt-0.5">{task.course} • Due {task.due}</p>
+              {loading ? (
+                <div className="text-center py-6 text-xs text-slate-400 font-semibold">Loading tasks...</div>
+              ) : tasks.length === 0 ? (
+                <div className="text-center py-12 flex flex-col items-center justify-center gap-2">
+                  <span className="text-3xl">📝</span>
+                  <p className="text-xs text-slate-400 dark:text-slate-500 font-bold">No tasks yet. Click "Add Task" to get started!</p>
+                </div>
+              ) : (
+                tasks.map((task) => (
+                  <div
+                    key={task.task_id}
+                    className="p-3.5 bg-slate-50/50 dark:bg-slate-900/30 hover:bg-slate-100/50 dark:hover:bg-slate-800/40 rounded-xl border border-slate-100 dark:border-slate-800/30 flex items-center justify-between gap-4 transition-all"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <input
+                        type="checkbox"
+                        checked={task.status === 'Done'}
+                        disabled={task.status === 'Done'}
+                        onChange={() => handleCompleteTask(task.task_id)}
+                        className="w-4.5 h-4.5 rounded border-slate-300 text-[#2E5B70] focus:ring-[#2E5B70] dark:bg-[#0F172A] dark:border-slate-800 cursor-pointer disabled:cursor-not-allowed"
+                      />
+                      <div className="text-left min-w-0">
+                        <h3 className={`text-xs font-bold text-slate-800 dark:text-slate-200 truncate ${task.status === 'Done' ? 'line-through text-slate-450 dark:text-slate-600' : ''}`}>{task.title}</h3>
+                        <p className="text-[10px] text-slate-450 dark:text-slate-500 font-semibold truncate mt-0.5">{task.category || 'General'} • Due {task.due_date ? new Date(task.due_date).toLocaleDateString() : 'No due date'}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className={`text-[9px] font-extrabold uppercase px-2 py-0.5 rounded border ${
+                        task.priority === 'High'
+                          ? 'bg-rose-500/10 text-rose-500 border-rose-500/20'
+                          : task.priority === 'Medium'
+                          ? 'bg-amber-500/10 text-amber-500 border-amber-500/20'
+                          : 'bg-slate-500/10 text-slate-500 border-slate-500/20'
+                      }`}>
+                        {task.priority}
+                      </span>
+                      <span className={`text-[9px] font-extrabold uppercase px-2 py-0.5 rounded border ${
+                        task.status === 'Done'
+                          ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
+                          : 'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700'
+                      }`}>
+                        {task.status}
+                      </span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <span className={`text-[9px] font-extrabold uppercase px-2 py-0.5 rounded border ${
-                      task.priority === 'High'
-                        ? 'bg-rose-500/10 text-rose-500 border-rose-500/20'
-                        : task.priority === 'Medium'
-                        ? 'bg-amber-500/10 text-amber-500 border-amber-500/20'
-                        : 'bg-slate-500/10 text-slate-500 border-slate-500/20'
-                    }`}>
-                      {task.priority}
-                    </span>
-                    <span className={`text-[9px] font-extrabold uppercase px-2 py-0.5 rounded border ${
-                      task.status === 'Completed'
-                        ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
-                        : task.status === 'In Progress'
-                        ? 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/20'
-                        : 'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700'
-                    }`}>
-                      {task.status}
-                    </span>
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
 
@@ -231,7 +266,7 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide }) {
       </div>
 
       {/* Page Local Modals */}
-      <NewTaskModal isOpen={isNewTaskOpen} onClose={() => setIsNewTaskOpen(false)} />
+      <NewTaskModal isOpen={isNewTaskOpen} onClose={() => setIsNewTaskOpen(false)} onTaskCreated={fetchTasks} />
       <NewSessionModal isOpen={isNewSessionOpen} onClose={() => setIsNewSessionOpen(false)} />
     </SidebarLayout>
   )
