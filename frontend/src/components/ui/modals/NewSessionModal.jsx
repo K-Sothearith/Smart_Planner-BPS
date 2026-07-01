@@ -1,12 +1,44 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 import Select from '../Select'
+import taskService from '../../../services/taskService'
+import studySessionService from '../../../services/studySessionService'
 
-export default function NewSessionModal({ isOpen, onClose }) {
+export default function NewSessionModal({ isOpen, onClose, preselectedDate, onSessionCreated }) {
   const [subjectTask, setSubjectTask] = useState('')
   const [date, setDate] = useState('')
   const [timeVal, setTimeVal] = useState('')
   const [ampm, setAmpm] = useState('AM')
+  const [tasks, setTasks] = useState([])
+  const [selectedTaskId, setSelectedTaskId] = useState(null)
+  const [error, setError] = useState('')
+
+  // Populate preselected date on open
+  useEffect(() => {
+    if (isOpen) {
+      if (preselectedDate) {
+        setDate(preselectedDate)
+      } else {
+        setDate('')
+      }
+      setSelectedTaskId(null)
+      setSubjectTask('')
+      setTimeVal('10:00')
+      setAmpm('AM')
+      setError('')
+    }
+  }, [isOpen, preselectedDate])
+
+  // Load user tasks to link with sessions
+  useEffect(() => {
+    if (isOpen) {
+      taskService.getTasks()
+        .then(data => {
+          setTasks((data || []).filter(t => t.status !== 'Done'))
+        })
+        .catch(err => console.error("Error loading tasks for session modal:", err))
+    }
+  }, [isOpen])
 
   const handleTimeChange = (e) => {
     let val = e.target.value.replace(/[^0-9:]/g, '')
@@ -38,10 +70,78 @@ export default function NewSessionModal({ isOpen, onClose }) {
     { value: '15 mins', label: '15 mins' },
   ]
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // Do nothing for now
-    onClose()
+    setError('')
+    try {
+      if (!date) {
+        setError('Please select a date')
+        return
+      }
+
+      if (!timeVal || !timeVal.includes(':')) {
+        setError('Please enter time in HH:MM format')
+        return
+      }
+
+      const [hoursStr, minutesStr] = timeVal.split(':')
+      const hours = parseInt(hoursStr, 10)
+      const minutes = parseInt(minutesStr, 10)
+
+      if (isNaN(hours) || isNaN(minutes)) {
+        setError('Please enter a valid hour and minute')
+        return
+      }
+
+      if (hours < 1 || hours > 12) {
+        setError('Hours must be between 1 and 12')
+        return
+      }
+
+      if (minutes < 0 || minutes > 59) {
+        setError('Minutes must be between 00 and 59')
+        return
+      }
+
+      let adjustedHours = hours
+      if (ampm === 'PM' && hours < 12) adjustedHours += 12
+      if (ampm === 'AM' && hours === 12) adjustedHours = 0
+
+      // Form datetime in local timezone
+      const startDateTime = new Date(date)
+      startDateTime.setHours(adjustedHours, minutes, 0, 0)
+
+      if (isNaN(startDateTime.getTime())) {
+        setError('Please enter a valid date')
+        return
+      }
+
+      const now = new Date()
+      if (startDateTime < now) {
+        setError("Study session date and time can't be in the past")
+        return
+      }
+
+      const durationMinutes = parseInt(duration, 10) || 30
+
+      await studySessionService.createSession({
+        taskId: selectedTaskId || null,
+        title: subjectTask,
+        startTime: startDateTime.toISOString(),
+        durationMinutes,
+        focusTechnique,
+        breakDuration,
+        burnoutPrevention: !!burnoutPrevention
+      })
+
+      if (onSessionCreated) {
+        onSessionCreated()
+      }
+      onClose()
+    } catch (err) {
+      console.error('Failed to create study session:', err)
+      setError('Server error while saving session')
+    }
   }
 
   return (
@@ -72,6 +172,34 @@ export default function NewSessionModal({ isOpen, onClose }) {
           </p>
 
           <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4.5 text-left">
+            {/* Link to Task Dropdown */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Link to Task (Optional)</label>
+              <select
+                value={selectedTaskId || ''}
+                onChange={(e) => {
+                  const val = e.target.value
+                  if (val) {
+                    const id = parseInt(val, 10)
+                    setSelectedTaskId(id)
+                    const found = tasks.find(t => t.task_id === id)
+                    if (found) {
+                      setSubjectTask(found.title)
+                    }
+                  } else {
+                    setSelectedTaskId(null)
+                    setSubjectTask('')
+                  }
+                }}
+                className="w-full h-11 px-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-[#F8FAFC] dark:bg-[#0F172A] text-xs font-semibold text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-[#2E5B70] dark:focus:ring-sky-500/50 transition-all cursor-pointer"
+              >
+                <option value="">-- No Task / Custom Session --</option>
+                {tasks.map(t => (
+                  <option key={t.task_id} value={t.task_id}>{t.title} ({t.priority})</option>
+                ))}
+              </select>
+            </div>
+
             {/* Subject / Task */}
             <div className="flex flex-col gap-1.5">
               <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Subject / Task</label>
@@ -188,6 +316,13 @@ export default function NewSessionModal({ isOpen, onClose }) {
                 />
               </button>
             </div>
+
+            {/* Validation Error Alert */}
+            {error && (
+              <div className="p-3 bg-rose-500/10 text-rose-600 dark:text-rose-450 border border-rose-500/20 text-xs font-bold rounded-xl text-center">
+                ⚠️ {error}
+              </div>
+            )}
 
             {/* Submit and Cancel Buttons */}
             <div className="flex justify-end gap-3.5 mt-4 border-t border-slate-100 dark:border-slate-800 pt-5">

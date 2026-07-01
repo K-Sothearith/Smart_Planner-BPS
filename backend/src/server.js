@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import { pool } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import taskRoutes from "./routes/taskRoutes.js";
+import studySessionRoutes from "./routes/studySessionRoutes.js";
 
 // Load environment variables
 dotenv.config();
@@ -18,6 +19,7 @@ app.use(express.json());
 // Register API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
+app.use("/api/study-sessions", studySessionRoutes);
 
 // Simple Health-Check Route
 app.get("/api/health", async (req, res) => {
