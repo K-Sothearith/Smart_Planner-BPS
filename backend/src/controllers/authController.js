@@ -148,6 +148,9 @@ const authController = {
       // 4. Generate JWT token
       const token = generateToken(user.user_id);
 
+      // Calculate streak dynamically
+      const streak = await User.getStreak(user.user_id);
+
       // 5. Send response matching frontend structure
       return res.status(200).json({
         status: "SUCCESS",
@@ -157,7 +160,8 @@ const authController = {
         email: user.email,
         age: user.age,
         gender: user.gender,
-        isNewUser: user.isNewUser === 1 || user.isNewUser === true || user.isNewUser === '1'
+        isNewUser: user.isNewUser === 1 || user.isNewUser === true || user.isNewUser === '1',
+        streak
       });
 
     } catch (error) {
@@ -192,6 +196,33 @@ const authController = {
       return res.status(500).json({
         status: "ERROR",
         message: "An error occurred while updating the guide completion status.",
+        error: error.message
+      });
+    }
+  },
+
+  // Get user's current streak dynamically
+  async getStreak(req, res) {
+    try {
+      const userId = req.user.userId;
+      if (!userId) {
+        return res.status(400).json({
+          status: "ERROR",
+          message: "User ID not found in request."
+        });
+      }
+
+      const streak = await User.getStreak(userId);
+
+      return res.status(200).json({
+        status: "SUCCESS",
+        streak
+      });
+    } catch (error) {
+      console.error("Get streak error:", error);
+      return res.status(500).json({
+        status: "ERROR",
+        message: "An error occurred while fetching user streak.",
         error: error.message
       });
     }

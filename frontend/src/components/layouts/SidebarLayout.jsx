@@ -31,7 +31,7 @@ export default function SidebarLayout({ activeView, onNavigate, onSignOut, user,
         {/* Streak Counter */}
         <div className="flex items-center gap-1.5 px-3 h-10 bg-amber-500/10 dark:bg-amber-500/20 border border-amber-500/20 rounded-full text-amber-600 dark:text-amber-400 font-bold text-xs select-none shadow-sm">
           <span>🔥</span>
-          <span>67</span>
+          <span>{user?.streak ?? 0}</span>
         </div>
 
         {/* Light Mode Switch */}

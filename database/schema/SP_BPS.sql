@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS Tasks (
 
 CREATE TABLE IF NOT EXISTS StudySessions (
   session_id INT PRIMARY KEY AUTO_INCREMENT,
-    user_id INT UNIQUE NULL,
+    user_id INT NULL,
     task_id INT NULL,
     start_time DATETIME,
     end_time DATETIME,

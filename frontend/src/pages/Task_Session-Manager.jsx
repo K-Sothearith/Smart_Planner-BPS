@@ -7,7 +7,7 @@ import NewSessionModal from '../components/ui/modals/NewSessionModal'
 import DeleteConfirmModal from '../components/ui/modals/DeleteConfirmModal'
 import taskService from '../services/taskService.js'
 
-export default function Manager({ user, onNavigate, onSignOut, onOpenGuide }) {
+export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refreshStreak }) {
   
   const [focusDuration, setFocusDuration] = useState('25 Minutes (Standard)')
   const [breakMethod, setBreakMethod] = useState('5 Mins (Pomodoro Break)')
@@ -57,6 +57,9 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide }) {
     try {
       await taskService.completeTask(taskId)
       fetchTasks()
+      if (refreshStreak) {
+        refreshStreak()
+      }
     } catch (err) {
       console.error('Failed to complete task:', err)
     }
@@ -69,6 +72,9 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide }) {
       fetchTasks()
       setIsDeleteOpen(false)
       setTaskToDelete(null)
+      if (refreshStreak) {
+        refreshStreak()
+      }
     } catch (err) {
       console.error('Failed to delete task:', err)
     }
@@ -332,7 +338,17 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide }) {
       </div>
 
       {/* Page Local Modals */}
-      <NewTaskModal isOpen={isNewTaskOpen} onClose={() => setIsNewTaskOpen(false)} onTaskCreated={fetchTasks} task={taskToEdit} />
+      <NewTaskModal
+        isOpen={isNewTaskOpen}
+        onClose={() => setIsNewTaskOpen(false)}
+        onTaskCreated={() => {
+          fetchTasks()
+          if (refreshStreak) {
+            refreshStreak()
+          }
+        }}
+        task={taskToEdit}
+      />
       <NewSessionModal isOpen={isNewSessionOpen} onClose={() => setIsNewSessionOpen(false)} />
       <DeleteConfirmModal
         isOpen={isDeleteOpen}

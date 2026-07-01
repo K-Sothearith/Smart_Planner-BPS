@@ -28,6 +28,7 @@ function App() {
   const [session, setSession] = useState(() => readSession())
   const [route, setRoute] = useState(() => (session ? 'dashboard' : 'signin'))
   const [isGuideOpen, setIsGuideOpen] = useState(false)
+  const [streak, setStreak] = useState(0)
 
   // Load and apply cached theme on startup
   useEffect(() => {
@@ -39,6 +40,25 @@ function App() {
     }
   }, [])
 
+  const refreshStreak = async () => {
+    if (!session) return
+    try {
+      const res = await authService.getStreak()
+      if (res && res.streak !== undefined) {
+        setStreak(res.streak)
+      }
+    } catch (err) {
+      console.error('Failed to refresh streak:', err)
+    }
+  }
+
+  // Fetch streak dynamically when user session is active
+  useEffect(() => {
+    if (session) {
+      refreshStreak()
+    }
+  }, [session])
+
   const user = useMemo(() => {
     if (!session) return null
     return {
@@ -47,8 +67,9 @@ function App() {
       age: session.age,
       gender: session.gender,
       isNewUser: !!session.isNewUser,
+      streak,
     }
-  }, [session])
+  }, [session, streak])
 
   // Automatically trigger the guide modal for new users on registration/onboarding
   useEffect(() => {
@@ -100,7 +121,8 @@ function App() {
       user,
       onNavigate: setRoute,
       onSignOut: handleSignOut,
-      onOpenGuide: () => setIsGuideOpen(true)
+      onOpenGuide: () => setIsGuideOpen(true),
+      refreshStreak: refreshStreak
     }
 
     switch (route) {

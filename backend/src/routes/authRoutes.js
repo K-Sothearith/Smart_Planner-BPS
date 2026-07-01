@@ -10,5 +10,6 @@ router.post("/login", authController.login);
 
 // Protected Onboarding Endpoints
 router.put("/complete-guide", authMiddleware, authController.completeGuide);
+router.get("/streak", authMiddleware, authController.getStreak);
 
 export default router;

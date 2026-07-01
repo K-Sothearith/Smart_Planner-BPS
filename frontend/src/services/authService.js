@@ -41,6 +41,15 @@ const authService = {
     const response = await API.put("/auth/complete-guide");
     return response.data;
   },
+
+  /**
+   * Get the current user's daily study/task streak.
+   * @returns {Promise<object>}
+   */
+  async getStreak() {
+    const response = await API.get("/auth/streak");
+    return response.data;
+  },
 };
 
 export default authService;
