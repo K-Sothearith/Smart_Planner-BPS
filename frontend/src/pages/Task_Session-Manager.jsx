@@ -6,6 +6,7 @@ import NewTaskModal from '../components/ui/modals/NewTaskModal'
 import NewSessionModal from '../components/ui/modals/NewSessionModal'
 import DeleteConfirmModal from '../components/ui/modals/DeleteConfirmModal'
 import taskService from '../services/taskService.js'
+import studySessionService from '../services/studySessionService.js'
 
 export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refreshStreak }) {
   
@@ -80,11 +81,21 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refr
     }
   }
 
+  const [sessions, setSessions] = useState([])
+
+  const fetchSessions = async () => {
+    try {
+      const data = await studySessionService.getSessions()
+      setSessions(data || [])
+    } catch (err) {
+      console.error('Failed to fetch study sessions:', err)
+    }
+  }
+
   useEffect(() => {
     fetchTasks()
+    fetchSessions()
   }, [])
-
-  const mockSessions = []
 
   return (
     <SidebarLayout activeView="manager" user={user} onNavigate={onNavigate} onSignOut={onSignOut} onOpenGuide={onOpenGuide}>
@@ -271,30 +282,55 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refr
               <div className="flex-1 flex flex-col gap-4 text-left min-w-[350px] border-r-slate-400 border-r-1">
                 <h3 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Session History</h3>
                 <div className="flex flex-col gap-2.5">
-                  {mockSessions.map((session) => (
-                    <div
-                      key={session.id}
-                      className="p-3 bg-slate-50/50 dark:bg-slate-900/30 rounded-xl border border-slate-100 dark:border-slate-800/30 flex items-center justify-between text-xs transition-all hover:bg-slate-100/50 dark:hover:bg-slate-800/40"
-                    >
-                      <div className="flex flex-col text-left gap-0.5">
-                        <span className="font-bold text-slate-700 dark:text-slate-300">{session.mode} ({session.duration})</span>
-                        <span className="text-[9px] text-slate-400 dark:text-slate-500 font-semibold">{session.date}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-right">
-                        <div className="flex flex-col gap-0.5">
-                          <span className="font-bold text-slate-700 dark:text-slate-300">{session.focusScore}</span>
-                          <span className="text-[9px] text-slate-400 dark:text-slate-500 font-semibold">Focus Score</span>
-                        </div>
-                        <span className={`text-[9px] font-extrabold uppercase px-2 py-0.5 rounded border ${
-                          session.outcome === 'Completed'
-                            ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
-                            : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
-                        }`}>
-                          {session.outcome}
-                        </span>
-                      </div>
+                  {sessions.length === 0 ? (
+                    <div className="p-4 w-82 bg-slate-80 dark:bg-slate-900/10 border border-dashed border-slate-200/40 dark:border-slate-800/30 rounded-xl text-center text-xs text-slate-400 dark:text-slate-650 font-semibold">
+                      No study sessions scheduled yet. Click "Start Session" to schedule one.
                     </div>
-                  ))}
+                  ) : (
+                    sessions.map((session) => {
+                      const isCompleted = new Date(session.end_time) < new Date();
+                      const formattedDate = new Date(session.start_time).toLocaleDateString(undefined, {
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      });
+
+                      return (
+                        <div
+                          key={session.session_id}
+                          className="p-3 w-82 bg-slate-50 dark:bg-slate-900/30 rounded-xl border border-[#2E5B7090] dark:border-[#38BDF890] flex items-center justify-between text-xs transition-all hover:bg-slate-100/50 dark:hover:bg-slate-800/40"
+                        >
+                          <div className="flex flex-col text-left gap-0.5 min-w-0 flex-1 pr-2">
+                            <span className="font-bold text-slate-700 dark:text-slate-300 truncate">
+                              {session.title || session.task_title || 'Focused Study'}
+                            </span>
+                            <span className="text-[10px] text-slate-450 dark:text-slate-400 font-medium">
+                              {session.focus_technique || 'Pomodoro'} • {session.duration_minutes} mins
+                            </span>
+                            <span className="text-[9px] text-slate-400 dark:text-slate-500 font-semibold">
+                              {formattedDate}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2 text-right shrink-0">
+                            <div className="flex flex-col gap-0.5">
+                              <span className="font-bold text-slate-700 dark:text-slate-300">
+                                {isCompleted ? '95' : '--'}
+                              </span>
+                              <span className="text-[9px] text-slate-400 dark:text-slate-500 font-semibold">Focus Score</span>
+                            </div>
+                            <span className={`text-[9px] font-extrabold uppercase px-2 py-0.5 rounded border ${
+                              isCompleted
+                                ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
+                                : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
+                            }`}>
+                              {isCompleted ? 'Completed' : 'Scheduled'}
+                            </span>
+                          </div>
+                        </div>
+                      )
+                    })
+                  )}
                 </div>
               </div>
 
@@ -349,7 +385,16 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refr
         }}
         task={taskToEdit}
       />
-      <NewSessionModal isOpen={isNewSessionOpen} onClose={() => setIsNewSessionOpen(false)} />
+      <NewSessionModal 
+        isOpen={isNewSessionOpen} 
+        onClose={() => setIsNewSessionOpen(false)} 
+        onSessionCreated={() => {
+          fetchSessions()
+          if (refreshStreak) {
+            refreshStreak()
+          }
+        }}
+      />
       <DeleteConfirmModal
         isOpen={isDeleteOpen}
         onClose={() => {
