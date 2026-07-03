@@ -279,7 +279,7 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refr
             <div className="flex-1 overflow-y-auto p-6 flex flex-col md:flex-row gap-8 scrollbar-thin">
               
               {/* Left Side: Mock Session Log Table */}
-              <div className="flex-1 flex flex-col gap-4 text-left min-w-[350px] border-r-slate-400 border-r-1">
+              <div className="flex-1 flex flex-col gap-4 text-left min-w-[440px] border-r-slate-400 border-r-1">
                 <h3 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Session History</h3>
                 <div className="flex flex-col gap-2.5">
                   {sessions.length === 0 ? (
@@ -299,7 +299,7 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refr
                       return (
                         <div
                           key={session.session_id}
-                          className="p-3 w-82 bg-slate-50 dark:bg-slate-900/30 rounded-xl border border-[#2E5B7090] dark:border-[#38BDF890] flex items-center justify-between text-xs transition-all hover:bg-slate-100/50 dark:hover:bg-slate-800/40"
+                          className="p-3 w-105 bg-slate-50 dark:bg-slate-900/30 rounded-xl border border-[#2E5B7090] dark:border-[#38BDF890] flex items-center justify-between text-xs transition-all hover:bg-slate-100/50 dark:hover:bg-slate-800/40"
                         >
                           <div className="flex flex-col text-left gap-0.5 min-w-0 flex-1 pr-2">
                             <span className="font-bold text-slate-700 dark:text-slate-300 truncate">
@@ -355,16 +355,7 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refr
                     />
                   </div>
                 </div>
-                <div className="p-4 bg-slate-100 dark:bg-slate-900/30 rounded-xl border border-slate-100 dark:border-slate-800/40 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <span className="text-2xl">⚡</span>
-                    <div>
-                      <h4 className="text-xs font-bold text-slate-700 dark:text-slate-300">Smart Break Mode</h4>
-                      <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">Let algorithm recommend breaks based on fatigue.</p>
-                    </div>
-                  </div>
-                  <input type="checkbox" defaultChecked className="w-9 h-5 rounded-full bg-slate-200 dark:bg-slate-800 border-none relative text-[#2E5B70]" />
-                </div>
+
               </div>
 
             </div>
