@@ -30,7 +30,7 @@ function MaskIcon({ src, className }) {
   )
 }
 
-export default function Sidebar({ activeView, onNavigate, onNewTask, onHelpSupport, onSignOut }) {
+export default function Sidebar({ activeView, onNavigate, onHelpSupport, onSignOut }) {
   return (
     <aside className="w-72 shrink-0 border-r border-slate-200 dark:border-slate-800 p-5 flex flex-col gap-6 bg-[#e5eeff] dark:bg-[#0F172A] transition-colors duration-300">
       <div className="text-left">
@@ -74,16 +74,6 @@ export default function Sidebar({ activeView, onNavigate, onNewTask, onHelpSuppo
       </nav>
 
       <div className="mt-auto grid gap-2">
-        <button
-          type="button"
-          className="h-11 rounded-xl border border-slate-200 dark:border-slate-800 bg-[#2E5B70] dark:bg-[#38BDF8] text-white dark:text-slate-900 text-sm font-medium hover:bg-[#214353] dark:hover:bg-[#0EA5E9] flex items-center gap-3 px-3 transition-colors"
-          onClick={() => onNewTask?.()}
-        >
-          <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-          </svg>
-          <span className="truncate">New Task</span>
-        </button>
 
         <div className="h-px bg-black/70 dark:bg-white/20 my-1" />
 
