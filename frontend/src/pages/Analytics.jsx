@@ -38,7 +38,7 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide }) 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4">
           
           {/* Card 1: Productivity Analysis (Fixed Height) */}
-          <div className="flex flex-col h-210 bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
+          <div className="flex flex-col h-170 bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
             <div className="p-6 border-b border-slate-300 dark:border-slate-700">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-emerald-500/10 dark:bg-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
@@ -102,7 +102,7 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide }) 
           {/* Column 2 Stack */}
           <div className="flex flex-col gap-8">
             {/* Card 2: Mood & Stress Log (Fixed Height) */}
-            <div className="flex flex-col h-110 bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
+            <div className="flex flex-col h-90 bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
               <div className="p-6 border-b border-slate-300 dark:border-slate-700">
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-lg bg-rose-500/10 dark:bg-rose-500/20 flex items-center justify-center text-rose-600 dark:text-rose-400">
@@ -161,7 +161,7 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide }) 
             </div>
 
             {/* Card 3: Breakdown Chart */}
-            <div className="flex flex-col h-92 bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
+            <div className="flex flex-col h-72 bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
               <div className="p-6 border-b border-slate-300 dark:border-slate-700">
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-lg bg-indigo-500/10 dark:bg-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
