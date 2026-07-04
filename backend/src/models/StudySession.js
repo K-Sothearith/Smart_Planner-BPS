@@ -77,6 +77,49 @@ const StudySession = {
   },
 
   /**
+   * Update a study session
+   */
+  async update(
+    sessionId,
+    {
+      taskId,
+      startTime,
+      endTime,
+      durationMinutes,
+      title,
+      focusTechnique,
+      breakDuration,
+      burnoutPrevention
+    }
+  ) {
+    const query = `
+      UPDATE StudySessions
+      SET
+        task_id = ?,
+        start_time = ?,
+        end_time = ?,
+        duration_minutes = ?,
+        title = ?,
+        focus_technique = ?,
+        break_duration = ?,
+        burnout_prevention = ?
+      WHERE session_id = ?
+    `;
+
+    await pool.query(query, [
+      taskId || null,
+      startTime,
+      endTime,
+      durationMinutes,
+      title,
+      focusTechnique,
+      breakDuration,
+      burnoutPrevention ? 1 : 0,
+      sessionId
+    ]);
+  },
+
+  /**
    * Delete study session
    */
   async delete(sessionId) {
