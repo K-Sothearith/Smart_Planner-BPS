@@ -12,7 +12,8 @@ const studySessionController = {
         durationMinutes,
         focusTechnique,
         breakDuration,
-        burnoutPrevention
+        burnoutPrevention,
+        isCompleted
       } = req.body;
 
       if (!startTime || !durationMinutes || !title) {
@@ -50,7 +51,8 @@ const studySessionController = {
         title,
         focusTechnique,
         breakDuration,
-        burnoutPrevention
+        burnoutPrevention,
+        isCompleted: isCompleted !== undefined ? isCompleted : false
       });
 
       return res.status(201).json({
@@ -116,7 +118,8 @@ const studySessionController = {
         durationMinutes,
         focusTechnique,
         breakDuration,
-        burnoutPrevention
+        burnoutPrevention,
+        isCompleted
       } = req.body;
 
       const start = new Date(startTime);
@@ -136,7 +139,8 @@ const studySessionController = {
         title,
         focusTechnique,
         breakDuration,
-        burnoutPrevention
+        burnoutPrevention,
+        isCompleted
       });
 
       return res.json({

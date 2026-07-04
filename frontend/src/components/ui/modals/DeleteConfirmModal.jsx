@@ -1,6 +1,6 @@
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 
-export default function DeleteConfirmModal({ isOpen, onClose, onConfirm, taskTitle }) {
+export default function DeleteConfirmModal({ isOpen, onClose, onConfirm, taskTitle, type = 'Task' }) {
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
       {/* Backdrop */}
@@ -18,7 +18,7 @@ export default function DeleteConfirmModal({ isOpen, onClose, onConfirm, taskTit
           </div>
 
           <DialogTitle className="text-xl font-extrabold text-[#2E5B70] dark:text-slate-100 font-sans tracking-tight">
-            Delete Task?
+            Delete {type}?
           </DialogTitle>
           
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium leading-relaxed">

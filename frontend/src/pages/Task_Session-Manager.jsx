@@ -5,6 +5,8 @@ import Select from '../components/ui/Select'
 import NewTaskModal from '../components/ui/modals/NewTaskModal'
 import NewSessionModal from '../components/ui/modals/NewSessionModal'
 import DeleteConfirmModal from '../components/ui/modals/DeleteConfirmModal'
+import StartSessionDetailModal from '../components/ui/modals/StartSessionDetailModal'
+import StudySessionTimerModal from '../components/ui/modals/StudySessionTimerModal'
 import taskService from '../services/taskService.js'
 import studySessionService from '../services/studySessionService.js'
 
@@ -14,6 +16,9 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refr
   const [breakMethod, setBreakMethod] = useState('5 Mins (Pomodoro Break)')
   const [isNewTaskOpen, setIsNewTaskOpen] = useState(false)
   const [isNewSessionOpen, setIsNewSessionOpen] = useState(false)
+  const [selectedStartSession, setSelectedStartSession] = useState(null)
+  const [isStartDetailOpen, setIsStartDetailOpen] = useState(false)
+  const [isTimerOpen, setIsTimerOpen] = useState(false)
 
   const focusOptions = [
     { value: '25 Minutes (Standard)', label: '25 Minutes (Standard)' },
@@ -237,11 +242,18 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refr
                       <div className="flex flex-col gap-1.5 border-l border-slate-200 dark:border-slate-800/80 pl-3">
                         <button
                           type="button"
+                          disabled={task.status === 'Done'}
                           onClick={() => {
-                            setTaskToEdit(task)
-                            setIsNewTaskOpen(true)
+                            if (task.status !== 'Done') {
+                              setTaskToEdit(task)
+                              setIsNewTaskOpen(true)
+                            }
                           }}
-                          className="text-slate-400 hover:text-amber-500 dark:hover:text-amber-400 transition-colors p-0.5 cursor-pointer"
+                          className={`transition-colors p-0.5 ${
+                            task.status === 'Done'
+                              ? 'text-slate-350 dark:text-slate-700 opacity-40 cursor-not-allowed pointer-events-none'
+                              : 'text-slate-400 hover:text-amber-500 dark:hover:text-amber-400 cursor-pointer'
+                          }`}
                           title="Edit Task"
                         >
                           <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -314,7 +326,8 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refr
                     </div>
                   ) : (
                     sessions.map((session) => {
-                      const isCompleted = new Date(session.end_time) < new Date();
+                      const isCompleted = session.is_completed === 1 || session.is_completed === true;
+                      const isLate = !isCompleted && new Date(session.start_time) < new Date();
                       const formattedDate = new Date(session.start_time).toLocaleDateString(undefined, {
                         month: 'short',
                         day: 'numeric',
@@ -325,7 +338,15 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refr
                       return (
                         <div
                           key={session.session_id}
-                          className="p-3 w-105 bg-slate-50 dark:bg-slate-900/30 rounded-xl border border-[#2E5B7090] dark:border-[#38BDF890] flex items-center justify-between text-xs transition-all hover:bg-slate-100/50 dark:hover:bg-slate-800/40"
+                          onClick={() => {
+                            if (!isCompleted) {
+                              setSelectedStartSession(session)
+                              setIsStartDetailOpen(true)
+                            }
+                          }}
+                          className={`p-3 w-105 bg-slate-50 dark:bg-slate-900/30 rounded-xl border border-[#2E5B7090] dark:border-[#38BDF890] flex items-center justify-between text-xs transition-all hover:bg-slate-100/50 dark:hover:bg-slate-800/40 ${
+                            isCompleted ? '' : 'cursor-pointer'
+                          }`}
                         >
                           <div className="flex flex-col text-left gap-0.5 min-w-0 flex-1 pr-2">
                             <span className="font-bold text-slate-700 dark:text-slate-300 truncate">
@@ -348,63 +369,72 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refr
                             <span className={`text-[9px] font-extrabold uppercase px-2 py-0.5 rounded border ${
                               isCompleted
                                 ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
-                                : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
+                                : (isLate
+                                    ? 'bg-rose-500/10 text-rose-600 dark:text-rose-450 border-rose-500/20'
+                                    : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20')
                             }`}>
-                              {isCompleted ? 'Completed' : 'Scheduled'}
+                              {isCompleted ? 'Completed' : (isLate ? 'Late' : 'Scheduled')}
                             </span>
                             <div className="flex items-start justify-between">
-
-                            {/* Edit / Delete Buttons */}
-                            <div className="flex flex-col gap-1.5 border-l border-slate-200 dark:border-slate-800/80 pl-3">
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setSessionToEdit(session)
-                                  setIsNewSessionOpen(true)
-                                }}
-                                className="text-slate-400 hover:text-amber-500 dark:hover:text-amber-400 transition-colors p-0.5 cursor-pointer"
-                                title="Edit Session"
-                              >
-                                <svg
-                                  className="w-3.5 h-3.5"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2.5"
+                              {/* Edit / Delete Buttons */}
+                              <div className="flex flex-col gap-1.5 border-l border-slate-200 dark:border-slate-800/80 pl-3">
+                                <button
+                                  type="button"
+                                  disabled={isCompleted}
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    if (!isCompleted) {
+                                      setSessionToEdit(session)
+                                      setIsNewSessionOpen(true)
+                                    }
+                                  }}
+                                  className={`transition-colors p-0.5 ${
+                                    isCompleted
+                                      ? 'text-slate-350 dark:text-slate-700 opacity-40 cursor-not-allowed pointer-events-none'
+                                      : 'text-slate-400 hover:text-amber-500 dark:hover:text-amber-400 cursor-pointer'
+                                  }`}
+                                  title="Edit Session"
                                 >
-                                  <path
-                                    d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.83 19.482a4.5 4.5 0 01-2.203 1.258l-3.483.782.782-3.483a4.5 4.5 0 011.258-2.203L16.862 4.487zm0 0L19.5 7.125"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  />
-                                </svg>
-                              </button>
-
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setSessionToDelete(session)
-                                  setIsDeleteSessionOpen(true)
-                                }}
-                                className="text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 transition-colors p-0.5 cursor-pointer"
-                                title="Delete Session"
-                              >
-                                <svg
-                                  className="w-3.5 h-3.5"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2.5"
+                                  <svg
+                                    className="w-3.5 h-3.5"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2.5"
+                                  >
+                                    <path
+                                      d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.83 19.482a4.5 4.5 0 01-2.203 1.258l-3.483.782.782-3.483a4.5 4.5 0 011.258-2.203L16.862 4.487zm0 0L19.5 7.125"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                    />
+                                  </svg>
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    setSessionToDelete(session)
+                                    setIsDeleteSessionOpen(true)
+                                  }}
+                                  className="text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 transition-colors p-0.5 cursor-pointer"
+                                  title="Delete Session"
                                 >
-                                  <path
-                                    d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  />
-                                </svg>
-                              </button>
+                                  <svg
+                                    className="w-3.5 h-3.5"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2.5"
+                                  >
+                                    <path
+                                      d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                    />
+                                  </svg>
+                                </button>
+                              </div>
                             </div>
-                          </div>
                           </div>
                         </div>
                       )
@@ -476,6 +506,7 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refr
         }}
         onConfirm={handleConfirmDelete}
         taskTitle={taskToDelete ? taskToDelete.title : ''}
+        type="Task"
       />
       <DeleteConfirmModal
         isOpen={isDeleteSessionOpen}
@@ -489,6 +520,35 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refr
                 ? sessionToDelete.title || sessionToDelete.task_title
                 : ""
         }
+        type="Study Session"
+      />
+      <StartSessionDetailModal
+        isOpen={isStartDetailOpen}
+        onClose={() => {
+          setIsStartDetailOpen(false)
+          setSelectedStartSession(null)
+        }}
+        onStart={() => {
+          setIsStartDetailOpen(false)
+          setIsTimerOpen(true)
+        }}
+        session={selectedStartSession}
+      />
+      <StudySessionTimerModal
+        isOpen={isTimerOpen}
+        onClose={() => {
+          setIsTimerOpen(false)
+          setSelectedStartSession(null)
+        }}
+        session={selectedStartSession}
+        focusSetting={focusDuration}
+        breakSetting={breakMethod}
+        onSessionFinished={() => {
+          fetchSessions()
+          if (refreshStreak) {
+            refreshStreak()
+          }
+        }}
       />
     </SidebarLayout>
   )

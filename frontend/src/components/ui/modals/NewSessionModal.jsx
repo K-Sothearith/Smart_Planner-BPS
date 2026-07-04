@@ -4,7 +4,7 @@ import Select from '../Select'
 import taskService from '../../../services/taskService'
 import studySessionService from '../../../services/studySessionService'
 
-export default function NewSessionModal({ isOpen, onClose, preselectedDate, onSessionCreated }) {
+export default function NewSessionModal({ isOpen, onClose, preselectedDate, onSessionCreated, session }) {
   const [subjectTask, setSubjectTask] = useState('')
   const [date, setDate] = useState('')
   const [timeVal, setTimeVal] = useState('')
@@ -13,21 +13,68 @@ export default function NewSessionModal({ isOpen, onClose, preselectedDate, onSe
   const [selectedTaskId, setSelectedTaskId] = useState(null)
   const [error, setError] = useState('')
 
-  // Populate preselected date on open
+  // Populate preselected date or session on open
   useEffect(() => {
     if (isOpen) {
-      if (preselectedDate) {
-        setDate(preselectedDate)
+      if (session) {
+        // Edit mode
+        setSubjectTask(session.title || session.task_title || '')
+        setSelectedTaskId(session.task_id || null)
+        
+        // Parse start_time
+        if (session.start_time) {
+          const start = new Date(session.start_time)
+          if (!isNaN(start.getTime())) {
+            const year = start.getFullYear()
+            const month = String(start.getMonth() + 1).padStart(2, '0')
+            const day = String(start.getDate()).padStart(2, '0')
+            setDate(`${year}-${month}-${day}`)
+            
+            let hours = start.getHours()
+            const minutes = String(start.getMinutes()).padStart(2, '0')
+            let ampmStr = 'AM'
+            if (hours >= 12) {
+              ampmStr = 'PM'
+              if (hours > 12) hours -= 12
+            }
+            if (hours === 0) {
+              hours = 12
+            }
+            setTimeVal(`${String(hours).padStart(2, '0')}:${minutes}`)
+            setAmpm(ampmStr)
+          }
+        }
+        
+        // Duration
+        if (session.duration_minutes) {
+          setDuration(`${session.duration_minutes} mins`)
+        } else {
+          setDuration('30 mins')
+        }
+        
+        setFocusTechnique(session.focus_technique || 'Pomodoro')
+        setBreakDuration(session.break_duration || '5 mins')
+        setBurnoutPrevention(session.burnout_prevention === 1 || session.burnout_prevention === true)
+        setError('')
       } else {
-        setDate('')
+        // Create mode
+        if (preselectedDate) {
+          setDate(preselectedDate)
+        } else {
+          setDate('')
+        }
+        setSelectedTaskId(null)
+        setSubjectTask('')
+        setTimeVal('10:00')
+        setAmpm('AM')
+        setDuration('30 mins')
+        setFocusTechnique('Pomodoro')
+        setBreakDuration('5 mins')
+        setBurnoutPrevention(true)
+        setError('')
       }
-      setSelectedTaskId(null)
-      setSubjectTask('')
-      setTimeVal('10:00')
-      setAmpm('AM')
-      setError('')
     }
-  }, [isOpen, preselectedDate])
+  }, [isOpen, preselectedDate, session])
 
   // Load user tasks to link with sessions
   useEffect(() => {
@@ -117,29 +164,41 @@ export default function NewSessionModal({ isOpen, onClose, preselectedDate, onSe
       }
 
       const now = new Date()
-      if (startDateTime < now) {
+      if (!session && startDateTime < now) {
         setError("Study session date and time can't be in the past")
         return
       }
 
       const durationMinutes = parseInt(duration, 10) || 30
 
-      await studySessionService.createSession({
-        taskId: selectedTaskId || null,
-        title: subjectTask,
-        startTime: startDateTime.toISOString(),
-        durationMinutes,
-        focusTechnique,
-        breakDuration,
-        burnoutPrevention: !!burnoutPrevention
-      })
+      if (session) {
+        await studySessionService.updateSession(session.session_id, {
+          taskId: selectedTaskId || null,
+          title: subjectTask,
+          startTime: startDateTime.toISOString(),
+          durationMinutes,
+          focusTechnique,
+          breakDuration,
+          burnoutPrevention: !!burnoutPrevention
+        })
+      } else {
+        await studySessionService.createSession({
+          taskId: selectedTaskId || null,
+          title: subjectTask,
+          startTime: startDateTime.toISOString(),
+          durationMinutes,
+          focusTechnique,
+          breakDuration,
+          burnoutPrevention: !!burnoutPrevention
+        })
+      }
 
       if (onSessionCreated) {
         onSessionCreated()
       }
       onClose()
     } catch (err) {
-      console.error('Failed to create study session:', err)
+      console.error('Failed to create/update study session:', err)
       setError('Server error while saving session')
     }
   }
@@ -165,10 +224,10 @@ export default function NewSessionModal({ isOpen, onClose, preselectedDate, onSe
           </button>
 
           <DialogTitle className="text-2xl font-extrabold text-[#2E5B70] dark:text-slate-100 font-sans tracking-tight">
-            New Study Session
+            {session ? 'Edit Study Session' : 'New Study Session'}
           </DialogTitle>
           <p className="text-xs text-slate-450 dark:text-slate-400 font-medium mt-1">
-            Design your focused session for learning.
+            {session ? 'Update the details of your study session.' : 'Design your focused session for learning.'}
           </p>
 
           <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4.5 text-left">
@@ -337,7 +396,7 @@ export default function NewSessionModal({ isOpen, onClose, preselectedDate, onSe
                 type="submit"
                 className="flex-1 sm:flex-initial h-11 px-8 rounded-full bg-[#2E5B70] hover:bg-[#214353] dark:bg-[#38BDF8] dark:hover:bg-[#0EA5E9] dark:text-slate-900 text-white text-xs font-bold transition-all shadow-md cursor-pointer"
               >
-                Schedule Session
+                {session ? 'Save Changes' : 'Schedule Session'}
               </button>
             </div>
           </form>
