@@ -87,6 +87,76 @@ const studySessionController = {
     }
   },
 
+  // Update study session
+  async updateSession(req, res) {
+    try {
+      const userId = req.user.userId;
+      const sessionId = req.params.id;
+
+      const session = await StudySession.findById(sessionId);
+
+      if (!session) {
+        return res.status(404).json({
+          status: "ERROR",
+          message: "Study session not found."
+        });
+      }
+
+      if (Number(session.user_id) !== Number(userId)) {
+        return res.status(403).json({
+          status: "ERROR",
+          message: "Unauthorized."
+        });
+      }
+
+      const {
+        taskId,
+        title,
+        startTime,
+        durationMinutes,
+        focusTechnique,
+        breakDuration,
+        burnoutPrevention
+      } = req.body;
+
+      const start = new Date(startTime);
+      const end = new Date(start.getTime() + durationMinutes * 60000);
+
+      const formatMySQLDateTime = (date) => {
+        const pad = (n) => String(n).padStart(2, "0");
+
+        return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+      };
+
+      await StudySession.update(sessionId,{
+        taskId,
+        startTime: formatMySQLDateTime(start),
+        endTime: formatMySQLDateTime(end),
+        durationMinutes,
+        title,
+        focusTechnique,
+        breakDuration,
+        burnoutPrevention
+      });
+
+      return res.json({
+        status:"SUCCESS",
+        message:"Study session updated successfully."
+      });
+
+    } catch(error){
+
+      console.error(error);
+
+      return res.status(500).json({
+        status:"ERROR",
+        message:"Failed to update study session.",
+        error:error.message
+      });
+
+    }
+  },
+
   // Delete a study session
   async deleteSession(req, res) {
     try {
