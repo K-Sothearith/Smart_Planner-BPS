@@ -47,6 +47,7 @@ CREATE TABLE IF NOT EXISTS StudySessions (
     focus_technique VARCHAR(50) NULL,
     break_duration VARCHAR(50) NULL,
     burnout_prevention TINYINT(1) DEFAULT 1,
+    is_completed TINYINT(1) DEFAULT 0,
     
     CONSTRAINT fk_session_user FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE SET NULL,
     CONSTRAINT fk_session_task FOREIGN KEY (task_id) REFERENCES Tasks(task_id) ON DELETE SET NULL

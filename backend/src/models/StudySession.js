@@ -13,7 +13,8 @@ const StudySession = {
     title,
     focusTechnique,
     breakDuration,
-    burnoutPrevention
+    burnoutPrevention,
+    isCompleted
   }) {
     const query = `
       INSERT INTO StudySessions (
@@ -25,9 +26,10 @@ const StudySession = {
         title,
         focus_technique,
         break_duration,
-        burnout_prevention
+        burnout_prevention,
+        is_completed
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const [result] = await pool.query(query, [
       userId,
@@ -38,7 +40,8 @@ const StudySession = {
       title || null,
       focusTechnique || null,
       breakDuration || null,
-      burnoutPrevention !== undefined ? (burnoutPrevention ? 1 : 0) : 1
+      burnoutPrevention !== undefined ? (burnoutPrevention ? 1 : 0) : 1,
+      isCompleted !== undefined ? (isCompleted ? 1 : 0) : 0
     ]);
     return {
       sessionId: result.insertId
@@ -89,7 +92,8 @@ const StudySession = {
       title,
       focusTechnique,
       breakDuration,
-      burnoutPrevention
+      burnoutPrevention,
+      isCompleted
     }
   ) {
     const query = `
@@ -102,7 +106,8 @@ const StudySession = {
         title = ?,
         focus_technique = ?,
         break_duration = ?,
-        burnout_prevention = ?
+        burnout_prevention = ?,
+        is_completed = ?
       WHERE session_id = ?
     `;
 
@@ -115,6 +120,7 @@ const StudySession = {
       focusTechnique,
       breakDuration,
       burnoutPrevention ? 1 : 0,
+      isCompleted !== undefined ? (isCompleted ? 1 : 0) : 0,
       sessionId
     ]);
   },
