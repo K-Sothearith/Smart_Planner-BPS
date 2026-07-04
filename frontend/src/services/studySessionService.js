@@ -28,6 +28,14 @@ const studySessionService = {
   },
 
   /**
+   * Update an existing study session.
+   */
+  async updateSession(id, sessionData) {
+    const response = await API.put(`/study-sessions/${id}`, sessionData);
+    return response.data.session;
+  },
+
+  /**
    * Delete a study session by ID.
    * @param {number|string} id
    * @returns {Promise<object>}

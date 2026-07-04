@@ -8,6 +8,7 @@ router.use(authMiddleware);
 
 router.get("/", studySessionController.getSessions);
 router.post("/", studySessionController.createSession);
+router.put("/:id", studySessionController.updateSession);
 router.delete("/:id", studySessionController.deleteSession);
 
 export default router;
