@@ -32,7 +32,7 @@ function MaskIcon({ src, className }) {
 
 export default function Sidebar({ activeView, onNavigate, onHelpSupport, onSignOut }) {
   return (
-    <aside className="w-72 shrink-0 border-r border-slate-200 dark:border-slate-800 p-5 flex flex-col gap-6 bg-[#e5eeff] dark:bg-[#0F172A] transition-colors duration-300">
+    <aside className="w-72 shrink-0 border-r border-slate-200 dark:border-slate-800 p-5 flex flex-col gap-6 bg-[#e5eeff] dark:bg-[#0F172A] transition-colors duration-300 sticky top-0 h-[100vh]">
       <div className="text-left">
         <div className="w-72 h-15 bg-white dark:bg-[#111A2E] -mt-5 -ml-5 -mr-5 flex flex-row p-3 border-b-[#2E5B70] dark:border-b-slate-800 border-b border-r border-r-slate-200 dark:border-r-slate-800">
           <div className="w-9 h-9 rounded-lg bg-[#2E5B70] dark:bg-[#0EA5E9] flex items-center justify-center shadow-lg shadow-[#2E5B70]/10 dark:shadow-sky-500/10 mb-4 transition-all duration-300 hover:scale-105">

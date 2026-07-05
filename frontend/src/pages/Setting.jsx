@@ -11,6 +11,11 @@ export default function Setting({ user, onNavigate, onSignOut, onOpenGuide }) {
   const [passwordMessage, setPasswordMessage] = useState('')
   const [passwordError, setPasswordError] = useState('')
 
+  const [focusPeriod, setFocusPeriod] = useState(() => Number(localStorage.getItem('sp:focus_period')) || 25)
+  const [shortBreak, setShortBreak] = useState(() => Number(localStorage.getItem('sp:short_break')) || 5)
+  const [longBreak, setLongBreak] = useState(() => Number(localStorage.getItem('sp:long_break')) || 15)
+  const [dailyGoal, setDailyGoal] = useState(() => Number(localStorage.getItem('sp:daily_goal')) || 4)
+
   const hasUppercase = /[A-Z]/.test(newPassword)
   const hasLowercase = /[a-z]/.test(newPassword)
   const hasNumber = /[0-9]/.test(newPassword)
@@ -115,7 +120,12 @@ export default function Setting({ user, onNavigate, onSignOut, onOpenGuide }) {
                 <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Focus Period (Minutes)</label>
                 <input
                   type="number"
-                  defaultValue={25}
+                  value={focusPeriod}
+                  onChange={(e) => {
+                    const val = Math.max(1, Number(e.target.value))
+                    setFocusPeriod(val)
+                    localStorage.setItem('sp:focus_period', val)
+                  }}
                   className="w-full h-10 px-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-[#F8FAFC] dark:bg-[#0F172A] text-xs font-semibold text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-[#2E5B70] dark:focus:ring-sky-500/50"
                 />
               </div>
@@ -125,7 +135,12 @@ export default function Setting({ user, onNavigate, onSignOut, onOpenGuide }) {
                 <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Short Break (Minutes)</label>
                 <input
                   type="number"
-                  defaultValue={5}
+                  value={shortBreak}
+                  onChange={(e) => {
+                    const val = Math.max(0, Number(e.target.value))
+                    setShortBreak(val)
+                    localStorage.setItem('sp:short_break', val)
+                  }}
                   className="w-full h-10 px-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-[#F8FAFC] dark:bg-[#0F172A] text-xs font-semibold text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-[#2E5B70] dark:focus:ring-sky-500/50"
                 />
               </div>
@@ -135,17 +150,12 @@ export default function Setting({ user, onNavigate, onSignOut, onOpenGuide }) {
                 <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Long Break (Minutes)</label>
                 <input
                   type="number"
-                  defaultValue={15}
-                  className="w-full h-10 px-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-[#F8FAFC] dark:bg-[#0F172A] text-xs font-semibold text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-[#2E5B70] dark:focus:ring-sky-500/50"
-                />
-              </div>
-
-              {/* Long Break Interval Input */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Long Break Interval (Cycles)</label>
-                <input
-                  type="number"
-                  defaultValue={4}
+                  value={longBreak}
+                  onChange={(e) => {
+                    const val = Math.max(0, Number(e.target.value))
+                    setLongBreak(val)
+                    localStorage.setItem('sp:long_break', val)
+                  }}
                   className="w-full h-10 px-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-[#F8FAFC] dark:bg-[#0F172A] text-xs font-semibold text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-[#2E5B70] dark:focus:ring-sky-500/50"
                 />
               </div>
@@ -155,7 +165,12 @@ export default function Setting({ user, onNavigate, onSignOut, onOpenGuide }) {
                 <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Daily Goal (Hours)</label>
                 <input
                   type="number"
-                  defaultValue={4}
+                  value={dailyGoal}
+                  onChange={(e) => {
+                    const val = Math.max(1, Number(e.target.value))
+                    setDailyGoal(val)
+                    localStorage.setItem('sp:daily_goal', val)
+                  }}
                   className="w-full h-10 px-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-[#F8FAFC] dark:bg-[#0F172A] text-xs font-semibold text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-[#2E5B70] dark:focus:ring-sky-500/50"
                 />
               </div>

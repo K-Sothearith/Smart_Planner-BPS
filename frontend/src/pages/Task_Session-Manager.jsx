@@ -24,12 +24,14 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refr
     { value: '25 Minutes (Standard)', label: '25 Minutes (Standard)' },
     { value: '50 Minutes (Deep Work)', label: '50 Minutes (Deep Work)' },
     { value: '15 Minutes (Short Focus)', label: '15 Minutes (Short Focus)' },
+    { value: 'Custom (Settings-Based)', label: 'Custom (Settings-Based)' },
   ]
 
   const breakOptions = [
     { value: '5 Mins (Pomodoro Break)', label: '5 Mins (Pomodoro Break)' },
     { value: '10 Mins (Extended Rest)', label: '10 Mins (Extended Rest)' },
     { value: 'No Break (Continuous)', label: 'No Break (Continuous)' },
+    { value: 'Custom (Settings-Based)', label: 'Custom (Settings-Based)' },
   ]
 
   const [tasks, setTasks] = useState([])
@@ -321,7 +323,7 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refr
                 <h3 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Session History</h3>
                 <div className="flex flex-col gap-2.5">
                   {sessions.length === 0 ? (
-                    <div className="p-4 w-82 bg-slate-80 dark:bg-slate-900/10 border border-dashed border-slate-200/40 dark:border-slate-800/30 rounded-xl text-center text-xs text-slate-400 dark:text-slate-650 font-semibold">
+                    <div className="p-4 w-105 bg-slate-80 dark:bg-slate-900/10 border border-dashed border-slate-200/40 dark:border-slate-800/30 rounded-xl text-center text-xs text-slate-400 dark:text-slate-650 font-semibold">
                       No study sessions scheduled yet. Click "Start Session" to schedule one.
                     </div>
                   ) : (

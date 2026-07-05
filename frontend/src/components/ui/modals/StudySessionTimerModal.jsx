@@ -8,6 +8,10 @@ export default function StudySessionTimerModal({ isOpen, onClose, session, focus
   // Helpers to parse minutes from global settings text
   const parseFocusMinutes = (str) => {
     if (!str) return 25
+    if (str.includes('Custom')) {
+      const saved = Number(localStorage.getItem('sp:focus_period'))
+      return isNaN(saved) || saved <= 0 ? 25 : saved
+    }
     if (str.includes('25')) return 25
     if (str.includes('50')) return 50
     if (str.includes('15')) return 15
@@ -16,6 +20,10 @@ export default function StudySessionTimerModal({ isOpen, onClose, session, focus
 
   const parseBreakMinutes = (str) => {
     if (!str) return 5
+    if (str.includes('Custom')) {
+      const saved = Number(localStorage.getItem('sp:short_break'))
+      return isNaN(saved) || saved < 0 ? 5 : saved
+    }
     if (str.includes('5')) return 5
     if (str.includes('10')) return 10
     if (str.includes('No Break') || str.includes('Continuous')) return 0

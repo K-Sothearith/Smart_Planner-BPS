@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { MindfulStudyLogo } from '../../assets'
 import authService from '../../services/authService.js'
+import Select from '../../components/ui/Select'
 
 export default function Signup({ onGoToSignin, onAuthSuccess }) {
   const [name, setName] = useState('')
@@ -301,29 +302,24 @@ export default function Signup({ onGoToSignin, onAuthSuccess }) {
                   Gender
                 </label>
                 <div className="relative flex items-center">
-                  <div className="absolute left-4 text-slate-400 dark:text-slate-500 pointer-events-none">
+                  <div className="absolute left-4 text-slate-400 dark:text-slate-500 pointer-events-none z-10">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5a4.5 4.5 0 100 9 4.5 4.5 0 000-9zM12 13.5v6m-3-3h6" />
                     </svg>
                   </div>
-                  <select
-                    id="signup-gender"
+                  <Select
                     value={gender}
-                    onChange={(e) => setGender(e.target.value)}
-                    autoComplete="sex"
-                    className="w-full h-12 pl-12 pr-10 rounded-xl border border-slate-200 dark:border-slate-800 bg-[#F8FAFC] dark:bg-[#0F172A] text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#2E5B70] dark:focus:ring-sky-500/50 focus:border-transparent transition-all duration-200 appearance-none"
-                  >
-                    <option value="">Select gender</option>
-                    <option value="Female">Female</option>
-                    <option value="Male">Male</option>
-                    <option value="Other">Other</option>
-                    <option value="Prefer not to say">Prefer not to say</option>
-                  </select>
-                  <div className="absolute right-4 text-slate-400 dark:text-slate-500 pointer-events-none">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6" />
-                    </svg>
-                  </div>
+                    onChange={setGender}
+                    options={[
+                      { value: '', label: 'Select gender' },
+                      { value: 'Female', label: 'Female' },
+                      { value: 'Male', label: 'Male' },
+                      { value: 'Other', label: 'Other' },
+                      { value: 'Prefer not to say', label: 'Prefer not to say' }
+                    ]}
+                    isLargeSelect={true}
+                    className="w-full"
+                  />
                 </div>
               </div>
             </div>

@@ -34,7 +34,7 @@ const faqs = [
   },
   {
     question: 'Where is my account information stored?',
-    answer: 'This app currently stores demo account information in your browser local storage, so it stays on this device and browser.',
+    answer: 'Your information is stored in a secured online database. No informations will be leaked.',
   },
 ]
 
