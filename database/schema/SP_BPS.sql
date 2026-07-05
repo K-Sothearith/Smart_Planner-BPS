@@ -53,12 +53,16 @@ CREATE TABLE IF NOT EXISTS StudySessions (
     CONSTRAINT fk_session_task FOREIGN KEY (task_id) REFERENCES Tasks(task_id) ON DELETE SET NULL
 );
 
-CREATE TABLE IF NOT EXISTS MoodLogs (
-  mood_id INT PRIMARY KEY AUTO_INCREMENT,
-    user_id INT NULL,
-    mood_level ENUM('Happy', 'Normal', 'Tired', 'Frustrated', 'Stressed'),
-    note VARCHAR(100),
-    created_at DATE,
-    
-    CONSTRAINT fk_mood_user FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE SET NULL
+CREATE TABLE IF NOT EXISTS BurnoutLogs (
+  burnout_id INT PRIMARY KEY AUTO_INCREMENT,
+  user_id INT NULL,
+  mood_level ENUM('Happy', 'Normal', 'Tired', 'Frustrated', 'Stressed') NOT NULL,
+  sleep_hours ENUM('Under 4 hours', '5-6 hours', '7-8 hours', 'Above 8 hours') NOT NULL,
+  sleep_quality INT NOT NULL, -- 1 to 5
+  screen_time ENUM('Under 4 hours', '5-6 hours', '7-8 hours', 'Above 8 hours') NOT NULL,
+  note VARCHAR(100) NULL,
+  burnout_index INT NOT NULL,
+  created_at DATE NOT NULL,
+  
+  CONSTRAINT fk_burnout_user FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE SET NULL
 );

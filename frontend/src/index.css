@@ -125,3 +125,65 @@ html[data-theme="dark"] input[type="time"]:not(.datetime-input)::-webkit-calenda
   z-index: 10;
   display: block;
 }
+
+/* Glassmorphism scrollbar styling */
+::-webkit-scrollbar,
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track,
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border-radius: 10px;
+}
+
+html[data-theme="dark"] ::-webkit-scrollbar-track,
+html[data-theme="dark"] .scrollbar-thin::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.01);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+::-webkit-scrollbar-thumb,
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.12);
+  border: 1px solid transparent;
+  background-clip: padding-box;
+  border-radius: 10px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover,
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid transparent;
+  background-clip: padding-box;
+}
+
+html[data-theme="dark"] ::-webkit-scrollbar-thumb,
+html[data-theme="dark"] .scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover,
+html[data-theme="dark"] .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Firefox support for scrollbar-thin class */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.12) rgba(255, 255, 255, 0.02);
+}
+html[data-theme="dark"] .scrollbar-thin {
+  scrollbar-color: rgba(255, 255, 255, 0.1) rgba(255, 255, 255, 0.01);
+}
+
