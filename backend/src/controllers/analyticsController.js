@@ -1,6 +1,7 @@
 import BurnoutLog from "../models/BurnoutLog.js";
 import Task from "../models/Task.js";
 import StudySession from "../models/StudySession.js";
+import User from "../models/User.js";
 
 // Helper helper functions for date checking
 const isDatePastToday = (dateStr) => {
@@ -203,18 +204,153 @@ const analyticsController = {
         });
         liveIndex = scores.burnoutIndex;
       } else {
-        // Fallback baseline if no logs submitted yet
-        scores = calculateRiskScores({
-          moodLevel: 'Normal',
-          sleepHours: '7-8 hours',
-          sleepQuality: 4,
-          screenTime: '5-6 hours',
-          pendingCount,
-          overdueCount,
-          missedCount
-        });
-        liveIndex = scores.burnoutIndex;
+        // If no log is made, set the index to 0
+        scores = {
+          moodScore: 0,
+          sleepScore: 0,
+          sleepQualityScore: 0,
+          screenTimeScore: 0,
+          pendingScore: 0,
+          overdueScore: 0,
+          missedScore: 0,
+          burnoutIndex: 0
+        };
+        liveIndex = 0;
       }
+
+      // 5. Generate Weekly Productivity & Workload Stats from real data
+      const user = await User.findById(userId);
+      const createdDateVal = user ? (user.created_at || new Date()) : new Date();
+      const T0 = new Date(createdDateVal);
+      T0.setHours(0, 0, 0, 0);
+
+      const weeks = [];
+      let weekIndex = 1;
+      let weekStart = new Date(T0);
+      const now = new Date();
+
+      // Loop to generate weekly ranges up to current time
+      while (weekStart <= now || weeks.length === 0) {
+        const weekEnd = new Date(weekStart);
+        weekEnd.setDate(weekEnd.getDate() + 7);
+
+        weeks.push({
+          weekNum: weekIndex,
+          start: new Date(weekStart),
+          end: new Date(weekEnd),
+          sessions: [],
+          completedTasks: []
+        });
+
+        weekStart = new Date(weekEnd);
+        weekIndex++;
+      }
+
+      // Distribute sessions and completed tasks to weeks
+      const allTasks = await Task.findAllByUser(userId);
+
+      for (const session of sessions) {
+        const sessionDate = new Date(session.start_time);
+        for (const week of weeks) {
+          if (sessionDate >= week.start && sessionDate < week.end) {
+            week.sessions.push(session);
+            break;
+          }
+        }
+      }
+
+      for (const task of allTasks) {
+        if (task.status === "Done" && task.completed_at) {
+          const completedDate = new Date(task.completed_at);
+          for (const week of weeks) {
+            if (completedDate >= week.start && completedDate < week.end) {
+              week.completedTasks.push(task);
+              break;
+            }
+          }
+        }
+      }
+
+      const formatShortDate = (d) => {
+        const actualMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        return `${actualMonths[d.getMonth()]} ${String(d.getDate()).padStart(2, "0")}`;
+      };
+
+      const weeklyProductivity = weeks.map((week) => {
+        const completedSessions = week.sessions.filter((s) => s.is_completed === 1);
+        const totalMinutes = completedSessions.reduce((sum, s) => sum + (s.duration_minutes || 0), 0);
+        const studyHrs = Math.round((totalMinutes / 60) * 10) / 10;
+
+        // Dynamic focus calculation
+        let baseFocus = 80;
+        if (week.completedTasks.length > 0) {
+          baseFocus += Math.min(week.completedTasks.length * 3, 15);
+        }
+        const failedSessions = week.sessions.filter((s) => s.is_completed === 0).length;
+        if (failedSessions > 0) {
+          baseFocus -= Math.min(failedSessions * 5, 15);
+        }
+        const avgFocus = Math.max(50, Math.min(100, baseFocus));
+
+        // Find burnout log entries in this week range
+        const weeklyLogs = history.filter((log) => {
+          const logDate = new Date(log.created_at);
+          return logDate >= week.start && logDate < week.end;
+        });
+
+        let burnoutIndex = 0;
+        if (weeklyLogs.length > 0) {
+          const sum = weeklyLogs.reduce((acc, l) => acc + l.burnout_index, 0);
+          burnoutIndex = Math.round(sum / weeklyLogs.length);
+        } else {
+          // Estimate base risk index on user workloads if no logs exist
+          const liveWorkload = (week.sessions.length * 5) + (week.completedTasks.length * 2);
+          burnoutIndex = Math.min(45, liveWorkload);
+        }
+
+        let status = "Healthy";
+        if (burnoutIndex > 75) status = "Severe Burnout";
+        else if (burnoutIndex > 50) status = "High Fatigue";
+        else if (burnoutIndex > 25) status = "Mild Fatigue";
+
+        return {
+          week: `Week ${week.weekNum} (${formatShortDate(week.start)} - ${formatShortDate(new Date(week.end.getTime() - 1000))})`,
+          studyHours: studyHrs,
+          breaks: completedSessions.length,
+          focus: avgFocus,
+          status
+        };
+      }).reverse(); // Show latest week first
+
+      // 6. Generate Study Distribution & Balance Stats from real data
+      const categoryMinutes = {
+        Practice: 0,
+        Assignment: 0,
+        Project: 0,
+        Revision: 0,
+        Research: 0,
+        Others: 0
+      };
+
+      let totalMinutesAll = 0;
+
+      for (const session of sessions) {
+        if (session.is_completed === 1) {
+          const cat = session.category_name || "Others";
+          categoryMinutes[cat] = (categoryMinutes[cat] || 0) + (session.duration_minutes || 0);
+          totalMinutesAll += (session.duration_minutes || 0);
+        }
+      }
+
+      const categoryDistribution = Object.keys(categoryMinutes).map((catName) => {
+        const mins = categoryMinutes[catName];
+        const pct = totalMinutesAll > 0 ? Math.round((mins / totalMinutesAll) * 100) : 0;
+        return {
+          category: catName,
+          percentage: pct,
+          hours: Math.round((mins / 60) * 10) / 10
+        };
+      });
 
       return res.status(200).json({
         status: "SUCCESS",
@@ -226,7 +362,9 @@ const analyticsController = {
           pendingCount,
           overdueCount,
           missedCount
-        }
+        },
+        weeklyProductivity,
+        categoryDistribution
       });
 
     } catch (error) {

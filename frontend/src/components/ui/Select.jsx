@@ -1,15 +1,19 @@
 import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from '@headlessui/react'
 
-export default function Select({ value, onChange, options, className = '' }) {
+export default function Select({ value, onChange, options, className = '', isLargeSelect = false }) {
   const selectedOption = options.find((opt) => opt.value === value) || options[0]
+
+  const buttonClasses = isLargeSelect
+    ? "flex items-center justify-between w-full h-12 pl-12 pr-10 rounded-xl border border-slate-200 dark:border-slate-800 bg-[#F8FAFC] dark:bg-[#0F172A] text-xs font-semibold text-slate-750 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-[#2E5B70]/50 dark:focus:ring-sky-500/50 transition-all text-left cursor-pointer"
+    : "flex items-center justify-between w-full h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-[#F8FAFC] dark:bg-[#0F172A] text-xs font-semibold text-slate-750 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-[#2E5B70]/50 dark:focus:ring-sky-500/50 transition-all text-left cursor-pointer";
 
   return (
     <Listbox value={value} onChange={onChange}>
       <div className={`relative w-full ${className}`}>
-        <ListboxButton className="flex items-center justify-between w-full h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-[#F8FAFC] dark:bg-[#0F172A] text-xs font-semibold text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-[#2E5B70]/50 transition-all text-left cursor-pointer">
+        <ListboxButton className={buttonClasses}>
           <span className="truncate">{selectedOption?.label || value}</span>
           <svg
-            className="w-4 h-4 text-slate-400 dark:text-slate-500 shrink-0"
+            className="w-4 h-4 text-slate-400 dark:text-slate-550 shrink-0"
             fill="none"
             stroke="currentColor"
             strokeWidth="2.5"

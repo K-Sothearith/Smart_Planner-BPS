@@ -24,12 +24,14 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refr
     { value: '25 Minutes (Standard)', label: '25 Minutes (Standard)' },
     { value: '50 Minutes (Deep Work)', label: '50 Minutes (Deep Work)' },
     { value: '15 Minutes (Short Focus)', label: '15 Minutes (Short Focus)' },
+    { value: 'Custom (Settings-Based)', label: 'Custom (Settings-Based)' },
   ]
 
   const breakOptions = [
     { value: '5 Mins (Pomodoro Break)', label: '5 Mins (Pomodoro Break)' },
     { value: '10 Mins (Extended Rest)', label: '10 Mins (Extended Rest)' },
     { value: 'No Break (Continuous)', label: 'No Break (Continuous)' },
+    { value: 'Custom (Settings-Based)', label: 'Custom (Settings-Based)' },
   ]
 
   const [tasks, setTasks] = useState([])

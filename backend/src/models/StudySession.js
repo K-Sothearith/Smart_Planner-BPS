@@ -56,9 +56,11 @@ const StudySession = {
       SELECT 
         s.*,
         t.title AS task_title,
-        t.status AS task_status
+        t.status AS task_status,
+        c.type AS category_name
       FROM StudySessions s
       LEFT JOIN Tasks t ON s.task_id = t.task_id
+      LEFT JOIN Categories c ON t.category_id = c.category_id
       WHERE s.user_id = ?
       ORDER BY s.start_time DESC
     `;

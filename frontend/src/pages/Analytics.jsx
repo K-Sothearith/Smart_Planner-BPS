@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import SidebarLayout from '../components/layouts/SidebarLayout'
 import { AnalyticsIcon } from '../assets'
 import analyticsService from '../services/analyticsService.js'
+import Select from '../components/ui/Select'
 
 export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, refreshStreak }) {
   // Loading and database states
@@ -10,6 +11,8 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
   const [liveScores, setLiveScores] = useState(null)
   const [history, setHistory] = useState([])
   const [taskMetrics, setTaskMetrics] = useState({ pendingCount: 0, overdueCount: 0, missedCount: 0 })
+  const [weeklyProductivity, setWeeklyProductivity] = useState([])
+  const [categoryDistribution, setCategoryDistribution] = useState([])
 
   // Modal open state
   const [isLogModalOpen, setIsLogModalOpen] = useState(false)
@@ -20,14 +23,6 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
   const [note, setNote] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
-  // Realistic mock data for fallback
-  const mockStudyStats = [
-    { week: 'Week 27 (Jun 29 - Jul 05)', totalHours: '24 hrs', breaksTaken: '16 breaks', avgFocus: '82%', status: 'Healthy' },
-    { week: 'Week 26 (Jun 22 - Jun 28)', totalHours: '32 hrs', breaksTaken: '10 breaks', avgFocus: '68%', status: 'Mild Fatigue' },
-    { week: 'Week 25 (Jun 15 - Jun 21)', totalHours: '40 hrs', breaksTaken: '6 breaks', avgFocus: '55%', status: 'High Fatigue' },
-    { week: 'Week 24 (Jun 08 - Jun 14)', totalHours: '20 hrs', breaksTaken: '15 breaks', avgFocus: '85%', status: 'Healthy' },
-  ]
-
   // Load analytics data from backend on mount
   const fetchAnalytics = async () => {
     try {
@@ -37,6 +32,8 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
       setLiveScores(data.liveScores || null)
       setHistory(data.history || [])
       setTaskMetrics(data.taskMetrics || { pendingCount: 0, overdueCount: 0, missedCount: 0 })
+      setWeeklyProductivity(data.weeklyProductivity || [])
+      setCategoryDistribution(data.categoryDistribution || [])
     } catch (err) {
       console.error("Failed to load analytics records:", err)
     } finally {
@@ -137,6 +134,13 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
   const riskDetails = getRiskDetails(liveIndex);
   const rec = getRecommendation(liveIndex);
 
+  const avgFocusOverall = weeklyProductivity.length > 0
+    ? Math.round(weeklyProductivity.reduce((sum, w) => sum + w.focus, 0) / weeklyProductivity.length)
+    : 0;
+
+  const totalHoursOverall = Math.round(weeklyProductivity.reduce((sum, w) => sum + w.studyHours, 0) * 10) / 10;
+  const totalBreaksOverall = weeklyProductivity.reduce((sum, w) => sum + w.breaks, 0);
+
   // SVG Circular progress math
   const strokeDasharray = 251.2;
   const strokeDashoffset = 251.2 - (251.2 * liveIndex) / 100;
@@ -172,9 +176,9 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4">
           
           {/* COLUMN 1 */}
-          <div className="flex flex-col gap-8">
-            {/* Card 1: Productivity & Workload (Fixed Height: h-118) */}
-            <div className="flex flex-col h-118 bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
+          <div className="flex flex-col gap-8 h-[872px]">
+            {/* Card 1: Productivity & Workload (Fixed Height: h-[420px]) */}
+            <div className="flex flex-col h-[420px] bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
               <div className="p-6 border-b border-slate-300 dark:border-slate-700">
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-lg bg-emerald-500/10 dark:bg-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
@@ -193,47 +197,112 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
                 <div className="grid grid-cols-3 gap-3">
                   <div className="p-3 bg-slate-50/50 dark:bg-slate-900/30 rounded-xl border border-slate-100 dark:border-slate-800/40 text-center">
                     <span className="text-[9px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Avg Focus</span>
-                    <p className="text-lg font-black text-[#2E5B70] dark:text-sky-400 mt-0.5">72%</p>
+                    <p className="text-lg font-black text-[#2E5B70] dark:text-sky-400 mt-0.5">{avgFocusOverall}%</p>
                   </div>
                   <div className="p-3 bg-slate-50/50 dark:bg-slate-900/30 rounded-xl border border-slate-100 dark:border-slate-800/40 text-center">
                     <span className="text-[9px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Hours Tracked</span>
-                    <p className="text-lg font-black text-[#2E5B70] dark:text-sky-400 mt-0.5">116 hrs</p>
+                    <p className="text-lg font-black text-[#2E5B70] dark:text-sky-400 mt-0.5">{totalHoursOverall} hrs</p>
                   </div>
                   <div className="p-3 bg-[#F0FDF4] dark:bg-[#064E3B]/20 rounded-xl border border-emerald-100 dark:border-emerald-950/20 text-center">
                     <span className="text-[9px] font-extrabold text-emerald-600 dark:text-emerald-500 uppercase tracking-wider">Breaks Taken</span>
-                    <p className="text-lg font-black text-emerald-700 dark:text-emerald-400 mt-0.5">47</p>
+                    <p className="text-lg font-black text-emerald-700 dark:text-emerald-400 mt-0.5">{totalBreaksOverall}</p>
                   </div>
                 </div>
 
                 {/* Weekly Trends List */}
                 <div className="flex flex-col gap-3">
                   <h3 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider text-left">Weekly Overview History</h3>
-                  {mockStudyStats.map((stat, i) => (
-                    <div
-                      key={i}
-                      className="p-3 bg-slate-50/50 dark:bg-slate-900/30 rounded-xl border border-slate-100 dark:border-slate-800/30 flex items-center justify-between text-xs transition-all hover:bg-slate-100/50 dark:hover:bg-slate-800/40"
-                    >
-                      <div className="text-left">
-                        <h4 className="font-bold text-slate-800 dark:text-slate-200">{stat.week}</h4>
-                        <p className="text-[9px] text-slate-400 dark:text-slate-500 font-semibold mt-0.5">Total Study: {stat.totalHours} • {stat.breaksTaken}</p>
-                      </div>
-                      <div className="text-right flex flex-col gap-0.5">
-                        <span className="font-bold text-slate-700 dark:text-slate-300">Focus: {stat.avgFocus}</span>
-                        <span className={`text-[8.5px] font-extrabold uppercase px-1.5 py-0.5 rounded border bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20`}>
-                          {stat.status}
-                        </span>
-                      </div>
+                  {weeklyProductivity.length === 0 ? (
+                    <div className="p-4 bg-slate-50/50 dark:bg-slate-900/10 border border-dashed border-slate-200/40 dark:border-slate-800/30 rounded-xl text-center text-xs text-slate-400 dark:text-slate-500 font-semibold">
+                      No study history recorded yet. Use the Planner to start study sessions!
                     </div>
-                  ))}
+                  ) : (
+                    weeklyProductivity.map((stat, i) => (
+                      <div
+                        key={i}
+                        className="p-3 bg-slate-50/50 dark:bg-slate-900/30 rounded-xl border border-[#2E5B7090] dark:border-[#38BDF890] flex items-center justify-between text-xs transition-all hover:bg-slate-100/50 dark:hover:bg-slate-800/40"
+                      >
+                        <div className="text-left">
+                          <h4 className="font-bold text-slate-800 dark:text-slate-200">{stat.week}</h4>
+                          <p className="text-[9px] text-slate-400 dark:text-slate-500 font-semibold mt-0.5">Total Study: {stat.studyHours} hrs • {stat.breaks} breaks</p>
+                        </div>
+                        <div className="text-right flex flex-col gap-0.5">
+                          <span className="font-bold text-slate-700 dark:text-slate-300">Focus: {stat.focus}%</span>
+                          <span className={`text-[8.5px] font-extrabold uppercase px-1.5 py-0.5 rounded border ${
+                            stat.status === "Healthy" 
+                              ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
+                              : stat.status === "Mild Fatigue"
+                              ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
+                              : "bg-rose-500/10 text-rose-600 dark:text-rose-450 border-rose-500/20"
+                          }`}>
+                            {stat.status}
+                          </span>
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
+              </div>
+            </div>
+
+            {/* Card 2: Study Distribution & Balance (Fixed Height: h-[420px]) */}
+            <div className="flex flex-col h-[420px] bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
+              <div className="p-6 border-b border-slate-300 dark:border-slate-700">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-indigo-500/10 dark:bg-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M11 3.055A9.003 9.003 0 1020.945 13H11V3.055z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+                    </svg>
+                  </div>
+                  <h2 className="text-base font-bold text-slate-800 dark:text-slate-200 font-sans">Study Distribution & Balance</h2>
+                </div>
+                <p className="text-[11px] text-slate-400 dark:text-slate-500 font-semibold mt-1">Review the balance of focus hours spent across category types.</p>
+              </div>
+
+              <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-4 scrollbar-thin">
+                {categoryDistribution.length === 0 || categoryDistribution.every(c => c.percentage === 0) ? (
+                  <div className="flex-1 flex flex-col items-center justify-center p-4 bg-slate-50/50 dark:bg-slate-900/10 border border-dashed border-slate-200/40 dark:border-slate-800/30 rounded-xl text-center text-xs text-slate-400 dark:text-slate-500 font-semibold">
+                    No study distribution data found. Complete a timed study session to see distribution trends!
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-3">
+                    {categoryDistribution.map((item, i) => {
+                      const colors = {
+                        Practice: { bar: "bg-emerald-500", text: "text-emerald-600 dark:text-emerald-400" },
+                        Assignment: { bar: "bg-indigo-500", text: "text-indigo-600 dark:text-indigo-400" },
+                        Project: { bar: "bg-amber-500", text: "text-amber-600 dark:text-amber-400" },
+                        Revision: { bar: "bg-rose-500", text: "text-rose-600 dark:text-rose-400" },
+                        Research: { bar: "bg-sky-500", text: "text-sky-600 dark:text-sky-400" },
+                        Others: { bar: "bg-slate-400", text: "text-slate-600 dark:text-slate-450" }
+                      };
+                      const theme = colors[item.category] || colors.Others;
+
+                      return (
+                        <div key={i} className="flex flex-col gap-1 text-xs">
+                          <div className="flex justify-between items-center font-semibold">
+                            <span className="text-slate-800 dark:text-slate-200">{item.category}</span>
+                            <span className="text-slate-400 dark:text-slate-500">{item.hours} hrs ({item.percentage}%)</span>
+                          </div>
+                          <div className="w-full h-2.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                            <div 
+                              className={`h-full ${theme.bar} rounded-full transition-all duration-500`}
+                              style={{ width: `${item.percentage}%` }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             </div>
           </div>
 
           {/* COLUMN 2 */}
           <div className="flex flex-col gap-8">
-            {/* Card 3: Burnout-Risk Analysis (Fixed Height: h-218) */}
-            <div className="flex flex-col h-218 bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
+            {/* Card 3: Burnout-Risk Analysis (Fixed Height: h-[872px]) */}
+            <div className="flex flex-col h-[872px] bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
               <div className="p-6 border-b border-slate-300 dark:border-slate-700 flex justify-between items-center gap-4">
                 <div className="text-left">
                   <div className="flex items-center gap-2.5">
@@ -290,7 +359,7 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
                 <div className="grid grid-cols-2 gap-4 bg-slate-50/20 dark:bg-slate-900/10 p-4 rounded-xl border border-slate-100 dark:border-slate-800/20">
                   <div className="space-y-1">
                     <div className="flex justify-between text-[10px] font-bold text-slate-500 dark:text-slate-400">
-                      <span>Mood Risk (30%)</span>
+                      <span>Mood Risk</span>
                       <span className="text-amber-500">{liveScores?.moodScore || 0}%</span>
                     </div>
                     <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
@@ -299,7 +368,7 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
                   </div>
                   <div className="space-y-1">
                     <div className="flex justify-between text-[10px] font-bold text-slate-500 dark:text-slate-400">
-                      <span>Sleep Quality Risk (10%)</span>
+                      <span>Sleep Quality Risk</span>
                       <span className="text-rose-500">{liveScores?.sleepQualityScore || 0}%</span>
                     </div>
                     <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
@@ -308,7 +377,7 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
                   </div>
                   <div className="space-y-1">
                     <div className="flex justify-between text-[10px] font-bold text-slate-500 dark:text-slate-400">
-                      <span>Study Intensity Risk (20%)</span>
+                      <span>Study Intensity Risk</span>
                       <span className="text-indigo-500">{liveScores?.pendingScore || 0}%</span>
                     </div>
                     <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
@@ -317,7 +386,7 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
                   </div>
                   <div className="space-y-1">
                     <div className="flex justify-between text-[10px] font-bold text-slate-500 dark:text-slate-400">
-                      <span>Overdue Tasks Risk (10%)</span>
+                      <span>Overdue Tasks Risk</span>
                       <span className="text-red-500">{liveScores?.overdueScore || 0}%</span>
                     </div>
                     <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
@@ -331,7 +400,7 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
                   <h3 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider text-left">Burnout Logs & Mood Entries</h3>
                   <div className="flex flex-col gap-2.5 max-h-100 overflow-y-auto scrollbar-thin pr-1">
                     {history.length === 0 ? (
-                      <div className="p-4 bg-slate-50/50 dark:bg-slate-900/10 border border-dashed border-slate-200/40 dark:border-slate-800/30 rounded-xl text-center text-xs text-slate-400 dark:text-slate-550 font-semibold">
+                      <div className="p-4 bg-slate-50/50 dark:bg-slate-900/10 border border-dashed border-slate-200/40 dark:border-slate-800/30 rounded-xl text-center text-xs text-slate-400 dark:text-slate-500 font-semibold">
                         No burnout checks logged yet. Click "Burnout-log" to log today's check-in.
                       </div>
                     ) : (
@@ -340,7 +409,7 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
                         return (
                           <div
                             key={log.burnout_id}
-                            className="p-3.5 bg-slate-50/50 dark:bg-slate-900/30 border border-slate-100 dark:border-slate-800/30 rounded-xl flex flex-col gap-1.5 transition-all hover:bg-slate-100/50 dark:hover:bg-slate-800/40 text-left"
+                            className="p-3.5 bg-slate-50/50 dark:bg-slate-900/30 border border-[#2E5B7090] dark:border-[#38BDF890] rounded-xl flex flex-col gap-1.5 transition-all hover:bg-slate-100/50 dark:hover:bg-slate-800/40 text-left"
                           >
                             <div className="flex justify-between items-center text-xs">
                               <span className="font-bold text-slate-800 dark:text-slate-200">{getMoodEmoji(log.mood_level)}</span>
@@ -397,7 +466,7 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
             <form onSubmit={handleSubmitLog} className="flex flex-col gap-4">
               {/* Mood (30% weight) */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">How is your Mood? (30%)</label>
+                <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">How is your Mood?</label>
                 <div className="grid grid-cols-5 gap-2 mt-1">
                   {[
                     { value: 'Happy', emoji: '😊', label: 'Happy' },
@@ -423,50 +492,80 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
                 </div>
               </div>
 
-              {/* Sleep Duration Dropdown (10%) */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Sleep Hours (10%)</label>
-                <select
-                  value={sleepHours}
-                  onChange={(e) => setSleepHours(e.target.value)}
-                  className="w-full h-11 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/30 text-xs font-semibold text-slate-700 dark:text-slate-250 outline-none focus:border-[#2E5B70] dark:focus:border-sky-500 transition-all cursor-pointer"
-                >
-                  <option value="Under 4 hours">Under 4 hours (High Burnout Risk)</option>
-                  <option value="5-6 hours">5-6 hours (Moderate-High Risk)</option>
-                  <option value="7-8 hours">7-8 hours (Healthy, Lowest Risk)</option>
-                  <option value="Above 8 hours">Above 8 hours (Mild Risk)</option>
-                </select>
+              {/* Row 2: Sleep Hours & Sleep Quality */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Sleep Hours</label>
+                  <Select
+                    value={sleepHours}
+                    onChange={setSleepHours}
+                    options={[
+                      { value: "Under 4 hours", label: "Under 4 hours (High Risk)" },
+                      { value: "5-6 hours", label: "5-6 hours (Mod-High Risk)" },
+                      { value: "7-8 hours", label: "7-8 hours (Healthy)" },
+                      { value: "Above 8 hours", label: "Above 8 hours (Mild Risk)" }
+                    ]}
+                    className="w-full"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Sleep Quality</label>
+                  <Select
+                    value={sleepQuality}
+                    onChange={setSleepQuality}
+                    options={[
+                      { value: "1", label: "1 - Terrible (High Risk)" },
+                      { value: "2", label: "2 - Poor" },
+                      { value: "3", label: "3 - Fair" },
+                      { value: "4", label: "4 - Good" },
+                      { value: "5", label: "5 - Excellent" }
+                    ]}
+                    className="w-full"
+                  />
+                </div>
               </div>
 
-              {/* Sleep Quality Dropdown (10%) */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Sleep Quality (10%)</label>
-                <select
-                  value={sleepQuality}
-                  onChange={(e) => setSleepQuality(e.target.value)}
-                  className="w-full h-11 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/30 text-xs font-semibold text-slate-700 dark:text-slate-250 outline-none focus:border-[#2E5B70] dark:focus:border-sky-500 transition-all cursor-pointer"
-                >
-                  <option value="1">1 - Terrible (High Burnout Risk)</option>
-                  <option value="2">2 - Poor</option>
-                  <option value="3">3 - Fair</option>
-                  <option value="4">4 - Good</option>
-                  <option value="5">5 - Excellent (Lowest Risk)</option>
-                </select>
+              {/* Row 3: Screen Time & Pending Tasks */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Screen Time</label>
+                  <Select
+                    value={screenTime}
+                    onChange={setScreenTime}
+                    options={[
+                      { value: "Under 4 hours", label: "Under 4 hours (Low Risk)" },
+                      { value: "5-6 hours", label: "5-6 hours (Mild Risk)" },
+                      { value: "7-8 hours", label: "7-8 hours (Mod-High Risk)" },
+                      { value: "Above 8 hours", label: "Above 8 hours (High Risk)" }
+                    ]}
+                    className="w-full"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Pending Tasks</label>
+                  <div className="w-full h-9 px-3 flex items-center rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-100/50 dark:bg-slate-900/50 text-xs font-semibold text-slate-500 dark:text-slate-400 select-none">
+                    {taskMetrics.pendingCount} Active {taskMetrics.pendingCount === 1 ? 'Task' : 'Tasks'}
+                  </div>
+                </div>
               </div>
 
-              {/* Screen Time Dropdown (10%) */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Screen Time (10%)</label>
-                <select
-                  value={screenTime}
-                  onChange={(e) => setScreenTime(e.target.value)}
-                  className="w-full h-11 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/30 text-xs font-semibold text-slate-700 dark:text-slate-250 outline-none focus:border-[#2E5B70] dark:focus:border-sky-500 transition-all cursor-pointer"
-                >
-                  <option value="Under 4 hours">Under 4 hours (Lowest Risk)</option>
-                  <option value="5-6 hours">5-6 hours (Mild Risk)</option>
-                  <option value="7-8 hours">7-8 hours (Moderate-High Risk)</option>
-                  <option value="Above 8 hours">Above 8 hours (High Burnout Risk)</option>
-                </select>
+              {/* Row 4: Overdue Tasks & Missed Study Sessions */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Overdue Tasks</label>
+                  <div className="w-full h-9 px-3 flex items-center rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-100/50 dark:bg-slate-900/50 text-xs font-semibold text-slate-500 dark:text-slate-400 select-none">
+                    {taskMetrics.overdueCount} Overdue {taskMetrics.overdueCount === 1 ? 'Task' : 'Tasks'}
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Missed Sessions</label>
+                  <div className="w-full h-9 px-3 flex items-center rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-100/50 dark:bg-slate-900/50 text-xs font-semibold text-slate-500 dark:text-slate-400 select-none">
+                    {taskMetrics.missedCount} Missed {taskMetrics.missedCount === 1 ? 'Session' : 'Sessions'}
+                  </div>
+                </div>
               </div>
 
               {/* Note input */}
@@ -478,7 +577,7 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
                   onChange={(e) => setNote(e.target.value)}
                   placeholder="Describe how your day was..."
                   maxLength="100"
-                  className="w-full h-11 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/30 text-xs font-semibold text-slate-700 dark:text-slate-200 outline-none focus:border-[#2E5B70] dark:focus:border-sky-500 transition-all"
+                  className="w-full h-9 px-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-[#F8FAFC] dark:bg-[#0F172A] text-xs font-semibold text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-[#2E5B70]/50 dark:focus:ring-sky-500/50 transition-all"
                 />
               </div>
 

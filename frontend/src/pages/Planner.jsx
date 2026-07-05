@@ -503,7 +503,7 @@ export default function Planner({ user, onNavigate, onSignOut, onOpenGuide, refr
                           <span className="text-sm shrink-0">
                             {isTask ? '⏰' : '📚'}
                           </span>
-                          <h4 className="text-xs font-bold text-slate-800 dark:text-slate-250 truncate">
+                          <h4 className="text-xs font-bold text-slate-800 dark:text-white truncate">
                             {item.title}
                           </h4>
                         </div>
