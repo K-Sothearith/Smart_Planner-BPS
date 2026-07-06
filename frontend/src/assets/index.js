@@ -11,6 +11,7 @@ import Manager from './images/Manager.png'
 import Planner from './images/Planner.png'
 import Analytics from './images/Analytics.png'
 import Settings from './images/Settings.png'
+import Welcome from './images/Welcome.png'
 
 export {
     MindfulStudyLogo,
@@ -24,7 +25,8 @@ export {
     Manager,
     Planner,
     Analytics,
-    Settings
+    Settings,
+    Welcome
 };
 
 export default {
@@ -39,5 +41,6 @@ export default {
     Manager,
     Planner,
     Analytics,
-    Settings
+    Settings,
+    Welcome
 };

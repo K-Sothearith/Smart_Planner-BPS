@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
-import { Manager, Planner, Analytics, Settings } from '../../../assets'
+import { Manager, Planner, Analytics, Settings, Welcome } from '../../../assets'
 
 export default function GuideModal({ isOpen, onClose }) {
   const [currentPage, setCurrentPage] = useState(0)
@@ -11,7 +11,7 @@ export default function GuideModal({ isOpen, onClose }) {
       tagline: "Your companion for sustainable productivity and academic balance.",
       altText: "Mindful Study Logo and Welcome screen banner placeholder",
       placeholderLabel: "Onboarding Graphic / Welcome Screen Overview",
-      image: null,
+      image: Welcome,
       description: (
         <div className="space-y-3.5 text-slate-650 dark:text-slate-350 text-xs leading-relaxed font-medium">
           <p>
