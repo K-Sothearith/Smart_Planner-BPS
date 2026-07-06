@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
+import { Manager, Planner, Analytics, Settings } from '../../../assets'
 
 export default function GuideModal({ isOpen, onClose }) {
   const [currentPage, setCurrentPage] = useState(0)
@@ -10,6 +11,7 @@ export default function GuideModal({ isOpen, onClose }) {
       tagline: "Your companion for sustainable productivity and academic balance.",
       altText: "Mindful Study Logo and Welcome screen banner placeholder",
       placeholderLabel: "Onboarding Graphic / Welcome Screen Overview",
+      image: null,
       description: (
         <div className="space-y-3.5 text-slate-650 dark:text-slate-350 text-xs leading-relaxed font-medium">
           <p>
@@ -28,10 +30,11 @@ export default function GuideModal({ isOpen, onClose }) {
       )
     },
     {
-      title: "Your Dashboard (Page 1/4) 📊",
+      title: "Your Dashboard (Page 1/5) 📊",
       tagline: "Monitor your current workload & cognitive state at a glance.",
       altText: "Dashboard screen showing Mindfulness Meter, Micro-break recommendations, Focus items, and Weekly progress",
       placeholderLabel: "Dashboard Page Layout (Mindfulness Meter & Today's focus)",
+      image: null,
       description: (
         <div className="space-y-3.5 text-slate-650 dark:text-slate-350 text-xs leading-relaxed font-medium">
           <p>
@@ -49,38 +52,20 @@ export default function GuideModal({ isOpen, onClose }) {
       )
     },
     {
-      title: "Smart Planner & Calendar (Page 2/4) 📅",
-      tagline: "Plan tasks, set priorities, and view schedule allocations.",
-      altText: "Planner screen showing Calendar view, deadline counters, and task priorities",
-      placeholderLabel: "Planner & Calendar Page Layout (Monthly grid & Task timelines)",
-      description: (
-        <div className="space-y-3.5 text-slate-650 dark:text-slate-350 text-xs leading-relaxed font-medium">
-          <p>
-            The <span className="font-bold text-[#2E5B70] dark:text-[#38BDF8]">Planner</span> visualizes your deadlines. It features a interactive calendar grid and scheduling layout.
-          </p>
-          <ul className="list-disc pl-4.5 space-y-1.5 font-semibold text-slate-700 dark:text-slate-300">
-            <li><span className="text-slate-800 dark:text-slate-100">Visual Calendar:</span> Displays tasks on their due date to avoid clutter.</li>
-            <li><span className="text-slate-800 dark:text-slate-100">Task Priorities:</span> Categorizes items into High, Medium, or Low priority blocks.</li>
-          </ul>
-          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2 font-medium">
-            🎯 <strong>Where to go:</strong> Navigate to the <strong>Planner</strong> page via the sidebar to structure your weekly assignments, schedule study blocks, and track due dates.
-          </p>
-        </div>
-      )
-    },
-    {
-      title: "Tasks & Study Sessions (Page 3/4) ⏱️",
+      title: "Tasks & Study Sessions (Page 2/5) ⏱️",
       tagline: "Time your focus periods and log your cognitive stress.",
       altText: "Task & Session Manager showing task list, Pomodoro timer, and mood logging module",
       placeholderLabel: "Task & Session Manager Page Layout (Pomodoro Timer & Mood Log)",
+      image: Manager,
       description: (
         <div className="space-y-3.5 text-slate-650 dark:text-slate-350 text-xs leading-relaxed font-medium">
           <p>
-            The <span className="font-bold text-[#2E5B70] dark:text-[#38BDF8]">Task & Session Manager</span> is where you get things done. It hosts your Pomodoro study tools:
+            The <span className="font-bold text-[#2E5B70] dark:text-[#38BDF8]">Task & Session Manager</span> is where you get things done. It hosts your task list and Pomodoro focus tools:
           </p>
           <ul className="list-disc pl-4.5 space-y-1.5 font-semibold text-slate-700 dark:text-slate-300">
-            <li><span className="text-[#2E5B70] dark:text-[#38BDF8]">Pomodoro Timer:</span> Custom study sessions (default 25 minutes) with forced break chimes.</li>
-            <li><span className="text-[#E28743] dark:text-[#F0A45D]">Mood & Stress Log:</span> Quick check-in to record your emotional level (Happy, Normal, Tired, Frustrated, Stressed).</li>
+            <li><span className="text-[#2E5B70] dark:text-[#38BDF8]">Manage Tasks:</span> Add, edit, delete, and complete tasks with priority and category tags.</li>
+            <li><span className="text-[#2E5B70] dark:text-[#38BDF8]">Manage Study Sessions:</span> Schedule study intervals, choose techniques, and save sessions.</li>
+            <li><span className="text-[#E28743] dark:text-[#F0A45D]">Timer Settings:</span> Quick config triggers for focus blocks (25, 50, 15 mins) and break methods.</li>
           </ul>
           <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2 font-medium">
             🎯 <strong>Where to go:</strong> Visit <strong>Tasks & Sessions</strong> in the sidebar when you start a study block to activate your focus timer and record check-ins.
@@ -89,21 +74,67 @@ export default function GuideModal({ isOpen, onClose }) {
       )
     },
     {
-      title: "Insights & Customization (Page 4/4) 📈",
-      tagline: "Track productivity metrics and customize system variables.",
-      altText: "Analytics graphs showing stress history and Settings panel configuring timer durations",
-      placeholderLabel: "Analytics & Settings Page Layouts (Productivity charts & Preferences)",
+      title: "Smart Planner & Calendar (Page 3/5) 📅",
+      tagline: "Plan tasks, set priorities, and view schedule allocations.",
+      altText: "Planner screen showing Calendar view, deadline counters, and task priorities",
+      placeholderLabel: "Planner & Calendar Page Layout (Monthly grid & Task timelines)",
+      image: Planner,
       description: (
         <div className="space-y-3.5 text-slate-650 dark:text-slate-350 text-xs leading-relaxed font-medium">
           <p>
-            Optimize your study habits by tracking long-term trends and customizing parameters:
+            The <span className="font-bold text-[#2E5B70] dark:text-[#38BDF8]">Planner</span> visualizes your deadlines. It features a monthly calendar grid and scheduling layout:
           </p>
           <ul className="list-disc pl-4.5 space-y-1.5 font-semibold text-slate-700 dark:text-slate-300">
-            <li><span className="text-[#2E5B70] dark:text-[#38BDF8]">Analytics Insights:</span> Line and bar graphs illustrating task completion rates, focus durations, and mood history over time.</li>
-            <li><span className="text-slate-800 dark:text-slate-100">Custom Timers & Dark Mode:</span> Personalize your study/break durations and toggle dark mode settings.</li>
+            <li><span className="text-slate-800 dark:text-slate-100">Visual Calendar Grid:</span> Displays your task deadlines and study sessions on their scheduled dates.</li>
+            <li><span className="text-slate-800 dark:text-slate-100">Daily Agenda:</span> Click any date to inspect specific tasks and scheduled sessions.</li>
+            <li><span className="text-slate-800 dark:text-slate-100">Agenda Chronology:</span> A scrollable timeline showing all upcoming tasks and sessions sorted by due date.</li>
           </ul>
           <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2 font-medium">
-            🎯 <strong>Where to go:</strong> Check <strong>Analytics</strong> weekly to audit your habits, and use <strong>Settings</strong> to match the timer length to your natural focus cycles.
+            🎯 <strong>Where to go:</strong> Navigate to the <strong>Planner</strong> page via the sidebar to structure your weekly assignments, schedule study blocks, and track due dates.
+          </p>
+        </div>
+      )
+    },
+    {
+      title: "Insights & Analytics (Page 4/5) 📈",
+      tagline: "Track productivity metrics and assess burnout risk levels.",
+      altText: "Analytics graphs showing stress history and Settings panel configuring timer durations",
+      placeholderLabel: "Analytics Page Layout (Productivity charts & Burnout index log)",
+      image: Analytics,
+      description: (
+        <div className="space-y-3.5 text-slate-650 dark:text-slate-350 text-xs leading-relaxed font-medium">
+          <p>
+            Optimize your study habits by tracking long-term trends and logging assessments:
+          </p>
+          <ul className="list-disc pl-4.5 space-y-1.5 font-semibold text-slate-700 dark:text-slate-300">
+            <li><span className="text-[#2E5B70] dark:text-[#38BDF8]">Burnout-Risk Meter:</span> Visualizes your live index score and gives custom wellness advice.</li>
+            <li><span className="text-[#E28743] dark:text-[#F0A45D]">Burnout Check-In Log:</span> Log daily mood, sleep quality, and screen time to compute your index.</li>
+            <li><span className="text-slate-800 dark:text-slate-100">Productivity Stats & Distribution:</span> Track weekly overview statistics and study hours breakdown across category types.</li>
+          </ul>
+          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2 font-medium">
+            🎯 <strong>Where to go:</strong> Check <strong>Analytics</strong> weekly to audit your study habits, and log daily burnout logs to maintain cognitive balance.
+          </p>
+        </div>
+      )
+    },
+    {
+      title: "System & Preferences (Page 5/5) ⚙️",
+      tagline: "Customize your timers, profile details, and sound chimes.",
+      altText: "Settings panel configuring timer durations and user profile",
+      placeholderLabel: "Settings Page Layout (Timer preferences & Profile Details)",
+      image: Settings,
+      description: (
+        <div className="space-y-3.5 text-slate-650 dark:text-slate-350 text-xs leading-relaxed font-medium">
+          <p>
+            Tailor the application defaults to fit your unique study workflows:
+          </p>
+          <ul className="list-disc pl-4.5 space-y-1.5 font-semibold text-slate-700 dark:text-slate-300">
+            <li><span className="text-[#2E5B70] dark:text-[#38BDF8]">Timer Customization:</span> Configure default focus periods, short break, and long break intervals.</li>
+            <li><span className="text-slate-800 dark:text-slate-100">Profile & Password:</span> Inspect profile details (email, age, gender) and update passwords securely.</li>
+            <li><span className="text-[#E28743] dark:text-[#F0A45D]">Preferences:</span> Toggle notifications and transition sound effects to match your focus environment.</li>
+          </ul>
+          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2 font-medium">
+            🎯 <strong>Where to go:</strong> Use the <strong>Settings</strong> page via the sidebar to match the timer length to your natural focus cycles.
           </p>
         </div>
       )
@@ -133,14 +164,11 @@ export default function GuideModal({ isOpen, onClose }) {
 
   return (
     <Dialog open={isOpen} onClose={handleClose} className="relative z-[9999]">
-      {/* Dark overlay backdrop */}
       <div className="fixed inset-0 bg-slate-900/60 dark:bg-black/75 backdrop-blur-sm transition-opacity" />
 
-      {/* Main outer container */}
       <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
         <DialogPanel className="w-full max-w-lg bg-white/95 dark:bg-[#1E293B]/95 backdrop-blur-md border border-slate-300 dark:border-slate-800 rounded-3xl shadow-2xl p-6 transition-all transform relative flex flex-col max-h-[90vh] text-left">
           
-          {/* Header controls (Skip & Close buttons) */}
           <div className="flex items-center justify-between pb-3.5 border-b border-slate-200 dark:border-slate-800/80">
             <div>
               <DialogTitle className="text-xl font-extrabold text-[#2E5B70] dark:text-slate-100 font-sans tracking-tight leading-tight">
@@ -161,36 +189,34 @@ export default function GuideModal({ isOpen, onClose }) {
             </button>
           </div>
 
-          {/* Scrollable Modal Content */}
           <div className="flex-1 overflow-y-auto py-5 flex flex-col scrollbar-thin">
-            {/* Image Placeholder Layout */}
-            <div className="w-full aspect-[16/9] mb-4 bg-slate-100 dark:bg-slate-900 border-2 border-dashed border-slate-300 dark:border-slate-800 rounded-2xl flex flex-col items-center justify-center text-slate-450 dark:text-slate-500 p-4 transition-colors relative group select-none overflow-hidden shadow-inner">
-              <img
-                src=""
-                alt={pageInfo.altText}
-                className="absolute inset-0 w-full h-full object-cover opacity-0 pointer-events-none"
-              />
-              
-              {/* Nice icon graphic */}
-              <svg className="w-8 h-8 mb-2 opacity-50 text-slate-500 dark:text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.8">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-              </svg>
+            <div className={`w-full aspect-[16/9] mb-4 bg-slate-100 dark:bg-slate-900 border border-slate-250 dark:border-slate-800 rounded-2xl flex flex-col items-center justify-center text-slate-450 dark:text-slate-500 p-4 transition-colors relative group select-none overflow-hidden shadow-inner ${!pageInfo.image ? 'border-2 border-dashed border-slate-300 dark:border-slate-850' : ''}`}>
+              {pageInfo.image ? (
+                <img
+                  src={pageInfo.image}
+                  alt={pageInfo.altText}
+                  className="absolute inset-0 w-full h-full object-contain"
+                />
+              ) : (
+                <>
+                  <svg className="w-8 h-8 mb-2 opacity-50 text-slate-500 dark:text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.8">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                  </svg>
 
-              <span className="text-[11px] font-bold text-center text-slate-500 dark:text-slate-400">
-                [ Screenshot: {pageInfo.placeholderLabel} ]
-              </span>
-              <span className="text-[9px] text-center text-slate-400 dark:text-slate-500 mt-1 font-medium">
-                (Image source will show screenshot when added)
-              </span>
+                  <span className="text-[11px] font-bold text-center text-slate-500 dark:text-slate-400">
+                    [ Screenshot: {pageInfo.placeholderLabel} ]
+                  </span>
+                  <span className="text-[9px] text-center text-slate-400 dark:text-slate-500 mt-1 font-medium">
+                    (Image source will show screenshot when added)
+                  </span>
+                </>
+              )}
             </div>
 
-            {/* Slide description */}
             {pageInfo.description}
           </div>
 
-          {/* Footer Controls (Navigation & Page Indicators) */}
           <div className="flex items-center justify-between border-t border-slate-200 dark:border-slate-800/80 pt-4 mt-auto">
-            {/* Prev button */}
             <div className="w-24 flex">
               {currentPage > 0 && (
                 <button
@@ -206,7 +232,6 @@ export default function GuideModal({ isOpen, onClose }) {
               )}
             </div>
 
-            {/* Pagination Dot Indicators */}
             <div className="flex items-center gap-1.5">
               {pages.map((_, idx) => (
                 <button
@@ -222,7 +247,6 @@ export default function GuideModal({ isOpen, onClose }) {
               ))}
             </div>
 
-            {/* Next or Finish button */}
             <div className="w-28 flex justify-end">
               {currentPage < pages.length - 1 ? (
                 <button
@@ -246,7 +270,6 @@ export default function GuideModal({ isOpen, onClose }) {
               )}
             </div>
           </div>
-
         </DialogPanel>
       </div>
     </Dialog>

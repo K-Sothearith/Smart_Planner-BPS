@@ -158,7 +158,7 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refr
         <div className="grid grid-cols-1 lg:grid-cols-[38%_60%] gap-8 mt-4">
           
           {/* Card 1: Managing Tasks (Left Card) */}
-          <div className="flex flex-col h-150 bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
+          <div className="flex flex-col h-155 bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
             {/* Card Header */}
             <div className="p-6 border-b border-slate-300 dark:border-slate-700 flex justify-between items-center">
               <div>
@@ -285,7 +285,7 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refr
           </div>
 
           {/* Card 2: Managing Study Sessions (Bottom Card) */}
-          <div className="flex flex-col h-150 bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
+          <div className="flex flex-col h-155 bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
             {/* Card Header */}
             <div className="p-6 border-b border-slate-300 dark:border-slate-700 flex justify-between items-center">
               <div>
@@ -311,7 +311,7 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refr
                   <path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
                   <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span>Start Session</span>
+                <span>Add Session</span>
               </button>
             </div>
 
