@@ -6,6 +6,7 @@ import authRoutes from "./routes/authRoutes.js";
 import taskRoutes from "./routes/taskRoutes.js";
 import studySessionRoutes from "./routes/studySessionRoutes.js";
 import analyticsRoutes from "./routes/analyticsRoutes.js";
+import errorHandler from "./middlewares/errorHandler.js";
 
 // Load environment variables
 dotenv.config();
@@ -24,7 +25,7 @@ app.use("/api/study-sessions", studySessionRoutes);
 app.use("/api/analytics", analyticsRoutes);
 
 // Simple Health-Check Route
-app.get("/api/health", async (req, res) => {
+app.get("/api/health", async (req, res, next) => {
   try {
     // Run a simple test query to ensure MySQL is reachable
     const [result] = await pool.query("SELECT 1 + 1 AS result");
@@ -34,13 +35,12 @@ app.get("/api/health", async (req, res) => {
       dbTest: result[0].result === 2 ? "Success" : "Failed",
     });
   } catch (error) {
-    res.status(500).json({
-      status: "ERROR",
-      message: "Server is running, but database connection failed.",
-      error: error.message,
-    });
+    next(error);
   }
 });
+
+// Register the error-handling middleware (MUST be the last middleware registered)
+app.use(errorHandler);
 
 // Start Express Server
 app.listen(PORT, async () => {
