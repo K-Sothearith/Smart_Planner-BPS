@@ -321,6 +321,7 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refr
               {/* Left Side: Mock Session Log Table */}
               <div className="flex-1 flex flex-col gap-4 text-left min-w-[440px] border-r-slate-400 border-r-1">
                 <h3 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Session History</h3>
+                <p className="text-[11px] text-slate-400 dark:text-slate-500 font-semibold -mt-3.5">Click on the study session card to start</p>
                 <div className="flex flex-col gap-2.5">
                   {sessions.length === 0 ? (
                     <div className="p-4 w-105 bg-slate-80 dark:bg-slate-900/10 border border-dashed border-slate-200/40 dark:border-slate-800/30 rounded-xl text-center text-xs text-slate-400 dark:text-slate-650 font-semibold">
