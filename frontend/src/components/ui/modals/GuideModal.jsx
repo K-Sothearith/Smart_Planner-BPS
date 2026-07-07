@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
-import { Manager, Planner, Analytics, Settings, Welcome } from '../../../assets'
+import { Welcome, Dashboard, Manager, Planner, Analytics, Settings } from '../../../assets'
 
 export default function GuideModal({ isOpen, onClose }) {
   const [currentPage, setCurrentPage] = useState(0)
@@ -34,7 +34,7 @@ export default function GuideModal({ isOpen, onClose }) {
       tagline: "Monitor your current workload & cognitive state at a glance.",
       altText: "Dashboard screen showing Mindfulness Meter, Micro-break recommendations, Focus items, and Weekly progress",
       placeholderLabel: "Dashboard Page Layout (Mindfulness Meter & Today's focus)",
-      image: null,
+      image: Dashboard,
       description: (
         <div className="space-y-3.5 text-slate-650 dark:text-slate-350 text-xs leading-relaxed font-medium">
           <p>

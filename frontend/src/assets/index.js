@@ -7,11 +7,12 @@ import SettingIcon from './icons/Setting.svg';
 import SupportIcon from './icons/Support.svg';
 import SignoutIcon from './icons/Signout.svg'
 
+import Welcome from './images/Welcome.png'
+import Dashboard from './images/Dashboard.png'
 import Manager from './images/Manager.png'
 import Planner from './images/Planner.png'
 import Analytics from './images/Analytics.png'
 import Settings from './images/Settings.png'
-import Welcome from './images/Welcome.png'
 
 export {
     MindfulStudyLogo,
@@ -22,11 +23,12 @@ export {
     SettingIcon,
     SupportIcon,
     SignoutIcon,
+    Welcome,
+    Dashboard,
     Manager,
     Planner,
     Analytics,
-    Settings,
-    Welcome
+    Settings
 };
 
 export default {
@@ -38,9 +40,10 @@ export default {
     SettingIcon,
     SupportIcon,
     SignoutIcon,
+    Welcome,
+    Dashboard,
     Manager,
     Planner,
     Analytics,
-    Settings,
-    Welcome
+    Settings
 };
