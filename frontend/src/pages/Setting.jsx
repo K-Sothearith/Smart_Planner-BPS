@@ -72,7 +72,6 @@ export default function Setting({ user, onNavigate, onSignOut, onOpenGuide }) {
   return (
     <SidebarLayout activeView="settings" user={user} onNavigate={onNavigate} onSignOut={onSignOut} onOpenGuide={onOpenGuide}>
       <div className="flex flex-col gap-6 text-left max-w-7xl mx-auto w-full">
-        {/* Page Header */}
         <div>
           <h1 className="flex items-center gap-3 text-3xl font-extrabold tracking-tight text-slate-800 dark:text-slate-100 font-heading">
             <span
@@ -96,10 +95,8 @@ export default function Setting({ user, onNavigate, onSignOut, onOpenGuide }) {
           </p>
         </div>
 
-        {/* 2-Column Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-[37%_60%] gap-8 mt-4">
           
-          {/* Card 1: Timer Preferences (Fixed Height) */}
           <div className="flex flex-col h-150 bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
             <div className="p-6 border-b border-slate-300 dark:border-slate-700">
               <div className="flex items-center gap-2.5">
@@ -113,9 +110,7 @@ export default function Setting({ user, onNavigate, onSignOut, onOpenGuide }) {
               <p className="text-[11px] text-slate-400 dark:text-slate-500 font-semibold mt-1">Configure study blocks and break intervals.</p>
             </div>
 
-            {/* Scrollable Content */}
             <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-5 scrollbar-thin">
-              {/* Pomodoro Focus Time Input */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Focus Period (Minutes)</label>
                 <input
@@ -130,7 +125,6 @@ export default function Setting({ user, onNavigate, onSignOut, onOpenGuide }) {
                 />
               </div>
 
-              {/* Short Break Time Input */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Short Break (Minutes)</label>
                 <input
@@ -145,7 +139,6 @@ export default function Setting({ user, onNavigate, onSignOut, onOpenGuide }) {
                 />
               </div>
 
-              {/* Long Break Time Input */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Long Break (Minutes)</label>
                 <input
@@ -160,7 +153,6 @@ export default function Setting({ user, onNavigate, onSignOut, onOpenGuide }) {
                 />
               </div>
 
-              {/* Target Focus Hours Input */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">Daily Goal (Hours)</label>
                 <input
@@ -177,7 +169,6 @@ export default function Setting({ user, onNavigate, onSignOut, onOpenGuide }) {
             </div>
           </div>
 
-          {/* Card 2: System Settings & Profile (Fixed Height) */}
           <div className="flex flex-col h-150 bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
             <div className="p-6 border-b border-slate-300 dark:border-slate-700">
               <div className="flex items-center gap-2.5">
@@ -192,9 +183,7 @@ export default function Setting({ user, onNavigate, onSignOut, onOpenGuide }) {
               <p className="text-[11px] text-slate-400 dark:text-slate-500 font-semibold mt-1">Configure profile details and notifications.</p>
             </div>
 
-            {/* Scrollable Content */}
             <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-6 scrollbar-thin">
-              {/* Profile sub-section */}
               <div className="flex flex-col gap-4 text-left">
                 <h3 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">User Profile</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -204,7 +193,7 @@ export default function Setting({ user, onNavigate, onSignOut, onOpenGuide }) {
                       type="text"
                       defaultValue={user?.name || 'Student'}
                       disabled
-                      className="h-10 px-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 text-xs font-semibold text-slate-400 dark:text-slate-600 cursor-not-allowed"
+                      className="h-10 px-4 rounded-xl border border-slate-200 dark:border-slate-900 text-xs font-semibold text-slate-400 dark:text-slate-600 cursor-not-allowed"
                     />
                   </div>
                   <div className="flex flex-col gap-1">
@@ -213,7 +202,7 @@ export default function Setting({ user, onNavigate, onSignOut, onOpenGuide }) {
                       type="email"
                       defaultValue={user?.email || 'student@university.edu'}
                       disabled
-                      className="h-10 px-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 text-xs font-semibold text-slate-400 dark:text-slate-600 cursor-not-allowed"
+                      className="h-10 px-4 rounded-xl border border-slate-200 dark:border-slate-900 text-xs font-semibold text-slate-400 dark:text-slate-600 cursor-not-allowed"
                     />
                   </div>
                   <div className="flex flex-col gap-1">
@@ -222,7 +211,7 @@ export default function Setting({ user, onNavigate, onSignOut, onOpenGuide }) {
                       type="text"
                       value={ageDisplay}
                       disabled
-                      className="h-10 px-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 text-xs font-semibold text-slate-400 dark:text-slate-600 cursor-not-allowed"
+                      className="h-10 px-4 rounded-xl border border-slate-200 dark:border-slate-900 text-xs font-semibold text-slate-400 dark:text-slate-600 cursor-not-allowed"
                     />
                   </div>
                   <div className="flex flex-col gap-1">
@@ -231,13 +220,12 @@ export default function Setting({ user, onNavigate, onSignOut, onOpenGuide }) {
                       type="text"
                       value={genderDisplay}
                       disabled
-                      className="h-10 px-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 text-xs font-semibold text-slate-400 dark:text-slate-600 cursor-not-allowed"
+                      className="h-10 px-4 rounded-xl border border-slate-200 dark:border-slate-900 text-xs font-semibold text-slate-400 dark:text-slate-600 cursor-not-allowed"
                     />
                   </div>
                 </div>
               </div>
 
-              {/* Password sub-section */}
               <form className="flex flex-col gap-4 text-left" onSubmit={handlePasswordUpdate}>
                 <h3 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Password</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -287,7 +275,7 @@ export default function Setting({ user, onNavigate, onSignOut, onOpenGuide }) {
                 )}
 
                 {passwordError && (
-                  <div className="text-xs text-rose-500 dark:text-rose-400 font-semibold bg-rose-50 dark:bg-rose-950/20 px-3.5 py-2.5 rounded-lg border border-rose-100 dark:border-rose-900/30">
+                  <div className="text-xs text-rose-500 dark:text-rose-455 font-semibold bg-rose-50 dark:bg-rose-950/20 px-3.5 py-2.5 rounded-lg border border-rose-100 dark:border-rose-900/30">
                     {passwordError}
                   </div>
                 )}
@@ -306,7 +294,6 @@ export default function Setting({ user, onNavigate, onSignOut, onOpenGuide }) {
                 </button>
               </form>
 
-              {/* Notification Toggles */}
               <div className="flex flex-col gap-4.5 text-left">
                 <h3 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Notifications & Sound</h3>
                 <div className="flex items-center justify-between p-3.5 bg-slate-50/50 dark:bg-slate-900/30 rounded-xl border border-slate-100 dark:border-slate-800/30">

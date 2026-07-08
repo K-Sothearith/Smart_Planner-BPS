@@ -10,12 +10,10 @@ const generateToken = (userId) => {
 };
 
 const authController = {
-  // Register a new user
   async register(req, res) {
     try {
       const { name, email, password, age, gender } = req.body;
 
-      // 1. Basic validation
       if (!name || !email || !password) {
         return res.status(400).json({
           status: "ERROR",
@@ -26,7 +24,6 @@ const authController = {
       const trimmedName = name.trim();
       const trimmedEmail = email.trim().toLowerCase();
 
-      // 2. Email format validation
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(trimmedEmail)) {
         return res.status(400).json({
@@ -35,7 +32,6 @@ const authController = {
         });
       }
 
-      // 2b. Email domain validation
       const allowedDomains = ["gmail.com", "outlook.com", "student.cadt.edu.kh", "icloud.com", "yahoo.com"];
       const emailDomain = trimmedEmail.split("@")[1];
       if (!allowedDomains.includes(emailDomain)) {
@@ -45,7 +41,6 @@ const authController = {
         });
       }
 
-      // 3. Password strength check (min 6 characters)
       if (password.length < 6) {
         return res.status(400).json({
           status: "ERROR",
@@ -53,7 +48,6 @@ const authController = {
         });
       }
 
-      // 4. Age validation if provided
       let parsedAge = null;
       if (age !== undefined && age !== null && age !== "") {
         parsedAge = Number(age);
@@ -65,7 +59,6 @@ const authController = {
         }
       }
 
-      // 5. Check if user already exists
       const existingUser = await User.findByEmail(trimmedEmail);
       if (existingUser) {
         return res.status(400).json({
@@ -74,10 +67,8 @@ const authController = {
         });
       }
 
-      // 6. Hash password
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      // 7. Save user in database
       const createdUser = await User.create({
         fullName: trimmedName,
         email: trimmedEmail,
@@ -86,10 +77,8 @@ const authController = {
         gender: gender || null
       });
 
-      // 8. Generate JWT token
       const token = generateToken(createdUser.userId);
 
-      // 9. Send response
       return res.status(201).json({
         status: "SUCCESS",
         message: "Registration successful.",
@@ -111,13 +100,10 @@ const authController = {
     }
   },
 
-
-  // Log in an existing user
   async login(req, res) {
     try {
       const { email, password } = req.body;
 
-      // 1. Basic validation
       if (!email || !password) {
         return res.status(400).json({
           status: "ERROR",
@@ -127,7 +113,6 @@ const authController = {
 
       const trimmedEmail = email.trim().toLowerCase();
 
-      // 2. Find user in database
       const user = await User.findByEmail(trimmedEmail);
       if (!user) {
         return res.status(400).json({
@@ -136,7 +121,6 @@ const authController = {
         });
       }
 
-      // 3. Verify password
       const isPasswordValid = await bcrypt.compare(password, user.password);
       if (!isPasswordValid) {
         return res.status(400).json({
@@ -145,13 +129,9 @@ const authController = {
         });
       }
 
-      // 4. Generate JWT token
       const token = generateToken(user.user_id);
-
-      // Calculate streak dynamically
       const streak = await User.getStreak(user.user_id);
 
-      // 5. Send response matching frontend structure
       return res.status(200).json({
         status: "SUCCESS",
         message: "Login successful.",
@@ -174,7 +154,6 @@ const authController = {
     }
   },
 
-  // Mark the onboarding guide as completed/seen
   async completeGuide(req, res) {
     try {
       const userId = req.user.userId;
@@ -201,7 +180,6 @@ const authController = {
     }
   },
 
-  // Get user's current streak dynamically
   async getStreak(req, res) {
     try {
       const userId = req.user.userId;

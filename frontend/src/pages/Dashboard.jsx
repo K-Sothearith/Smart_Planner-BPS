@@ -23,7 +23,6 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  // Database States
   const [liveIndex, setLiveIndex] = useState(0)
   const [liveScores, setLiveScores] = useState(null)
   const [latestLog, setLatestLog] = useState(null)
@@ -32,13 +31,11 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
   const [tasks, setTasks] = useState([])
   const [sessions, setSessions] = useState([])
 
-  // Breathing Exercise (4-7-8 Breathing Technique) States
   const [breathingActive, setBreathingActive] = useState(false)
-  const [breathPhase, setBreathPhase] = useState('Breathe In') // 'Breathe In' (4s), 'Hold' (7s), 'Breathe Out' (8s)
+  const [breathPhase, setBreathPhase] = useState('Breathe In')
   const [phaseTime, setPhaseTime] = useState(4)
   const [breathCount, setBreathCount] = useState(0)
 
-  // Fetch Dashboard Data
   const fetchDashboardData = async () => {
     try {
       setLoading(true)
@@ -69,14 +66,12 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
     fetchDashboardData()
   }, [])
 
-  // Breathing countdown state machine
   useEffect(() => {
     if (!breathingActive) return
 
     const interval = setInterval(() => {
       setPhaseTime((prev) => {
         if (prev <= 1) {
-          // Switch to next phase
           if (breathPhase === 'Breathe In') {
             setBreathPhase('Hold')
             return 7
@@ -113,21 +108,18 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
     setBreathCount(0)
   }
 
-  // Handle task complete from dashboard
   const handleCompleteTask = async (taskId) => {
     try {
       await taskService.completeTask(taskId)
       if (refreshStreak) {
         await refreshStreak()
       }
-      // Re-fetch everything to update burnout meter, upcoming checklist, and weekly totals
       fetchDashboardData()
     } catch (err) {
       console.error('Failed to complete task:', err)
     }
   }
 
-  // Date Checkers & Formatters
   const isToday = (dateStr) => {
     if (!dateStr) return false
     const today = new Date()
@@ -168,7 +160,6 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
     })
   }
 
-  // Calculate Risk Details
   const getRiskDetails = (idx) => {
     if (idx >= 76) return { label: 'High Burnout Risk', colorClass: 'text-rose-500 dark:text-rose-455', borderClass: 'border-rose-500/20 bg-rose-500/10', circleColor: 'stroke-rose-500' }
     if (idx >= 41) return { label: 'Moderate Fatigue', colorClass: 'text-amber-500 dark:text-amber-455', borderClass: 'border-amber-500/20 bg-amber-500/10', circleColor: 'stroke-amber-500' }
@@ -177,7 +168,6 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
 
   const risk = getRiskDetails(liveIndex)
 
-  // Get dynamic wellness advice based on burnout risk index
   const getRecommendation = (idx) => {
     if (idx >= 76) {
       return {
@@ -211,11 +201,9 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
 
   const rec = getRecommendation(liveIndex)
 
-  // Filter Today's Items
   const todayTasks = tasks.filter(t => t.status === 'Undone' && (isToday(t.due_date) || t.priority === 'High'))
   const todaySessions = sessions.filter(s => isToday(s.start_time))
 
-  // Filter Upcoming Items (Undone tasks due tomorrow or later, sorted by date)
   const upcomingTasks = tasks
     .filter(t => t.status === 'Undone')
     .sort((a, b) => {
@@ -225,7 +213,6 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
     })
     .slice(0, 3)
 
-  // Fetch Weekly Goals
   const latestWeek = weeklyProductivity[0] || { studyHours: 0, focus: 0, breaks: 0, status: 'Healthy' }
   const targetStudyHours = 10
   const weeklyStudyPercentage = Math.min(100, Math.round((latestWeek.studyHours / targetStudyHours) * 100))
@@ -292,7 +279,6 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
                   {/* Gauge indicator & Pulse (Left) */}
                   <div className="flex flex-col items-center justify-center relative shrink-0 select-none">
                     <div className="relative">
-                      {/* Ambient Neon Glow */}
                       <div className={`absolute inset-8 rounded-full blur-md opacity-25 dark:opacity-35 transition-all duration-700 ${liveIndex >= 76
                           ? 'bg-rose-500'
                           : liveIndex >= 41
@@ -301,7 +287,6 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
                         }`} />
 
                       <svg className="w-44 h-44 transform -rotate-90 relative z-10">
-                        {/* Gray track background */}
                         <circle
                           cx="88"
                           cy="88"
@@ -310,7 +295,6 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
                           strokeWidth="11"
                           fill="transparent"
                         />
-                        {/* Active level meter with glow shadow */}
                         <circle
                           cx="88"
                           cy="88"
@@ -324,7 +308,6 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
                           style={{ filter: 'drop-shadow(0 0 3px currentColor)' }}
                         />
                       </svg>
-                      {/* Inside circle text */}
                       <div className="absolute inset-0 flex flex-col items-center justify-center text-center z-20">
                         <span className="text-3.5xl font-black text-slate-800 dark:text-slate-100 transition-all duration-300">
                           {liveIndex}%
@@ -332,7 +315,6 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
                         <p className="text-[9px] uppercase tracking-widest font-black text-slate-400 dark:text-slate-500 mt-0.5">Burnout</p>
                       </div>
                     </div>
-                    {/* Pulsing indicator badge */}
                     <div className="mt-3">
                       <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-[9px] font-black uppercase tracking-wider ${risk.borderClass} ${risk.colorClass}`}>
                         <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
@@ -341,14 +323,10 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
                     </div>
                   </div>
 
-                  {/* Right Column: Dynamic Content Box */}
                   <div className="flex-1 flex flex-col justify-center w-full md:w-auto min-h-0">
                     {latestLog ? (
-                      /* State A: Logged Today - Detailed breakdown and advice */
                       <div className="flex flex-col gap-4 text-left">
-                        {/* Breakdown progress grid */}
                         <div className="grid grid-cols-2 gap-x-4 gap-y-2.5">
-                          {/* 1. Mood Level */}
                           <div className="flex flex-col gap-0.5">
                             <div className="flex justify-between items-center text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                               <span>Mood Load</span>
@@ -362,7 +340,6 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
                             </div>
                           </div>
 
-                          {/* 2. Sleep Quality */}
                           <div className="flex flex-col gap-0.5">
                             <div className="flex justify-between items-center text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                               <span>Sleep Health</span>
@@ -376,7 +353,6 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
                             </div>
                           </div>
 
-                          {/* 3. Screen Exposure */}
                           <div className="flex flex-col gap-0.5">
                             <div className="flex justify-between items-center text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                               <span>Screen Time</span>
@@ -390,7 +366,6 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
                             </div>
                           </div>
 
-                          {/* 4. Combined Workload */}
                           <div className="flex flex-col gap-0.5">
                             <div className="flex justify-between items-center text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                               <span>Workload</span>
@@ -407,7 +382,6 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
                           </div>
                         </div>
 
-                        {/* Recommendation Card */}
                         <div className={`p-3 rounded-xl border flex flex-col gap-1.5 ${rec.boxClass}`}>
                           <div className="flex items-center gap-1.5">
                             <span className="text-xs">💡</span>
@@ -436,7 +410,6 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
                         </div>
                       </div>
                     ) : (
-                      /* State B: Not Logged Yet - Friendly onboarding CTA */
                       <div className="flex flex-col items-start gap-3 p-4 bg-amber-500/5 dark:bg-amber-500/10 border border-amber-500/15 rounded-2xl">
                         <div className="flex items-center gap-2">
                           <div className="w-8 h-8 rounded-lg bg-amber-500/10 dark:bg-amber-500/20 flex items-center justify-center text-amber-500 dark:text-amber-400 shrink-0">
@@ -462,20 +435,16 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
                       </div>
                     )}
                   </div>
-
                 </div>
               </Card>
 
-              {/* Card 2: Micro-break */}
               <Card
                 title="Micro-break"
                 description="GUIDED MINDFULNESS: Take a dynamic 4-7-8 breathing pause to reset focus levels."
                 className="h-[380px]"
               >
                 <div className="flex-1 flex flex-col items-center justify-between gap-4">
-                  {/* Breather Circle container */}
                   <div className="flex-1 flex items-center justify-center relative w-full">
-                    {/* Ring Pulse outer shell (only visible when active) */}
                     {breathingActive && (
                       <div
                         className="absolute w-32 h-32 rounded-full border border-sky-400/30 dark:border-sky-500/30 animate-ping duration-1000 scale-[1.3]"
@@ -485,7 +454,6 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
                       />
                     )}
 
-                    {/* The main breathing spacer bubble */}
                     <div
                       className="w-32 h-32 rounded-full flex flex-col items-center justify-center text-white bg-gradient-to-br from-[#2E5B70] to-[#C1F9FF] dark:from-sky-500 dark:to-indigo-600 shadow-md border border-white relative z-10 transition-transform ease-in-out select-none"
                       style={{
@@ -512,7 +480,6 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
                     </div>
                   </div>
 
-                  {/* Feedback readout */}
                   <div className="text-center">
                     <p className="text-[11px] font-bold text-slate-605 dark:text-slate-350 min-h-4">
                       {breathingActive
@@ -521,7 +488,6 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
                     </p>
                   </div>
 
-                  {/* Breathing Actions */}
                   <div className="flex items-center gap-2 w-full pt-2">
                     {!breathingActive ? (
                       <button
@@ -565,17 +531,14 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
 
             </div>
 
-            {/* Bottom row: Today's Focus, Upcoming, Weekly Goal */}
             <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1.2fr_0.9fr] gap-8">
 
-              {/* Card 3: Today's Focus */}
               <Card
                 title="Today's Focus"
                 description="Prioritized tasks and study sessions mapped for today."
                 className="h-[360px]"
               >
                 <div className="flex-1 overflow-y-auto flex flex-col gap-4.5 scrollbar-thin">
-                  {/* Scheduled Study Sessions */}
                   <div className="flex flex-col gap-2">
                     <span className="text-[10px] text-slate-455 dark:text-slate-500 font-extrabold uppercase tracking-wider text-left border-l-2 border-[#2E5B70] dark:border-sky-500 pl-2">
                       Today's Study Blocks
@@ -592,7 +555,7 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
                             className="p-2.5 bg-slate-50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800/80 rounded-xl flex items-center justify-between gap-3 text-left"
                           >
                             <div className="min-w-0 flex-1">
-                              <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">
+                               <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">
                                 {session.title || 'Untitled Session'}
                               </h4>
                               <p className="text-[9px] text-slate-455 dark:text-slate-500 font-semibold mt-0.5">
@@ -612,7 +575,6 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
                     )}
                   </div>
 
-                  {/* Today's Tasks */}
                   <div className="flex flex-col gap-2">
                     <span className="text-[10px] text-slate-455 dark:text-slate-500 font-extrabold uppercase tracking-wider text-left border-l-2 border-amber-500 pl-2">
                       Today's Urgent Tasks
@@ -650,7 +612,6 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
                 </div>
               </Card>
 
-              {/* Card 4: Upcoming */}
               <Card
                 title="Upcoming"
                 description="Assignments, projects, and deliverables sorted by nearest deadline."
@@ -680,7 +641,7 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
                               <h3 className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">
                                 {task.title}
                               </h3>
-                              <p className="text-[10px] text-slate-450 dark:text-slate-500 font-semibold truncate mt-0.5">
+                              <p className="text-[10px] text-slate-455 dark:text-slate-500 font-semibold truncate mt-0.5">
                                 {task.category || 'General'} • Due {formatRelativeDate(task.due_date)}
                               </p>
                             </div>
@@ -703,14 +664,12 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
                 </div>
               </Card>
 
-              {/* Card 5: Weekly Goal */}
               <Card
                 title="Weekly Goal"
                 description="Compare your study progress to the weekly goal."
                 className="h-[360px]"
               >
                 <div className="flex-1 flex flex-col justify-between gap-4">
-                  {/* Goal progress indicator */}
                   <div className="flex flex-col gap-2.5 text-left">
                     <div className="flex justify-between items-end">
                       <span className="text-xs font-black text-slate-800 dark:text-slate-205">Weekly Target</span>
@@ -719,7 +678,6 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
                       </span>
                     </div>
 
-                    {/* Progress track */}
                     <div className="h-3 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden border border-slate-200 dark:border-slate-800/80">
                       <div
                         className="h-full bg-gradient-to-r from-[#2E5B70] to-[#E28743] dark:from-sky-400 dark:to-indigo-500 transition-all duration-500 rounded-full"
@@ -732,7 +690,6 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
                     </p>
                   </div>
 
-                  {/* Core weekly statistics */}
                   <div className="grid grid-cols-2 gap-3.5 border-t border-slate-200 dark:border-slate-800/80 pt-4.5">
                     <div className="flex flex-col gap-0.5 text-left">
                       <span className="text-[9px] text-slate-400 dark:text-slate-500 font-extrabold uppercase tracking-wider font-heading">Avg Focus</span>

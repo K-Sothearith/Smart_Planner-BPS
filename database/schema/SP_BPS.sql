@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS BurnoutLogs (
   user_id INT NULL,
   mood_level ENUM('Happy', 'Normal', 'Tired', 'Frustrated', 'Stressed') NOT NULL,
   sleep_hours ENUM('Under 4 hours', '5-6 hours', '7-8 hours', 'Above 8 hours') NOT NULL,
-  sleep_quality INT NOT NULL, -- 1 to 5
+  sleep_quality INT NOT NULL,
   screen_time ENUM('Under 4 hours', '5-6 hours', '7-8 hours', 'Above 8 hours') NOT NULL,
   note VARCHAR(100) NULL,
   burnout_index INT NOT NULL,

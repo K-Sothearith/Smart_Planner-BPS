@@ -5,7 +5,6 @@ import analyticsService from '../services/analyticsService.js'
 import Select from '../components/ui/Select'
 
 export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, refreshStreak }) {
-  // Loading and database states
   const [loading, setLoading] = useState(true)
   const [liveIndex, setLiveIndex] = useState(0)
   const [liveScores, setLiveScores] = useState(null)
@@ -14,7 +13,6 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
   const [weeklyProductivity, setWeeklyProductivity] = useState([])
   const [categoryDistribution, setCategoryDistribution] = useState([])
 
-  // Modal open state
   const [isLogModalOpen, setIsLogModalOpen] = useState(false)
   const [selectedMood, setSelectedMood] = useState('Normal')
   const [sleepHours, setSleepHours] = useState('7-8 hours')
@@ -23,7 +21,6 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
   const [note, setNote] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
-  // Load analytics data from backend on mount
   const fetchAnalytics = async () => {
     try {
       setLoading(true)
@@ -45,7 +42,6 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
     fetchAnalytics()
   }, [])
 
-  // Handle logging check-in submission
   const handleSubmitLog = async (e) => {
     e.preventDefault()
     try {
@@ -57,7 +53,6 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
         screenTime,
         note
       })
-      // Reset form fields
       setNote('')
       setSelectedMood('Normal')
       setSleepHours('7-8 hours')
@@ -65,7 +60,6 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
       setScreenTime('5-6 hours')
       setIsLogModalOpen(false)
       
-      // Refresh current states
       await fetchAnalytics()
       if (refreshStreak) {
         refreshStreak()
@@ -77,14 +71,12 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
     }
   }
 
-  // Get index category badge label and colors
   const getRiskDetails = (idx) => {
     if (idx >= 76) return { label: 'High Burnout Risk', borderClass: 'border-rose-500/20 text-rose-600 dark:text-rose-400 bg-rose-500/10', circleColor: 'stroke-rose-500' };
     if (idx >= 41) return { label: 'Moderate Fatigue', borderClass: 'border-amber-500/20 text-amber-600 dark:text-amber-400 bg-amber-500/10', circleColor: 'stroke-amber-500' };
     return { label: 'Healthy Balance', borderClass: 'border-emerald-500/20 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10', circleColor: 'stroke-emerald-500' };
   };
 
-  // Get dynamic recommendations text
   const getRecommendation = (idx) => {
     if (idx >= 76) {
       return {
@@ -141,14 +133,12 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
   const totalHoursOverall = Math.round(weeklyProductivity.reduce((sum, w) => sum + w.studyHours, 0) * 10) / 10;
   const totalBreaksOverall = weeklyProductivity.reduce((sum, w) => sum + w.breaks, 0);
 
-  // SVG Circular progress math
   const strokeDasharray = 251.2;
   const strokeDashoffset = 251.2 - (251.2 * liveIndex) / 100;
 
   return (
     <SidebarLayout activeView="analytics" user={user} onNavigate={onNavigate} onSignOut={onSignOut} onOpenGuide={onOpenGuide}>
       <div className="flex flex-col gap-6 text-left max-w-7xl mx-auto w-full">
-        {/* Page Header */}
         <div>
           <h1 className="flex items-center gap-3 text-3xl font-extrabold tracking-tight text-slate-800 dark:text-slate-100 font-heading">
             <span
@@ -172,12 +162,9 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
           </p>
         </div>
 
-        {/* 2-Column Symmetric Grid Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4">
           
-          {/* COLUMN 1 */}
           <div className="flex flex-col gap-8 h-[872px]">
-            {/* Card 1: Productivity & Workload (Fixed Height: h-[420px]) */}
             <div className="flex flex-col h-[420px] bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
               <div className="p-6 border-b border-slate-300 dark:border-slate-700">
                 <div className="flex items-center gap-2.5">
@@ -191,9 +178,7 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
                 <p className="text-[11px] text-slate-400 dark:text-slate-500 font-semibold mt-1">Track your total study hours, focus levels, and completed tasks to monitor academic performance.</p>
               </div>
 
-              {/* Scrollable Content */}
               <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-5 scrollbar-thin">
-                {/* Highlight summary widgets */}
                 <div className="grid grid-cols-3 gap-3">
                   <div className="p-3 bg-slate-50/50 dark:bg-slate-900/30 rounded-xl border border-slate-100 dark:border-slate-800/40 text-center">
                     <span className="text-[9px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Avg Focus</span>
@@ -233,7 +218,7 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
                               ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
                               : stat.status === "Mild Fatigue"
                               ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
-                              : "bg-rose-500/10 text-rose-600 dark:text-rose-450 border-rose-500/20"
+                              : "bg-rose-500/10 text-rose-600 dark:text-rose-455 border-rose-500/20"
                           }`}>
                             {stat.status}
                           </span>
@@ -245,8 +230,7 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
               </div>
             </div>
 
-            {/* Card 2: Study Distribution & Balance (Fixed Height: h-[420px]) */}
-            <div className="flex flex-col h-[420px] bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
+            <div className="flex-col h-[420px] bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
               <div className="p-6 border-b border-slate-300 dark:border-slate-700">
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-lg bg-indigo-500/10 dark:bg-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
@@ -299,9 +283,7 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
             </div>
           </div>
 
-          {/* COLUMN 2 */}
           <div className="flex flex-col gap-8">
-            {/* Card 3: Burnout-Risk Analysis (Fixed Height: h-[872px]) */}
             <div className="flex flex-col h-[872px] bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
               <div className="p-6 border-b border-slate-300 dark:border-slate-700 flex justify-between items-center gap-4">
                 <div className="text-left">
@@ -316,7 +298,6 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
                   <p className="text-[11px] text-slate-400 dark:text-slate-500 font-semibold mt-1">Assess burnout risk to prevent academic overload.</p>
                 </div>
 
-                {/* Burnout-log Button */}
                 <button 
                   onClick={() => setIsLogModalOpen(true)}
                   className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-white bg-[#2E5B70] dark:bg-sky-500 hover:bg-[#1f3f50] dark:hover:bg-sky-600 rounded-xl transition-all duration-200 active:scale-95 shadow-sm shadow-[#2E5B70]/10 shrink-0 cursor-pointer"
@@ -328,11 +309,8 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
                 </button>
               </div>
               
-              {/* Content */}
               <div className="flex-1 p-6 flex flex-col gap-6 overflow-y-auto scrollbar-thin">
-                {/* Burnout Risk Ring Meter & Alert row */}
                 <div className="flex flex-col sm:flex-row gap-4 items-center bg-slate-50/50 dark:bg-slate-900/30 rounded-2xl border border-slate-100 dark:border-slate-800/40 p-4">
-                  {/* SVG Ring (Left) */}
                   <div className="relative w-28 h-28 flex items-center justify-center shrink-0">
                     <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
                       <circle cx="50" cy="50" r="40" className="stroke-slate-200 dark:stroke-slate-800" strokeWidth="8" fill="transparent" />
@@ -346,7 +324,6 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
                       </span>
                     </div>
                   </div>
-                  {/* Alert / Recommendation (Right) */}
                   <div className="flex-1 text-left space-y-1">
                     <h4 className={`text-[11px] font-extrabold uppercase tracking-wider ${rec.titleClass}`}>{rec.title}</h4>
                     <p className="text-xs text-slate-650 dark:text-slate-350 leading-relaxed font-medium">
@@ -355,7 +332,6 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
                   </div>
                 </div>
 
-                {/* Sub-metrics breakdown grid */}
                 <div className="grid grid-cols-2 gap-4 bg-slate-50/20 dark:bg-slate-900/10 p-4 rounded-xl border border-slate-100 dark:border-slate-800/20">
                   <div className="space-y-1">
                     <div className="flex justify-between text-[10px] font-bold text-slate-500 dark:text-slate-400">
@@ -395,7 +371,6 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
                   </div>
                 </div>
 
-                {/* Recent Burnout logs list */}
                 <div className="flex flex-col gap-2.5">
                   <h3 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider text-left">Burnout Logs & Mood Entries</h3>
                   <div className="flex flex-col gap-2.5 max-h-100 overflow-y-auto scrollbar-thin pr-1">
@@ -441,12 +416,9 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
         </div>
       </div>
 
-      {/* Burnout-log Form Popup Modal */}
       {isLogModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-all duration-300">
-          {/* Modal Card */}
           <div className="w-full max-w-lg bg-white/95 dark:bg-[#1E293B]/95 backdrop-blur-lg border border-slate-200 dark:border-slate-850 rounded-3xl shadow-2xl p-6 flex flex-col gap-5 text-left transform scale-100 transition-all duration-300">
-            {/* Header */}
             <div className="flex justify-between items-center pb-3 border-b border-slate-200 dark:border-slate-700/60">
               <div>
                 <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 font-sans">Submit Burnout Check-in</h3>
@@ -462,9 +434,7 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
               </button>
             </div>
 
-            {/* Form */}
             <form onSubmit={handleSubmitLog} className="flex flex-col gap-4">
-              {/* Mood (30% weight) */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">How is your Mood?</label>
                 <div className="grid grid-cols-5 gap-2 mt-1">
@@ -492,7 +462,6 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
                 </div>
               </div>
 
-              {/* Row 2: Sleep Hours & Sleep Quality */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Sleep Hours</label>
@@ -526,7 +495,6 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
                 </div>
               </div>
 
-              {/* Row 3: Screen Time & Pending Tasks */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Screen Time</label>
@@ -551,7 +519,6 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
                 </div>
               </div>
 
-              {/* Row 4: Overdue Tasks & Missed Study Sessions */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Overdue Tasks</label>
@@ -568,7 +535,6 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
                 </div>
               </div>
 
-              {/* Note input */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Check-in Note (Optional)</label>
                 <input
@@ -581,7 +547,6 @@ export default function Analytics({ user, onNavigate, onSignOut, onOpenGuide, re
                 />
               </div>
 
-              {/* Submit */}
               <div className="flex gap-3 justify-end mt-4 pt-3 border-t border-slate-200 dark:border-slate-700/60">
                 <button
                   type="button"

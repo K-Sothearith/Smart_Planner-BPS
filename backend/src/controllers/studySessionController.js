@@ -1,7 +1,6 @@
 import StudySession from "../models/StudySession.js";
 
 const studySessionController = {
-  // Create a new study session
   async createSession(req, res) {
     try {
       const userId = req.user.userId;
@@ -23,11 +22,9 @@ const studySessionController = {
         });
       }
 
-      // Calculate end time
       const start = new Date(startTime);
       const end = new Date(start.getTime() + durationMinutes * 60 * 1000);
 
-      // Format datetime strings for MySQL (YYYY-MM-DD HH:MM:SS)
       const formatMySQLDateTime = (date) => {
         const pad = (num) => String(num).padStart(2, '0');
         const yyyy = date.getFullYear();
@@ -70,7 +67,6 @@ const studySessionController = {
     }
   },
 
-  // Get all study sessions for the logged-in user
   async getSessions(req, res) {
     try {
       const userId = req.user.userId;
@@ -89,7 +85,6 @@ const studySessionController = {
     }
   },
 
-  // Update study session
   async updateSession(req, res) {
     try {
       const userId = req.user.userId;
@@ -161,7 +156,6 @@ const studySessionController = {
     }
   },
 
-  // Delete a study session
   async deleteSession(req, res) {
     try {
       const userId = req.user.userId;

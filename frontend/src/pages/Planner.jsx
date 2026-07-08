@@ -10,7 +10,6 @@ export default function Planner({ user, onNavigate, onSignOut, onOpenGuide, refr
   const [sessions, setSessions] = useState([])
   const [loading, setLoading] = useState(true)
   
-  // Calendar states
   const [currentDate, setCurrentDate] = useState(new Date())
   const [selectedDateStr, setSelectedDateStr] = useState(
     `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(new Date().getDate()).padStart(2, '0')}`
@@ -59,11 +58,9 @@ export default function Planner({ user, onNavigate, onSignOut, onOpenGuide, refr
     setCurrentDate(new Date(currentYear, currentMonth + 1, 1))
   }
 
-  // Calendar calculations
   const getDaysInMonth = (year, month) => new Date(year, month + 1, 0).getDate()
   const getStartDayIndex = (year, month) => {
     const day = new Date(year, month, 1).getDay()
-    // Monday is index 0, Sunday is index 6
     return (day + 6) % 7
   }
 
@@ -71,7 +68,6 @@ export default function Planner({ user, onNavigate, onSignOut, onOpenGuide, refr
   const daysInCurrentMonth = getDaysInMonth(currentYear, currentMonth)
   const startDay = getStartDayIndex(currentYear, currentMonth)
 
-  // Previous month padding days
   const prevMonthYear = currentMonth === 0 ? currentYear - 1 : currentYear
   const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1
   const daysInPrevMonth = getDaysInMonth(prevMonthYear, prevMonth)
@@ -84,7 +80,6 @@ export default function Planner({ user, onNavigate, onSignOut, onOpenGuide, refr
     })
   }
 
-  // Current month days
   for (let i = 1; i <= daysInCurrentMonth; i++) {
     days.push({
       dayNum: i,
@@ -94,7 +89,6 @@ export default function Planner({ user, onNavigate, onSignOut, onOpenGuide, refr
     })
   }
 
-  // Next month padding days to fill 42 grid cells
   const remainingCells = 42 - days.length
   const nextMonthYear = currentMonth === 11 ? currentYear + 1 : currentYear
   const nextMonth = currentMonth === 11 ? 0 : currentMonth + 1
@@ -107,7 +101,6 @@ export default function Planner({ user, onNavigate, onSignOut, onOpenGuide, refr
     })
   }
 
-  // Date strings formatted for matching
   const getCellDateStr = (year, month, day) => {
     const y = year
     const m = String(month + 1).padStart(2, '0')
@@ -123,7 +116,6 @@ export default function Planner({ user, onNavigate, onSignOut, onOpenGuide, refr
     return sessions.filter(s => s.start_time && String(s.start_time).substring(0, 10) === dateStr)
   }
 
-  // Formatted selected date header
   const getSelectedDateTitle = () => {
     if (!selectedDateStr) return 'Select a Day'
     const parts = selectedDateStr.split('-')
@@ -134,17 +126,15 @@ export default function Planner({ user, onNavigate, onSignOut, onOpenGuide, refr
   const selectedDateTasks = getTasksForDate(selectedDateStr)
   const selectedDateSessions = getSessionsForDate(selectedDateStr)
 
-  // Merge and sort chronological backlog (Card 2)
   const upcomingItems = []
   
-  // Undone tasks with deadlines
   tasks.forEach(t => {
     if (t.due_date && t.status !== 'Done') {
       upcomingItems.push({
         id: `task-${t.task_id}`,
         type: 'task',
         title: t.title,
-        date: new Date(String(t.due_date).substring(0, 10) + 'T23:59:59'), // End of day local
+        date: new Date(String(t.due_date).substring(0, 10) + 'T23:59:59'),
         priority: t.priority,
         category: t.category,
         status: t.status,
@@ -153,7 +143,6 @@ export default function Planner({ user, onNavigate, onSignOut, onOpenGuide, refr
     }
   })
 
-  // Future or today's study sessions
   sessions.forEach(s => {
     if (s.start_time) {
       const sDate = new Date(s.start_time)
@@ -173,7 +162,6 @@ export default function Planner({ user, onNavigate, onSignOut, onOpenGuide, refr
     }
   })
 
-  // Sort ascending (closest date first)
   upcomingItems.sort((a, b) => a.date - b.date)
 
   const monthName = new Date(currentYear, currentMonth).toLocaleString('default', { month: 'long' })
@@ -181,7 +169,6 @@ export default function Planner({ user, onNavigate, onSignOut, onOpenGuide, refr
   return (
     <SidebarLayout activeView="planner" user={user} onNavigate={onNavigate} onSignOut={onSignOut} onOpenGuide={onOpenGuide}>
       <div className="flex flex-col gap-6 text-left max-w-7xl mx-auto w-full">
-        {/* Page Header */}
         <div>
           <h1 className="flex items-center gap-3 text-3xl font-extrabold tracking-tight text-slate-800 dark:text-slate-100 font-heading">
             <span
@@ -205,13 +192,10 @@ export default function Planner({ user, onNavigate, onSignOut, onOpenGuide, refr
           </p>
         </div>
 
-        {/* 2-Column Responsive Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-[68%_30%] gap-6 mt-2">
           
-          {/* Column 1: Month Calendar and Day Details */}
           <div className="flex flex-col gap-6">
             
-            {/* Card 1: Month Calendar (Large Card) */}
             <div className="flex flex-col bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
               {/* Calendar Header */}
               <div className="p-5 border-b border-slate-300 dark:border-slate-700 flex justify-between items-center">
@@ -252,9 +236,7 @@ export default function Planner({ user, onNavigate, onSignOut, onOpenGuide, refr
                 </div>
               </div>
 
-              {/* Calendar Grid Container */}
               <div className="p-4 flex flex-col gap-1.5 select-none">
-                {/* Weekday Labels */}
                 <div className="grid grid-cols-7 gap-1 text-center">
                   {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => (
                     <span key={day} className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider py-1">
@@ -263,7 +245,6 @@ export default function Planner({ user, onNavigate, onSignOut, onOpenGuide, refr
                   ))}
                 </div>
 
-                {/* Day Grid */}
                 <div className="grid grid-cols-7 gap-1.5">
                   {days.map((dayData, index) => {
                     const cellDateStr = getCellDateStr(dayData.year, dayData.month, dayData.dayNum)
@@ -280,7 +261,7 @@ export default function Planner({ user, onNavigate, onSignOut, onOpenGuide, refr
                         onClick={() => setSelectedDateStr(cellDateStr)}
                         className={`group relative min-h-16 md:min-h-20 p-1.5 rounded-xl border flex flex-col text-left transition-all duration-200 cursor-pointer hover:border-indigo-400/50 dark:hover:border-indigo-500/30 ${
                           dayData.isCurrentMonth
-                            ? 'bg-slate-50/20 dark:bg-[#0F172A]/10 border-slate-200/60 dark:border-slate-800/40 text-slate-700 dark:text-slate-350'
+                            ? 'bg-slate-50/20 dark:bg-[#0F172A]/10 border-slate-200/60 dark:border-slate-800/40 text-slate-700 dark:text-slate-355'
                             : 'bg-slate-100/10 dark:bg-[#0F172A]/5 border-slate-100 dark:border-slate-900/10 text-slate-350 dark:text-slate-650'
                         } ${
                           isSelected
@@ -292,7 +273,6 @@ export default function Planner({ user, onNavigate, onSignOut, onOpenGuide, refr
                             : ''
                         }`}
                       >
-                        {/* Day Number and Add Button */}
                         <div className="flex justify-between items-center mb-1">
                           <span className={`text-[10px] md:text-xs font-bold px-1 py-0.5 rounded-md ${
                             isToday ? 'bg-emerald-500 text-white dark:bg-emerald-600' : ''
@@ -300,7 +280,6 @@ export default function Planner({ user, onNavigate, onSignOut, onOpenGuide, refr
                             {dayData.dayNum}
                           </span>
                           
-                          {/* Quick "+" scheduling button */}
                           <button
                             type="button"
                             onClick={(e) => {
@@ -315,7 +294,6 @@ export default function Planner({ user, onNavigate, onSignOut, onOpenGuide, refr
                           </button>
                         </div>
 
-                        {/* Event Tags */}
                         <div className="flex flex-col gap-1 overflow-hidden mt-0.5">
                           {dayTasks.map(t => (
                             <div
@@ -347,7 +325,6 @@ export default function Planner({ user, onNavigate, onSignOut, onOpenGuide, refr
               </div>
             </div>
 
-            {/* Selected Date Agenda Details */}
             <div className="bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm p-6 text-left transition-all duration-300">
               <div className="flex justify-between items-start border-b border-slate-300 dark:border-slate-700/80 pb-4 mb-4">
                 <div>
@@ -373,7 +350,6 @@ export default function Planner({ user, onNavigate, onSignOut, onOpenGuide, refr
                 </button>
               </div>
 
-              {/* Items List */}
               <div className="flex flex-col gap-3">
                 {selectedDateTasks.length === 0 && selectedDateSessions.length === 0 ? (
                   <div className="text-center py-6 flex flex-col items-center justify-center gap-2">
@@ -382,7 +358,6 @@ export default function Planner({ user, onNavigate, onSignOut, onOpenGuide, refr
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Tasks column */}
                     <div className="flex flex-col gap-2.5">
                       <h4 className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
                         <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
@@ -401,7 +376,7 @@ export default function Planner({ user, onNavigate, onSignOut, onOpenGuide, refr
                               onChange={() => handleCompleteTask(t.task_id)}
                               className="w-4 h-4 rounded border-slate-300 text-[#2E5B70] focus:ring-[#2E5B70] dark:bg-[#0F172A] dark:border-slate-800 cursor-pointer disabled:cursor-not-allowed shrink-0"
                             />
-                            <span className={`font-bold text-slate-700 dark:text-slate-300 truncate ${t.status === 'Done' ? 'line-through text-slate-400 dark:text-slate-650' : ''}`}>
+                            <span className={`font-bold text-slate-700 dark:text-slate-300 truncate ${t.status === 'Done' ? 'line-through text-slate-400 dark:text-slate-655' : ''}`}>
                               {t.title}
                             </span>
                           </div>
@@ -418,7 +393,6 @@ export default function Planner({ user, onNavigate, onSignOut, onOpenGuide, refr
                       ))}
                     </div>
 
-                    {/* Sessions column */}
                     <div className="flex flex-col gap-2.5">
                       <h4 className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
                         <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
@@ -452,11 +426,10 @@ export default function Planner({ user, onNavigate, onSignOut, onOpenGuide, refr
             </div>
           </div>
 
-          {/* Card 2: Upcoming Deadlines & Sessions (Chronological Backlog) */}
           <div className="flex flex-col h-230 lg:h-auto bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300 max-h-[910px]">
             <div className="p-5 border-b border-slate-300 dark:border-slate-700">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-rose-500/10 dark:bg-rose-500/20 flex items-center justify-center text-rose-600 dark:text-rose-400">
+                <div className="w-8 h-8 rounded-lg bg-rose-500/10 dark:bg-rose-500/20 flex items-center justify-center text-rose-600 dark:text-rose-455">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                   </svg>
@@ -468,7 +441,6 @@ export default function Planner({ user, onNavigate, onSignOut, onOpenGuide, refr
               </p>
             </div>
 
-            {/* Scrollable Content */}
             <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-3.5 scrollbar-thin">
               {loading ? (
                 <div className="text-center py-6 text-xs text-slate-400 font-semibold">Loading agenda...</div>
@@ -497,7 +469,6 @@ export default function Planner({ user, onNavigate, onSignOut, onOpenGuide, refr
                           : 'bg-indigo-500/5 border-indigo-500/10 hover:bg-indigo-500/10'
                       }`}
                     >
-                      {/* Item Header */}
                       <div className="flex justify-between items-start gap-2.5">
                         <div className="flex items-center gap-2 min-w-0">
                           <span className="text-sm shrink-0">
@@ -517,7 +488,6 @@ export default function Planner({ user, onNavigate, onSignOut, onOpenGuide, refr
                         </span>
                       </div>
 
-                      {/* Item Details */}
                       <div className="flex justify-between items-center text-[10px] text-slate-400 dark:text-slate-500 font-semibold border-t border-slate-200/40 dark:border-slate-800/40 pt-2">
                         <div className="flex flex-col gap-0.5">
                           <span>
@@ -528,11 +498,9 @@ export default function Planner({ user, onNavigate, onSignOut, onOpenGuide, refr
                           </span>
                         </div>
 
-                        {/* Extra Metadata */}
                         <div>
                           {isTask ? (
                             <div className="flex items-center gap-1.5">
-                              {/* Complete Task checkbox */}
                               <input
                                 type="checkbox"
                                 checked={item.status === 'Done'}
@@ -552,7 +520,7 @@ export default function Planner({ user, onNavigate, onSignOut, onOpenGuide, refr
                               </span>
                             </div>
                           ) : (
-                            <span className="text-slate-600 dark:text-slate-350 font-bold">
+                            <span className="text-slate-600 dark:text-slate-355 font-bold">
                               {item.duration} mins
                             </span>
                           )}
@@ -568,7 +536,6 @@ export default function Planner({ user, onNavigate, onSignOut, onOpenGuide, refr
         </div>
       </div>
 
-      {/* New Study Session Modal */}
       <NewSessionModal
         isOpen={isNewSessionOpen}
         onClose={() => {

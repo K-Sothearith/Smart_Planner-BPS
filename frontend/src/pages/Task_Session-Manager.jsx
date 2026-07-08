@@ -130,7 +130,6 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refr
   return (
     <SidebarLayout activeView="manager" user={user} onNavigate={onNavigate} onSignOut={onSignOut} onOpenGuide={onOpenGuide}>
       <div className="flex flex-col gap-6 text-left max-w-7xl mx-auto w-full">
-        {/* Page Header */}
         <div>
           <h1 className="flex items-center gap-3 text-3xl font-extrabold tracking-tight text-slate-800 dark:text-slate-100 font-heading">
             <span
@@ -154,12 +153,9 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refr
           </p>
         </div>
 
-        {/* 2-Column Grid Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-[38%_60%] gap-8 mt-4">
           
-          {/* Card 1: Managing Tasks (Left Card) */}
           <div className="flex flex-col h-155 bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
-            {/* Card Header */}
             <div className="p-6 border-b border-slate-300 dark:border-slate-700 flex justify-between items-center">
               <div>
                 <div className="flex items-center gap-2.5">
@@ -187,7 +183,6 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refr
               </button>
             </div>
 
-            {/* Scrollable Content */}
             <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-3 scrollbar-thin">
               {loading ? (
                 <div className="text-center py-6 text-xs text-slate-400 font-semibold">Loading tasks...</div>
@@ -211,13 +206,12 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refr
                         className="w-4.5 h-4.5 rounded border-slate-300 text-[#2E5B70] focus:ring-[#2E5B70] dark:bg-[#0F172A] dark:border-slate-800 cursor-pointer disabled:cursor-not-allowed"
                       />
                       <div className="text-left min-w-0 flex-1">
-                        <h3 className={`text-xs font-bold text-slate-800 dark:text-slate-200 truncate ${task.status === 'Done' ? 'line-through text-slate-450 dark:text-slate-600' : ''}`}>{task.title}</h3>
+                        <h3 className={`text-xs font-bold text-slate-800 dark:text-slate-200 truncate ${task.status === 'Done' ? 'line-through text-slate-455 dark:text-slate-600' : ''}`}>{task.title}</h3>
                         <p className="text-[10px] text-slate-450 dark:text-slate-500 font-semibold truncate mt-0.5">{task.category || 'General'} • Due {task.due_date ? new Date(task.due_date).toLocaleDateString() : 'No due date'}</p>
                       </div>
                     </div>
                     
                     <div className="flex items-center gap-4 shrink-0">
-                      {/* Status Badges */}
                       <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2">
                         <span className={`text-[9px] font-extrabold uppercase px-2 py-0.5 rounded border ${
                           task.priority === 'High'
@@ -233,14 +227,13 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refr
                           task.status === 'Done'
                             ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
                             : isPastDueOrToday(task.due_date)
-                            ? 'bg-rose-500/10 text-rose-650 dark:text-rose-450 border-rose-500/20'
+                            ? 'bg-rose-500/10 text-rose-650 dark:text-rose-455 border-rose-500/20'
                             : 'bg-slate-105 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700'
                         }`}>
                           {task.status === 'Done' ? 'Done' : (isPastDueOrToday(task.due_date) ? 'Overdue' : 'Undone')}
                         </span>
                       </div>
 
-                      {/* Edit / Delete Buttons */}
                       <div className="flex flex-col gap-1.5 border-l border-slate-200 dark:border-slate-800/80 pl-3">
                         <button
                           type="button"
@@ -284,9 +277,7 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refr
             </div>
           </div>
 
-          {/* Card 2: Managing Study Sessions (Bottom Card) */}
           <div className="flex flex-col h-155 bg-white/80 dark:bg-[#1E293B]/60 backdrop-blur-md border border-slate-400 dark:border-slate-700 rounded-2xl shadow-sm shadow-[#2E5B70]/5 transition-all duration-300">
-            {/* Card Header */}
             <div className="p-6 border-b border-slate-300 dark:border-slate-700 flex justify-between items-center">
               <div>
                 <div className="flex items-center gap-2.5">
@@ -315,10 +306,8 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refr
               </button>
             </div>
 
-            {/* Scrollable Content */}
             <div className="flex-1 overflow-y-auto p-6 flex flex-col md:flex-row gap-8 scrollbar-thin">
               
-              {/* Left Side: Mock Session Log Table */}
               <div className="flex-1 flex flex-col gap-4 text-left min-w-[440px] border-r-slate-400 border-r-1">
                 <h3 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Session History</h3>
                 <p className="text-[11px] text-slate-400 dark:text-slate-500 font-semibold -mt-3.5">Click on the study session card to start</p>
@@ -355,7 +344,7 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refr
                             <span className="font-bold text-slate-700 dark:text-slate-300 truncate">
                               {session.title || session.task_title || 'Focused Study'}
                             </span>
-                            <span className="text-[10px] text-slate-450 dark:text-slate-400 font-medium">
+                            <span className="text-[10px] text-slate-455 dark:text-slate-400 font-medium">
                               {session.focus_technique || 'Pomodoro'} • {session.duration_minutes} mins
                             </span>
                             <span className="text-[9px] text-slate-400 dark:text-slate-500 font-semibold">
@@ -373,13 +362,12 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refr
                               isCompleted
                                 ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
                                 : (isLate
-                                    ? 'bg-rose-500/10 text-rose-600 dark:text-rose-450 border-rose-500/20'
-                                    : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20')
+                                    ? 'bg-rose-500/10 text-rose-600 dark:text-rose-455 border-rose-500/20'
+                                    : 'bg-amber-500/10 text-amber-605 dark:text-amber-400 border-amber-500/20')
                             }`}>
                               {isCompleted ? 'Completed' : (isLate ? 'Late' : 'Scheduled')}
                             </span>
                             <div className="flex items-start justify-between">
-                              {/* Edit / Delete Buttons */}
                               <div className="flex flex-col gap-1.5 border-l border-slate-200 dark:border-slate-800/80 pl-3">
                                 <button
                                   type="button"
@@ -419,7 +407,7 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refr
                                     setSessionToDelete(session)
                                     setIsDeleteSessionOpen(true)
                                   }}
-                                  className="text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 transition-colors p-0.5 cursor-pointer"
+                                  className="text-slate-400 hover:text-rose-500 dark:hover:text-rose-450 transition-colors p-0.5 cursor-pointer"
                                   title="Delete Session"
                                 >
                                   <svg
@@ -446,7 +434,6 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refr
                 </div>
               </div>
 
-              {/* Right Side: Mock Quick Config Controls */}
               <div className="flex-1 flex flex-col gap-4 text-left">
                 <h3 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Timer Settings</h3>
                 <div className="grid grid-cols-1 gap-3.5">
@@ -476,7 +463,6 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refr
         </div>
       </div>
 
-      {/* Page Local Modals */}
       <NewTaskModal
         isOpen={isNewTaskOpen}
         onClose={() => setIsNewTaskOpen(false)}

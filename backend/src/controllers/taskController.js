@@ -1,7 +1,6 @@
 import Task from "../models/Task.js";
 
 const taskController = {
-    //create new task
     async createTask(req, res) {
         try{
             const userId = req.user.userId;
@@ -44,7 +43,6 @@ const taskController = {
         }
     },
 
-    //Get all tasks of the logged in user
     async getTasks(req, res) {
         try{
             const userId = req.user.userId;
@@ -66,7 +64,6 @@ const taskController = {
         }
     },
     
-    //Get one task by Id
     async getTaskById(req, res) {
         try{
             const task = await Task.findById(req.params.id);
@@ -92,7 +89,6 @@ const taskController = {
         }
     },
 
-    //update a task
     async updateTask(req, res){
         try{
             await Task.update(req.params.id, req.body);
@@ -112,7 +108,6 @@ const taskController = {
         }
     },
     
-    //Delete a task
     async deleteTask(req, res){
         try{
             await Task.delete(req.params.id);
@@ -132,7 +127,6 @@ const taskController = {
         }
     },
 
-    //Set task as completed (setTaskDone)
     async completeTask(req, res){
         try{
             const taskId = req.params.id;
