@@ -319,8 +319,9 @@ export default function Manager({ user, onNavigate, onSignOut, onOpenGuide, refr
                   ) : (
                     sessions.map((session) => {
                       const isCompleted = session.is_completed === 1 || session.is_completed === true;
-                      const isLate = !isCompleted && new Date(session.start_time) < new Date();
-                      const formattedDate = new Date(session.start_time).toLocaleDateString(undefined, {
+                      const safeStartTime = new Date(typeof session.start_time === 'string' ? session.start_time.replace(' ', 'T') : session.start_time);
+                      const isLate = !isCompleted && safeStartTime < new Date();
+                      const formattedDate = safeStartTime.toLocaleDateString(undefined, {
                         month: 'short',
                         day: 'numeric',
                         hour: '2-digit',

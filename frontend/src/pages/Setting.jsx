@@ -117,9 +117,18 @@ export default function Setting({ user, onNavigate, onSignOut, onOpenGuide }) {
                   type="number"
                   value={focusPeriod}
                   onChange={(e) => {
-                    const val = Math.max(1, Number(e.target.value))
-                    setFocusPeriod(val)
-                    localStorage.setItem('sp:focus_period', val)
+                    const raw = e.target.value
+                    setFocusPeriod(raw === '' ? '' : Number(raw))
+                    if (raw !== '') {
+                      localStorage.setItem('sp:focus_period', raw)
+                    }
+                  }}
+                  onBlur={() => {
+                    const val = Number(focusPeriod)
+                    if (isNaN(val) || val < 1) {
+                      setFocusPeriod(1)
+                      localStorage.setItem('sp:focus_period', '1')
+                    }
                   }}
                   className="w-full h-10 px-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-[#F8FAFC] dark:bg-[#0F172A] text-xs font-semibold text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-[#2E5B70] dark:focus:ring-sky-500/50"
                 />
@@ -131,9 +140,18 @@ export default function Setting({ user, onNavigate, onSignOut, onOpenGuide }) {
                   type="number"
                   value={shortBreak}
                   onChange={(e) => {
-                    const val = Math.max(0, Number(e.target.value))
-                    setShortBreak(val)
-                    localStorage.setItem('sp:short_break', val)
+                    const raw = e.target.value
+                    setShortBreak(raw === '' ? '' : Number(raw))
+                    if (raw !== '') {
+                      localStorage.setItem('sp:short_break', raw)
+                    }
+                  }}
+                  onBlur={() => {
+                    const val = Number(shortBreak)
+                    if (isNaN(val) || val < 0) {
+                      setShortBreak(0)
+                      localStorage.setItem('sp:short_break', '0')
+                    }
                   }}
                   className="w-full h-10 px-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-[#F8FAFC] dark:bg-[#0F172A] text-xs font-semibold text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-[#2E5B70] dark:focus:ring-sky-500/50"
                 />
@@ -145,9 +163,18 @@ export default function Setting({ user, onNavigate, onSignOut, onOpenGuide }) {
                   type="number"
                   value={longBreak}
                   onChange={(e) => {
-                    const val = Math.max(0, Number(e.target.value))
-                    setLongBreak(val)
-                    localStorage.setItem('sp:long_break', val)
+                    const raw = e.target.value
+                    setLongBreak(raw === '' ? '' : Number(raw))
+                    if (raw !== '') {
+                      localStorage.setItem('sp:long_break', raw)
+                    }
+                  }}
+                  onBlur={() => {
+                    const val = Number(longBreak)
+                    if (isNaN(val) || val < 0) {
+                      setLongBreak(0)
+                      localStorage.setItem('sp:long_break', '0')
+                    }
                   }}
                   className="w-full h-10 px-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-[#F8FAFC] dark:bg-[#0F172A] text-xs font-semibold text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-[#2E5B70] dark:focus:ring-sky-500/50"
                 />
@@ -159,9 +186,18 @@ export default function Setting({ user, onNavigate, onSignOut, onOpenGuide }) {
                   type="number"
                   value={dailyGoal}
                   onChange={(e) => {
-                    const val = Math.max(1, Number(e.target.value))
-                    setDailyGoal(val)
-                    localStorage.setItem('sp:daily_goal', val)
+                    const raw = e.target.value
+                    setDailyGoal(raw === '' ? '' : Number(raw))
+                    if (raw !== '') {
+                      localStorage.setItem('sp:daily_goal', raw)
+                    }
+                  }}
+                  onBlur={() => {
+                    const val = Number(dailyGoal)
+                    if (isNaN(val) || val < 1) {
+                      setDailyGoal(1)
+                      localStorage.setItem('sp:daily_goal', '1')
+                    }
                   }}
                   className="w-full h-10 px-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-[#F8FAFC] dark:bg-[#0F172A] text-xs font-semibold text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-[#2E5B70] dark:focus:ring-sky-500/50"
                 />

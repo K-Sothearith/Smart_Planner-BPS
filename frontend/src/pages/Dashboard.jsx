@@ -559,7 +559,7 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
                                 {session.title || 'Untitled Session'}
                               </h4>
                               <p className="text-[9px] text-slate-455 dark:text-slate-500 font-semibold mt-0.5">
-                                ⏰ {new Date(session.start_time).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })} • {session.duration_minutes}m • {session.category_name || 'General'}
+                                ⏰ {new Date(typeof session.start_time === 'string' ? session.start_time.replace(' ', 'T') : session.start_time).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })} • {session.duration_minutes}m • {session.category_name || 'General'}
                               </p>
                             </div>
                             <button

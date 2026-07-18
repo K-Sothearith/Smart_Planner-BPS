@@ -64,7 +64,7 @@ The objectives of this project are:
 
 ### Human-Computer Interaction (HCI)
 • Target user: University Students who desire a balancing academic life and personal life
-• UX Research Conducted: Survey
+• UX Research Conducted: Survey (via Microsoft Team)
 • Pain point: Students often struggle with overlapping deadlines; procrastination,
 distractions, and poor time management can lead to stress, exhaustion, reduced
 productivity, and academic burnout.

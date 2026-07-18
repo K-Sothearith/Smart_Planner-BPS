@@ -5,16 +5,18 @@ import studySessionService from '../../../services/studySessionService'
 export default function StudySessionTimerModal({ isOpen, onClose, session, focusSetting, breakSetting, onSessionFinished }) {
   if (!session) return null
 
-  // Helpers to parse minutes from global settings text
+  // Helpers to parse minutes from settings or session
   const parseFocusMinutes = (str) => {
     if (!str) return 25
+    if (str === 'Pomodoro') return 25
     if (str.includes('Custom')) {
       const saved = Number(localStorage.getItem('sp:focus_period'))
       return isNaN(saved) || saved <= 0 ? 25 : saved
     }
-    if (str.includes('25')) return 25
-    if (str.includes('50')) return 50
-    if (str.includes('15')) return 15
+    const match = str.match(/\d+/)
+    if (match) {
+      return parseInt(match[0], 10)
+    }
     return 25
   }
 
@@ -22,25 +24,34 @@ export default function StudySessionTimerModal({ isOpen, onClose, session, focus
     if (!str) return 5
     if (str.includes('Custom')) {
       const saved = Number(localStorage.getItem('sp:short_break'))
-      return isNaN(saved) || saved < 0 ? 5 : saved
+      if (!isNaN(saved) && saved >= 0) return saved
+      const match = str.match(/\d+/)
+      if (match) return parseInt(match[0], 10)
+      return 5
     }
-    if (str.includes('5')) return 5
-    if (str.includes('10')) return 10
     if (str.includes('No Break') || str.includes('Continuous')) return 0
+    const match = str.match(/\d+/)
+    if (match) {
+      return parseInt(match[0], 10)
+    }
     return 5
   }
 
-  const focusMinutes = parseFocusMinutes(focusSetting)
-  const breakMinutes = parseBreakMinutes(breakSetting)
+  const focusMinutes = parseFocusMinutes(session.focus_technique || focusSetting)
+  const breakMinutes = parseBreakMinutes(session.break_duration || breakSetting)
 
   const totalSessionMinutes = session.duration_minutes || 30
 
   // State
-  const [totalSecondsLeft, setTotalSecondsLeft] = useState(totalSessionMinutes * 60)
-  const [currentMode, setCurrentMode] = useState('focus') // 'focus' or 'break'
-  const [periodSecondsLeft, setPeriodSecondsLeft] = useState(Math.min(focusMinutes * 60, totalSessionMinutes * 60))
-  const [periodTotalSeconds, setPeriodTotalSeconds] = useState(Math.min(focusMinutes * 60, totalSessionMinutes * 60))
+  const [timerState, setTimerState] = useState({
+    totalSecondsLeft: totalSessionMinutes * 60,
+    currentMode: 'focus',
+    periodSecondsLeft: Math.min(focusMinutes * 60, totalSessionMinutes * 60),
+    periodTotalSeconds: Math.min(focusMinutes * 60, totalSessionMinutes * 60),
+  })
   const [isSaving, setIsSaving] = useState(false)
+
+  const { totalSecondsLeft, currentMode, periodSecondsLeft, periodTotalSeconds } = timerState
 
   // Ref to hold interval ID
   const intervalRef = useRef(null)
@@ -95,7 +106,12 @@ export default function StudySessionTimerModal({ isOpen, onClose, session, focus
       await studySessionService.updateSession(session.session_id, {
         taskId: session.task_id || null,
         title: session.title || session.task_title || 'Focused Study Block',
-        startTime: new Date(session.start_time).toISOString(),
+        startTime: (() => {
+          if (!session.start_time) return new Date().toISOString();
+          const str = typeof session.start_time === 'string' ? session.start_time.replace(' ', 'T') : session.start_time;
+          const d = new Date(str);
+          return isNaN(d.getTime()) ? new Date().toISOString() : d.toISOString();
+        })(),
         durationMinutes: totalSessionMinutes,
         focusTechnique: session.focus_technique || 'Pomodoro',
         breakDuration: session.break_duration || '5 mins',
@@ -118,47 +134,50 @@ export default function StudySessionTimerModal({ isOpen, onClose, session, focus
   // Timer runner
   useEffect(() => {
     if (isOpen) {
-      // Reset state for new timer run
       const initialTotalSeconds = totalSessionMinutes * 60
       const initialFocusSeconds = Math.min(focusMinutes * 60, initialTotalSeconds)
-      setTotalSecondsLeft(initialTotalSeconds)
-      setCurrentMode('focus')
-      setPeriodSecondsLeft(initialFocusSeconds)
-      setPeriodTotalSeconds(initialFocusSeconds)
+      
+      setTimerState({
+        totalSecondsLeft: initialTotalSeconds,
+        currentMode: 'focus',
+        periodSecondsLeft: initialFocusSeconds,
+        periodTotalSeconds: initialFocusSeconds,
+      })
 
       intervalRef.current = setInterval(() => {
-        setTotalSecondsLeft((prevTotal) => {
-          const nextTotal = prevTotal - 1
-          
+        setTimerState((prev) => {
+          const nextTotal = prev.totalSecondsLeft - 1
           if (nextTotal <= 0) {
-            // Auto complete
-            clearInterval(intervalRef.current)
-            handleFinishSession(true)
-            return 0
+            if (intervalRef.current) {
+              clearInterval(intervalRef.current)
+            }
+            return {
+              ...prev,
+              totalSecondsLeft: 0,
+              periodSecondsLeft: 0,
+            }
           }
 
-          setPeriodSecondsLeft((prevPeriod) => {
-            if (prevPeriod - 1 <= 0) {
-              // Transition between modes
-              setCurrentMode((prevMode) => {
-                const nextMode = prevMode === 'focus' && breakMinutes > 0 ? 'break' : 'focus'
-                const nextModeMinutes = nextMode === 'focus' ? focusMinutes : breakMinutes
-                const nextPeriodSeconds = Math.min(nextModeMinutes * 60, nextTotal)
+          const nextPeriod = prev.periodSecondsLeft - 1
+          if (nextPeriod <= 0) {
+            // Transition between modes
+            const nextMode = prev.currentMode === 'focus' && breakMinutes > 0 ? 'break' : 'focus'
+            const nextModeMinutes = nextMode === 'focus' ? focusMinutes : breakMinutes
+            const nextPeriodSeconds = Math.min(nextModeMinutes * 60, nextTotal)
 
-                setPeriodTotalSeconds(nextPeriodSeconds)
-                // Schedule update for period seconds left
-                setTimeout(() => setPeriodSecondsLeft(nextPeriodSeconds), 0)
-                
-                // Play notification sound
-                playChime(nextMode)
-                return nextMode
-              })
-              return 0
+            return {
+              totalSecondsLeft: nextTotal,
+              currentMode: nextMode,
+              periodSecondsLeft: nextPeriodSeconds,
+              periodTotalSeconds: nextPeriodSeconds,
             }
-            return prevPeriod - 1
-          })
+          }
 
-          return nextTotal
+          return {
+            ...prev,
+            totalSecondsLeft: nextTotal,
+            periodSecondsLeft: nextPeriod,
+          }
         })
       }, 1000)
     }
@@ -168,16 +187,39 @@ export default function StudySessionTimerModal({ isOpen, onClose, session, focus
         clearInterval(intervalRef.current)
       }
     }
-  }, [isOpen, session, focusSetting, breakSetting])
+  }, [isOpen, session, focusSetting, breakSetting, focusMinutes, breakMinutes, totalSessionMinutes])
+
+  // Track mode change for audio chime side-effect
+  const prevModeRef = useRef('focus')
+  useEffect(() => {
+    if (isOpen) {
+      if (currentMode !== prevModeRef.current) {
+        playChime(currentMode)
+      }
+      prevModeRef.current = currentMode
+    } else {
+      prevModeRef.current = 'focus'
+    }
+  }, [currentMode, isOpen])
+
+  // Track auto completion side-effect
+  useEffect(() => {
+    if (isOpen && totalSecondsLeft === 0) {
+      handleFinishSession(true)
+    }
+  }, [totalSecondsLeft, isOpen])
 
   // Skip the current break early
   const handleEndBreakEarly = () => {
     if (currentMode !== 'break') return
     playChime('focus')
-    setCurrentMode('focus')
     const nextPeriodSeconds = Math.min(focusMinutes * 60, totalSecondsLeft)
-    setPeriodTotalSeconds(nextPeriodSeconds)
-    setPeriodSecondsLeft(nextPeriodSeconds)
+    setTimerState((prev) => ({
+      ...prev,
+      currentMode: 'focus',
+      periodSecondsLeft: nextPeriodSeconds,
+      periodTotalSeconds: nextPeriodSeconds,
+    }))
   }
 
   // SVG configurations for Round circular timer

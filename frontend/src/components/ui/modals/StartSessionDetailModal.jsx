@@ -3,14 +3,15 @@ import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 export default function StartSessionDetailModal({ isOpen, onClose, onStart, session }) {
   if (!session) return null
 
-  const formattedDate = new Date(session.start_time).toLocaleDateString(undefined, {
+  const safeStartTime = new Date(typeof session.start_time === 'string' ? session.start_time.replace(' ', 'T') : session.start_time);
+  const formattedDate = safeStartTime.toLocaleDateString(undefined, {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
     day: 'numeric'
   })
 
-  const formattedTime = new Date(session.start_time).toLocaleTimeString(undefined, {
+  const formattedTime = safeStartTime.toLocaleTimeString(undefined, {
     hour: '2-digit',
     minute: '2-digit'
   })

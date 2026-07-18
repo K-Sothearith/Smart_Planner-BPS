@@ -23,7 +23,7 @@ export default function NewSessionModal({ isOpen, onClose, preselectedDate, onSe
         
         // Parse start_time
         if (session.start_time) {
-          const start = new Date(session.start_time)
+          const start = new Date(typeof session.start_time === 'string' ? session.start_time.replace(' ', 'T') : session.start_time)
           if (!isNaN(start.getTime())) {
             const year = start.getFullYear()
             const month = String(start.getMonth() + 1).padStart(2, '0')
@@ -53,7 +53,18 @@ export default function NewSessionModal({ isOpen, onClose, preselectedDate, onSe
         }
         
         setFocusTechnique(session.focus_technique || 'Pomodoro')
-        setBreakDuration(session.break_duration || '5 mins')
+        if (session.break_duration) {
+          setBreakDuration(session.break_duration)
+          const match = session.break_duration.match(/\d+/)
+          if (match) {
+            setCustomBreakMinutes(match[0])
+          } else {
+            setCustomBreakMinutes('5')
+          }
+        } else {
+          setBreakDuration('5 mins')
+          setCustomBreakMinutes('5')
+        }
         setBurnoutPrevention(session.burnout_prevention === 1 || session.burnout_prevention === true)
         setError('')
       } else {
@@ -70,6 +81,7 @@ export default function NewSessionModal({ isOpen, onClose, preselectedDate, onSe
         setDuration('30 mins')
         setFocusTechnique('Pomodoro')
         setBreakDuration('5 mins')
+        setCustomBreakMinutes('5')
         setBurnoutPrevention(true)
         setError('')
       }
@@ -104,6 +116,7 @@ export default function NewSessionModal({ isOpen, onClose, preselectedDate, onSe
   const [duration, setDuration] = useState('30 mins')
   const [focusTechnique, setFocusTechnique] = useState('Pomodoro')
   const [breakDuration, setBreakDuration] = useState('5 mins')
+  const [customBreakMinutes, setCustomBreakMinutes] = useState('5')
   const [burnoutPrevention, setBurnoutPrevention] = useState(true)
 
   const techniqueOptions = [
@@ -115,6 +128,7 @@ export default function NewSessionModal({ isOpen, onClose, preselectedDate, onSe
     { value: '5 mins', label: '5 mins' },
     { value: '10 mins', label: '10 mins' },
     { value: '15 mins', label: '15 mins' },
+    { value: 'Custom', label: 'Custom' },
   ]
 
   const handleSubmit = async (e) => {
@@ -171,6 +185,16 @@ export default function NewSessionModal({ isOpen, onClose, preselectedDate, onSe
 
       const durationMinutes = parseInt(duration, 10) || 30
 
+      let finalBreakDuration = breakDuration
+      if (breakDuration === 'Custom' || !breakOptions.some(opt => opt.value === breakDuration)) {
+        const mins = parseInt(customBreakMinutes, 10)
+        if (isNaN(mins) || mins <= 0) {
+          setError('Please enter a valid custom break duration (greater than 0)')
+          return
+        }
+        finalBreakDuration = `${mins} mins`
+      }
+
       if (session) {
         await studySessionService.updateSession(session.session_id, {
           taskId: selectedTaskId || null,
@@ -178,7 +202,7 @@ export default function NewSessionModal({ isOpen, onClose, preselectedDate, onSe
           startTime: startDateTime.toISOString(),
           durationMinutes,
           focusTechnique,
-          breakDuration,
+          breakDuration: finalBreakDuration,
           burnoutPrevention: !!burnoutPrevention
         })
       } else {
@@ -188,7 +212,7 @@ export default function NewSessionModal({ isOpen, onClose, preselectedDate, onSe
           startTime: startDateTime.toISOString(),
           durationMinutes,
           focusTechnique,
-          breakDuration,
+          breakDuration: finalBreakDuration,
           burnoutPrevention: !!burnoutPrevention
         })
       }
@@ -348,9 +372,36 @@ export default function NewSessionModal({ isOpen, onClose, preselectedDate, onSe
               </div>
               <div className="flex flex-col gap-1.5">
                 <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Break Duration</label>
-                <Select value={breakDuration} onChange={setBreakDuration} options={breakOptions} className="h-11" />
+                <Select
+                  value={breakOptions.some(opt => opt.value === breakDuration) ? breakDuration : 'Custom'}
+                  onChange={(val) => {
+                    setBreakDuration(val)
+                    if (val === 'Custom') {
+                      if (!customBreakMinutes) setCustomBreakMinutes('5')
+                    }
+                  }}
+                  options={breakOptions}
+                  className="h-11"
+                />
               </div>
             </div>
+
+            {/* Custom Break Duration Input */}
+            {(breakDuration === 'Custom' || !breakOptions.some(opt => opt.value === breakDuration)) && (
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Custom Break Duration (mins)</label>
+                <input
+                  type="number"
+                  min="1"
+                  max="120"
+                  required
+                  value={customBreakMinutes}
+                  onChange={(e) => setCustomBreakMinutes(e.target.value)}
+                  className="w-full h-11 px-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-[#F8FAFC] dark:bg-[#0F172A] text-xs font-semibold text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-[#2E5B70] dark:focus:ring-sky-500/50 transition-all"
+                  placeholder="e.g. 7"
+                />
+              </div>
+            )}
 
             {/* Burnout Prevention Card */}
             <div className="p-4 bg-emerald-500/5 dark:bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center justify-between transition-all">
