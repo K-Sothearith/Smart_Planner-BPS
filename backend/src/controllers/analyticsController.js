@@ -90,6 +90,60 @@ const calculateRiskScores = ({
   };
 };
 
+const getBurnoutRecommendationAndRisk = (idx) => {
+  let riskDetails = {};
+  let recommendation = {};
+
+  if (idx >= 76) {
+    riskDetails = {
+      label: 'High Burnout Risk',
+      colorClass: 'text-rose-500 dark:text-rose-455',
+      borderClass: 'border-rose-500/20 text-rose-600 dark:text-rose-400 bg-rose-500/10',
+      circleColor: 'stroke-rose-500'
+    };
+    recommendation = {
+      title: "Critical Overload",
+      text: "Your burnout risk is critical! Reschedule non-urgent tasks and take an extended recovery break.",
+      boxClass: "bg-rose-500/5 dark:bg-rose-500/10 border-rose-500/20 text-rose-700 dark:text-rose-300",
+      titleClass: "text-rose-800 dark:text-rose-400",
+      actionText: "Take deep breaths ⏱️",
+      actionType: "breathing"
+    };
+  } else if (idx >= 41) {
+    riskDetails = {
+      label: 'Moderate Fatigue',
+      colorClass: 'text-amber-500 dark:text-amber-455',
+      borderClass: 'border-amber-500/20 text-amber-600 dark:text-amber-400 bg-amber-500/10',
+      circleColor: 'stroke-amber-500'
+    };
+    recommendation = {
+      title: "Moderate Fatigue",
+      text: "Study intensity is high. Take shorter 5-min stretch breaks every 25 minutes to avoid fatigue.",
+      boxClass: "bg-amber-500/5 dark:bg-amber-500/10 border-amber-500/20 text-amber-700 dark:text-amber-300",
+      titleClass: "text-amber-850 dark:text-amber-400",
+      actionText: "Breathing exercise ⏱️",
+      actionType: "breathing"
+    };
+  } else {
+    riskDetails = {
+      label: 'Healthy Balance',
+      colorClass: 'text-emerald-600 dark:text-emerald-455',
+      borderClass: 'border-emerald-500/20 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10',
+      circleColor: 'stroke-emerald-500'
+    };
+    recommendation = {
+      title: "Optimal Balance",
+      text: "Workload and lifestyle are well balanced. Maintain your schedule and take standard scheduled breaks.",
+      boxClass: "bg-emerald-500/5 dark:bg-emerald-500/10 border-emerald-500/20 text-emerald-700 dark:text-emerald-300",
+      titleClass: "text-emerald-800 dark:text-emerald-400",
+      actionText: "View study planner 📅",
+      actionType: "planner"
+    };
+  }
+
+  return { riskDetails, recommendation };
+};
+
 const analyticsController = {
   async logBurnout(req, res) {
     try {
@@ -122,6 +176,8 @@ const analyticsController = {
         missedCount
       });
 
+      const { riskDetails, recommendation } = getBurnoutRecommendationAndRisk(scores.burnoutIndex);
+
       const result = await BurnoutLog.create({
         userId,
         moodLevel,
@@ -137,7 +193,9 @@ const analyticsController = {
         message: "Burnout log saved and index calculated successfully.",
         burnoutId: result.burnoutId,
         burnoutIndex: scores.burnoutIndex,
-        scores
+        scores,
+        riskDetails,
+        recommendation
       });
 
     } catch (error) {
@@ -193,6 +251,8 @@ const analyticsController = {
         };
         liveIndex = 0;
       }
+
+      const { riskDetails, recommendation } = getBurnoutRecommendationAndRisk(liveIndex);
 
       const user = await User.findById(userId);
       const createdDateVal = user ? (user.created_at || new Date()) : new Date();
@@ -327,6 +387,8 @@ const analyticsController = {
         history,
         liveIndex,
         liveScores: scores,
+        riskDetails,
+        recommendation,
         taskMetrics: {
           pendingCount,
           overdueCount,

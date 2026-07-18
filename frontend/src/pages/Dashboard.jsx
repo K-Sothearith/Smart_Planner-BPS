@@ -26,6 +26,8 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
   const [liveIndex, setLiveIndex] = useState(0)
   const [liveScores, setLiveScores] = useState(null)
   const [latestLog, setLatestLog] = useState(null)
+  const [backendRiskDetails, setBackendRiskDetails] = useState(null)
+  const [backendRecommendation, setBackendRecommendation] = useState(null)
   const [taskMetrics, setTaskMetrics] = useState({ pendingCount: 0, overdueCount: 0, missedCount: 0 })
   const [weeklyProductivity, setWeeklyProductivity] = useState([])
   const [tasks, setTasks] = useState([])
@@ -50,6 +52,8 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
       setLiveIndex(analyticsData.liveIndex || 0)
       setLiveScores(analyticsData.liveScores || null)
       setLatestLog(analyticsData.latestLog || null)
+      setBackendRiskDetails(analyticsData.riskDetails || null)
+      setBackendRecommendation(analyticsData.recommendation || null)
       setTaskMetrics(analyticsData.taskMetrics || { pendingCount: 0, overdueCount: 0, missedCount: 0 })
       setWeeklyProductivity(analyticsData.weeklyProductivity || [])
       setTasks(allTasks || [])
@@ -160,46 +164,21 @@ export default function Dashboard({ user, onNavigate, onSignOut, onOpenGuide, re
     })
   }
 
-  const getRiskDetails = (idx) => {
-    if (idx >= 76) return { label: 'High Burnout Risk', colorClass: 'text-rose-500 dark:text-rose-455', borderClass: 'border-rose-500/20 bg-rose-500/10', circleColor: 'stroke-rose-500' }
-    if (idx >= 41) return { label: 'Moderate Fatigue', colorClass: 'text-amber-500 dark:text-amber-455', borderClass: 'border-amber-500/20 bg-amber-500/10', circleColor: 'stroke-amber-500' }
-    return { label: 'Healthy Balance', colorClass: 'text-emerald-600 dark:text-emerald-455', borderClass: 'border-emerald-500/20 bg-emerald-500/10', circleColor: 'stroke-emerald-500' }
+  const risk = backendRiskDetails || {
+    label: 'Healthy Balance',
+    colorClass: 'text-emerald-600 dark:text-emerald-455',
+    borderClass: 'border-emerald-500/20 bg-emerald-500/10',
+    circleColor: 'stroke-emerald-500'
   }
 
-  const risk = getRiskDetails(liveIndex)
-
-  const getRecommendation = (idx) => {
-    if (idx >= 76) {
-      return {
-        title: "Critical Overload",
-        text: "Your burnout risk is critical! Reschedule non-urgent tasks and take an extended recovery break.",
-        boxClass: "bg-rose-500/5 dark:bg-rose-500/10 border-rose-500/20 text-rose-700 dark:text-rose-300",
-        titleClass: "text-rose-800 dark:text-rose-400",
-        actionText: "Take deep breaths ⏱️",
-        actionType: "breathing"
-      };
-    }
-    if (idx >= 41) {
-      return {
-        title: "Moderate Fatigue",
-        text: "Study intensity is high. Take shorter 5-min stretch breaks every 25 minutes to avoid fatigue.",
-        boxClass: "bg-amber-500/5 dark:bg-amber-500/10 border-amber-500/20 text-amber-700 dark:text-amber-300",
-        titleClass: "text-amber-800 dark:text-amber-400",
-        actionText: "Breathing exercise ⏱️",
-        actionType: "breathing"
-      };
-    }
-    return {
-      title: "Optimal Balance",
-      text: "Workload and lifestyle are well balanced. Maintain your schedule and take standard scheduled breaks.",
-      boxClass: "bg-emerald-500/5 dark:bg-emerald-500/10 border-emerald-500/20 text-emerald-700 dark:text-emerald-300",
-      titleClass: "text-emerald-800 dark:text-emerald-400",
-      actionText: "View study planner 📅",
-      actionType: "planner"
-    };
-  };
-
-  const rec = getRecommendation(liveIndex)
+  const rec = backendRecommendation || {
+    title: "Optimal Balance",
+    text: "Workload and lifestyle are well balanced. Maintain your schedule and take standard scheduled breaks.",
+    boxClass: "bg-emerald-500/5 dark:bg-emerald-500/10 border-emerald-500/20 text-emerald-700 dark:text-emerald-300",
+    titleClass: "text-emerald-800 dark:text-emerald-400",
+    actionText: "View study planner 📅",
+    actionType: "planner"
+  }
 
   const todayTasks = tasks.filter(t => t.status === 'Undone' && (isToday(t.due_date) || t.priority === 'High'))
   const todaySessions = sessions.filter(s => isToday(s.start_time))
