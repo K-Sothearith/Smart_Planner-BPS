@@ -13,6 +13,8 @@ CREATE TABLE IF NOT EXISTS Users (
     isNewUser BOOLEAN DEFAULT TRUE,
     -- UserSetting
     modePreference ENUM('Dark', 'Light')
+
+
 );
 
 CREATE TABLE IF NOT EXISTS Categories (
@@ -66,3 +68,33 @@ CREATE TABLE IF NOT EXISTS BurnoutLogs (
   
   CONSTRAINT fk_burnout_user FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE SET NULL
 );
+
+-- Tasks
+CREATE INDEX idx_task_user
+ON Tasks(user_id);
+
+CREATE INDEX idx_task_category
+ON Tasks(category_id);
+
+CREATE INDEX idx_task_status
+ON Tasks(status);
+
+CREATE INDEX idx_task_due_date
+ON Tasks(due_date);
+
+-- StudySessions
+CREATE INDEX idx_session_user
+ON StudySessions(user_id);
+
+CREATE INDEX idx_session_task
+ON StudySessions(task_id);
+
+CREATE INDEX idx_session_start
+ON StudySessions(start_time);
+
+-- BurnoutLogs
+CREATE INDEX idx_burnout_user
+ON BurnoutLogs(user_id);
+
+CREATE INDEX idx_burnout_created
+ON BurnoutLogs(created_at);
