@@ -7,6 +7,8 @@ import taskRoutes from "./routes/taskRoutes.js";
 import studySessionRoutes from "./routes/studySessionRoutes.js";
 import analyticsRoutes from "./routes/analyticsRoutes.js";
 import errorHandler from "./middlewares/errorHandler.js";
+import swaggerUi from "swagger-ui-express";
+import swaggerSpec from "./config/swagger.js";
 
 dotenv.config();
 
@@ -33,6 +35,12 @@ app.get("/api/health", async (req, res, next) => {
     next(error);
   }
 });
+
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec)
+);
 
 // Error-handling middleware (must be registered last)
 app.use(errorHandler);
